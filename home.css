@@ -1,0 +1,143 @@
+/* ================================================================
+   home.css — index.html 전용
+   의존: common.css 선로드 필요
+================================================================ */
+
+body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── 레이아웃 ── */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+/* ── 헤더 ── */
+header {
+  grid-column: 1 / -1;
+  padding: 3rem 2rem 1.8rem;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+}
+.site-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.site-desc {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+/* ── 사이드바 ── */
+aside {
+  border-right: 1px solid var(--rule);
+  padding: 1.8rem 0 4rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-dim) transparent;
+}
+
+/* ── 트리 ── */
+.tree, .tree ul { list-style: none; padding: 0; margin: 0; }
+
+.t-node {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink-muted);
+  font-family: var(--sans);
+  transition: color 0.13s, border-color 0.13s, background 0.13s;
+  user-select: none;
+}
+.t-node:hover { color: var(--ink); }
+.t-node.active { color: var(--accent); border-left-color: var(--accent); }
+
+.t-node[data-depth="0"] { padding: 0.32rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+.t-node[data-depth="1"] { padding: 0.28rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.t-node[data-depth="2"] { padding: 0.24rem 1.2rem 0.24rem 2.2rem; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-dim); }
+.t-node[data-depth="3"] { padding: 0.2rem 1.2rem 0.2rem 3rem; font-size: 0.7rem; color: var(--ink-dim); }
+
+.t-arrow {
+  font-size: 0.5rem; flex-shrink: 0;
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 2px;
+  transition: transform 0.18s, background 0.12s;
+  color: var(--ink-dim); cursor: pointer;
+}
+.t-arrow:hover { background: var(--bg-hover); color: var(--ink-muted); }
+.t-arrow.open { transform: rotate(90deg); }
+
+.t-label { flex: 1; cursor: pointer; }
+.t-label:hover { color: var(--ink); }
+
+.t-sub { overflow: hidden; max-height: 0; transition: max-height 0.22s ease; }
+.t-sub.open { max-height: 1000px; }
+
+.t-divider { height: 1px; background: var(--rule); margin: 0.6rem 1.2rem; }
+
+/* ── 글 목록 ── */
+main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
+
+.post-list { display: flex; flex-direction: column; }
+
+.post-item {
+  border-bottom: 0.5px solid var(--rule);
+  padding: 1.6rem 0;
+  display: flex; flex-direction: column; gap: 0.45rem;
+  text-decoration: none; cursor: pointer;
+  transition: background 0.12s, padding 0.12s, margin 0.12s;
+}
+.post-item:first-child { border-top: 0.5px solid var(--rule); }
+.post-item:hover {
+  background: var(--bg-hover);
+  margin: 0 -2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+.post-item.hidden { display: none; }
+
+.post-meta-row { display: flex; align-items: center; gap: 0.75rem; }
+.post-tag {
+  font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-dim);
+  padding: 0.15rem 0.55rem; border-radius: 2px;
+}
+.post-date { font-size: 0.72rem; color: var(--ink-dim); }
+.post-title {
+  font-family: var(--serif);
+  font-size: 1.25rem; font-weight: 600;
+  color: var(--ink); line-height: 1.35; letter-spacing: -0.01em;
+}
+.post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
+
+/* ── 반응형 ── */
+@media (max-width: 640px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { display: none; }
+  header { flex-direction: column; gap: 0.3rem; padding: 2rem 1.2rem 1.2rem; }
+  main { padding: 1.8rem 1.2rem 5rem; }
+  .post-item:hover { margin: 0 -1.2rem; padding-left: 1.2rem; padding-right: 1.2rem; }
+}

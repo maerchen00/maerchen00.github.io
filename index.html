@@ -5,138 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>무제</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* index 전용 — 사이드바 레이아웃·트리·글 목록 */
-    body { font-family: var(--sans); font-size: 15px; line-height: 1.7; min-height: 100vh; }
-
-    .layout {
-      display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      grid-template-rows: auto 1fr;
-      min-height: 100vh;
-    }
-
-    header {
-      grid-column: 1 / -1;
-      padding: 3rem 2rem 1.8rem;
-      border-bottom: 1px solid var(--rule);
-      display: flex;
-      align-items: baseline;
-      gap: 1.2rem;
-    }
-    .site-title {
-      font-family: var(--serif);
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 600;
-      color: var(--ink);
-      letter-spacing: -0.02em;
-    }
-    .site-desc {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 0.95rem;
-      color: var(--ink-muted);
-    }
-
-    aside {
-      border-right: 1px solid var(--rule);
-      padding: 1.8rem 0 4rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--ink-dim) transparent;
-    }
-
-    .tree, .tree ul { list-style: none; padding: 0; margin: 0; }
-
-    .t-node {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      width: 100%;
-      background: none;
-      border: none;
-      border-left: 2px solid transparent;
-      cursor: pointer;
-      text-align: left;
-      color: var(--ink-muted);
-      font-family: var(--sans);
-      transition: color 0.13s, border-color 0.13s, background 0.13s;
-      user-select: none;
-    }
-    .t-node:hover { color: var(--ink); }
-    .t-node.active { color: var(--accent); border-left-color: var(--accent); }
-
-    .t-node[data-depth="0"] { padding: 0.32rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
-    .t-node[data-depth="1"] { padding: 0.28rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
-    .t-node[data-depth="2"] { padding: 0.24rem 1.2rem 0.24rem 2.2rem; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-dim); }
-    .t-node[data-depth="3"] { padding: 0.2rem 1.2rem 0.2rem 3rem; font-size: 0.7rem; color: var(--ink-dim); }
-
-    .t-arrow {
-      font-size: 0.5rem; flex-shrink: 0; width: 18px; height: 18px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 2px;
-      transition: transform 0.18s, background 0.12s;
-      color: var(--ink-dim); cursor: pointer;
-    }
-    .t-arrow:hover { background: var(--bg-hover); color: var(--ink-muted); }
-    .t-arrow.open { transform: rotate(90deg); }
-
-    .t-label { flex: 1; cursor: pointer; }
-    .t-label:hover { color: var(--ink); }
-
-    .t-sub { overflow: hidden; max-height: 0; transition: max-height 0.22s ease; }
-
-    .t-divider { height: 1px; background: var(--rule); margin: 0.6rem 1.2rem; }
-
-    main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
-
-    .post-list { display: flex; flex-direction: column; }
-
-    .post-item {
-      border-bottom: 0.5px solid var(--rule);
-      padding: 1.6rem 0;
-      display: flex; flex-direction: column; gap: 0.45rem;
-      transition: background 0.12s, padding 0.12s, margin 0.12s;
-    }
-    .post-item:first-child { border-top: 0.5px solid var(--rule); }
-    .post-item.hidden { display: none; }
-    .post-item:hover {
-      background: var(--bg-hover);
-      margin: 0 -2.5rem;
-      padding-left: 2.5rem;
-      padding-right: 2.5rem;
-    }
-
-    .post-meta-row { display: flex; align-items: center; gap: 0.75rem; }
-    .post-tag {
-      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent); background: var(--accent-dim); padding: 0.15rem 0.55rem; border-radius: 2px;
-      text-decoration: none; cursor: pointer;
-      transition: background 0.12s, color 0.12s;
-    }
-    .post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
-    .post-date { font-size: 0.72rem; color: var(--ink-dim); }
-
-    .post-link {
-      display: flex; flex-direction: column; gap: 0.45rem;
-      text-decoration: none; cursor: pointer;
-    }
-    .post-link:hover { text-decoration: none; }
-    .post-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--ink); line-height: 1.35; letter-spacing: -0.01em; }
-    .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
-
-    @media (max-width: 640px) {
-      .layout { grid-template-columns: 1fr; }
-      aside { display: none; }
-      header { flex-direction: column; gap: 0.3rem; padding: 2rem 1.2rem 1.2rem; }
-      main { padding: 1.8rem 1.2rem 5rem; }
-      .post-item:hover { margin: 0 -1.2rem; padding-left: 1.2rem; padding-right: 1.2rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="home.css" />
 </head>
 <body>
 <div class="layout">
@@ -202,27 +72,23 @@
   <main>
     <div class="post-list" id="post-list">
 
-      <div class="post-item" id="post-capm-report" data-tags="Finance,Asset Pricing">
+      <a class="post-item" id="post-capm-report" href="posts/capm-report.html" data-tags="Finance,Asset Pricing">
         <div class="post-meta-row">
-          <a class="post-tag" href="#" data-action="filter" data-filter="Finance">Finance</a>
+          <span class="post-tag">Finance</span>
           <span class="post-date">2025. 6</span>
         </div>
-        <a class="post-link" href="posts/capm-report.html">
-          <div class="post-title">IS SML의 Out-of-Sample 설명력 실증검정</div>
-          <div class="post-desc">S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</div>
-        </a>
-      </div>
+        <div class="post-title">IS SML의 Out-of-Sample 설명력 실증검정</div>
+        <div class="post-desc">S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</div>
+      </a>
 
-      <div class="post-item" id="post-great-depression" data-tags="Economics,ABCT">
+      <a class="post-item" id="post-great-depression" href="posts/great-depression.html" data-tags="Economics,ABCT">
         <div class="post-meta-row">
-          <a class="post-tag" href="#" data-action="filter" data-filter="Economics">Economics</a>
+          <span class="post-tag">Economics</span>
           <span class="post-date">2025. 5</span>
         </div>
-        <a class="post-link" href="posts/great-depression.html">
-          <div class="post-title">대공황은 자본주의의 실패였는가</div>
-          <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
-        </a>
-      </div>
+        <div class="post-title">대공황은 자본주의의 실패였는가</div>
+        <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
+      </a>
 
     </div>
   </main>
@@ -233,39 +99,12 @@
   const posts = document.querySelectorAll('.post-item');
   const tree  = document.getElementById('nav-tree');
 
-  document.querySelectorAll('.t-sub.open').forEach(sub => {
-    sub.style.maxHeight = sub.scrollHeight + 'px';
-  });
-
-  function applyFilter(tag) {
-    document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
-    const node = document.querySelector(`.t-label[data-filter="${tag}"]`);
-    if (node) node.closest('.t-node').classList.add('active');
-    posts.forEach(p => {
-      const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
-      p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
-    });
-  }
-
-  document.querySelectorAll('.post-tag').forEach(tagEl => {
-    tagEl.addEventListener('click', e => {
-      e.preventDefault();
-      applyFilter(tagEl.dataset.filter);
-    });
-  });
-
   tree.addEventListener('click', e => {
     const arrow = e.target.closest('.t-arrow');
     if (arrow) {
       const sub = document.getElementById(arrow.dataset.toggle);
       if (!sub) return;
       const isOpen = sub.classList.contains('open');
-      if (isOpen) {
-        sub.style.maxHeight = sub.scrollHeight + 'px';
-        requestAnimationFrame(() => { sub.style.maxHeight = '0px'; });
-      } else {
-        sub.style.maxHeight = sub.scrollHeight + 'px';
-      }
       sub.classList.toggle('open', !isOpen);
       arrow.classList.toggle('open', !isOpen);
       return;
@@ -276,14 +115,13 @@
     const action = label.dataset.action;
 
     if (action === 'filter') {
-      applyFilter(label.dataset.filter);
-    }
-
-    if (action === 'go') {
       document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
       label.closest('.t-node').classList.add('active');
-      const postEl = document.getElementById('post-' + label.dataset.post);
-      if (postEl) window.location.href = postEl.href;
+      const tag = label.dataset.filter;
+      posts.forEach(p => {
+        const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
+        p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
+      });
     }
   });
 </script>

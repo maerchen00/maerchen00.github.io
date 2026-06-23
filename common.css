@@ -1,0 +1,42 @@
+/* ================================================================
+   common.css — 공통 변수·리셋·폰트
+   index.html:   <link href="common.css" />
+   posts/*.html: <link href="../common.css" />
+================================================================ */
+
+:root {
+  --bg:          #faf8f5;
+  --bg-card:     #f3f0eb;
+  --bg-hover:    #f0ece5;
+  --ink:         #1c1917;
+  --ink-muted:   #78716c;
+  --ink-dim:     #a8a29e;
+  --accent:      #92400e;
+  --accent-muted:#c4907a;
+  --accent-dim:  #fef3c7;
+  --rule:        #e7e2d8;
+  --sidebar-w:   220px;
+  --serif: 'EB Garamond', 'Noto Serif KR', Georgia, serif;
+  --sans:  'Noto Sans KR', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.9;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; color: var(--ink); }
+
+sup {
+  font-size: 0.65rem;
+  vertical-align: super;
+  font-family: var(--sans);
+  color: var(--accent);
+}

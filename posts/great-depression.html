@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>대공황은 자본주의의 실패였는가</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="../article.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    /* ── 네비 + 레이아웃 ── */
+    body { font-size: 19px; line-height: 1.9; padding: 0; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg);
+      border-bottom: 0.5px solid var(--rule);
+      padding: 0 1.6rem;
+      height: 46px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-left { display: flex; align-items: center; gap: 0.8rem; }
+    .toc-btn {
+      width: 28px; height: 28px;
+      background: none; border: 0.5px solid transparent; border-radius: 3px;
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3.5px;
+      transition: background 0.13s, border-color 0.13s; flex-shrink: 0;
+    }
+    .toc-btn:hover { background: var(--bg-hover); border-color: var(--rule); }
+    .toc-btn.open { background: var(--bg-hover); border-color: var(--ink-dim); }
+    .toc-btn span { display: block; width: 12px; height: 1px; background: var(--ink-muted); }
+    .nav-site { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--ink); }
+    .nav-right { display: flex; align-items: center; gap: 1.2rem; font-family: var(--sans); font-size: 0.72rem; color: var(--ink-dim); }
+    .nav-back { color: var(--ink-dim); text-decoration: none; transition: color 0.13s; }
+    .nav-back:hover { color: var(--ink-muted); }
+    .nav-tag {
+      color: var(--accent); font-weight: 500; cursor: pointer;
+      padding: 3px 8px; border-radius: 3px;
+      transition: background 0.13s; position: relative; user-select: none;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .nav-tag:hover { background: var(--accent-dim); }
+    .nav-tag.open { background: var(--accent-dim); }
+    .nav-date { color: var(--ink-dim); }
+
+    /* 드롭다운 */
+    .tree-drop {
+      position: absolute; top: 46px; right: 0;
+      width: 200px; background: var(--bg);
+      border: 0.5px solid var(--rule); border-top: none;
+      z-index: 200; display: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .tree-drop.open { display: block; }
+    .td-item { font-family: var(--sans); font-size: 0.72rem; padding: 0.28rem 1rem; color: var(--ink-muted); cursor: pointer; border-left: 2px solid transparent; transition: color 0.12s; }
+    .td-item:hover { color: var(--ink); }
+    .td-item.active { color: var(--accent); border-left-color: var(--accent); }
+    .td-item.d1 { font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.65rem; color: var(--ink-dim); padding-top: 0.5rem; }
+    .td-item.d2 { padding-left: 1.8rem; }
+    .td-item.d3 { padding-left: 2.6rem; font-size: 0.68rem; color: var(--ink-dim); }
+    .td-divider { height: 0.5px; background: var(--rule); margin: 0.3rem 0; }
+
+    /* TOC 패널 */
+    .toc-panel {
+      position: fixed; left: 0; top: 46px; bottom: 0;
+      width: 200px; background: var(--bg);
+      border-right: 0.5px solid var(--rule);
+      z-index: 90; transform: translateX(-200px);
+      transition: transform 0.22s ease;
+      padding: 1.4rem 0 2rem; overflow-y: auto;
+    }
+    .toc-panel.open { transform: translateX(0); }
+    .toc-head { font-family: var(--sans); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); padding: 0 1rem; margin-bottom: 0.5rem; }
+    .toc-item { font-family: var(--sans); font-size: 0.72rem; color: var(--ink-dim); padding: 0.22rem 1rem; border-left: 2px solid transparent; cursor: pointer; transition: color 0.12s; display: block; text-decoration: none; }
+    .toc-item:hover { color: var(--ink-muted); }
+    .toc-item.on { color: var(--accent); border-left-color: var(--accent); }
+    .toc-item.sub { padding-left: 1.7rem; font-size: 0.68rem; }
+
+    /* 오버레이 */
+    .overlay { position: fixed; inset: 0; background: rgba(28,25,23,0.15); z-index: 80; display: none; }
+    .overlay.show { display: block; }
+
+    /* 본문 */
+    .page-wrap { transition: margin-left 0.22s ease; }
+    .page-wrap.shifted { margin-left: 200px; }
+
+    article { max-width: 720px; margin: 0 auto; padding: 3.5rem 1rem 6rem; }
+    header { max-width: 720px; margin: 0 auto; padding: 3rem 1rem 2rem; border-bottom: 2px solid var(--ink-dim); }
+    .category { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; }
+    h1 { font-family: var(--serif); font-size: clamp(1.9rem,4vw,2.9rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 0.8rem; color: var(--ink); }
+    .subtitle { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--ink-muted); margin-bottom: 1.2rem; }
+    .meta { font-family: var(--sans); font-size: 0.75rem; color: var(--ink-muted); display: flex; gap: 1.5rem; }
+
+    /* 글 내 요소 */
+    p { margin-bottom: 1.6rem; word-break: keep-all; }
+    h2 { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin: 3.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule); letter-spacing: -0.01em; color: var(--ink); }
+    h3 { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; margin: 2.4rem 0 0.7rem; color: var(--accent); letter-spacing: -0.01em; }
+    blockquote { background: var(--bg-card); border-left: 3px solid var(--accent); margin: 2.5rem 0; padding: 1.4rem 1.8rem; font-style: italic; font-size: 1.05rem; color: var(--ink-muted); line-height: 1.75; border-radius: 0; }
+    .bq-source { display: block; margin-top: 0.8rem; font-style: normal; font-family: var(--sans); font-size: 0.72rem; color: var(--accent-muted); }
+    .viz-wrap { margin: 2.5rem 0; background: var(--bg-card); border: 1px solid var(--rule); border-radius: 3px; padding: 1.6rem; }
+    .viz-title { font-family: var(--sans); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+    .chart-box { background: var(--bg); border-radius: 2px; padding: 0.9rem 1rem 0.7rem; }
+    .chart-label { font-family: var(--sans); font-size: 0.68rem; color: var(--ink-muted); margin-bottom: 0.5rem; letter-spacing: 0.04em; }
+    .chart-val { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 0.6rem; }
+    .chart-box canvas { width: 100% !important; }
+    .pie-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .pie-box { background: var(--bg); border-radius: 2px; padding: 0.9rem 1rem; display: flex; align-items: center; gap: 1.2rem; }
+    .pie-box canvas { width: 110px !important; height: 110px !important; flex-shrink: 0; }
+    strong { font-weight: 600; color: var(--ink); }
+    .divider { text-align: center; color: var(--accent-muted); margin: 3rem 0; font-size: 1rem; letter-spacing: 0.5em; }
+    sup { font-size: 0.65rem; vertical-align: super; font-family: var(--sans); color: var(--accent); }
+    .dropcap::first-letter { float: left; font-size: 4rem; line-height: 0.85; margin: 0.05em 0.1em 0 0; font-family: var(--serif); font-weight: 600; color: var(--accent); }
+    .footnotes { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: 0.75rem; color: var(--ink-muted); line-height: 1.8; }
+    .footnotes p { margin-bottom: 0.4rem; }
+    .table-wrap { margin: 1.6rem 0 2rem; overflow-x: auto; }
+    .table-wrap table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.82rem; }
+    .table-num { font-family: var(--sans); font-size: 0.72rem; font-weight: 500; color: var(--accent); margin-bottom: 0.2rem; }
+    .table-caption { font-family: var(--sans); font-size: 0.78rem; color: var(--ink); margin-bottom: 0.5rem; }
+    .table-wrap th { background: var(--ink-dim); color: var(--ink); padding: 0.5rem 0.9rem; text-align: center; font-weight: 500; }
+    .table-wrap td { padding: 0.45rem 0.9rem; text-align: center; border-bottom: 1px solid var(--rule); color: var(--ink-muted); }
+    .table-wrap td:first-child { text-align: left; }
+    .table-wrap .highlight td { color: var(--ink); font-weight: 500; }
+    .table-wrap tr:last-child td { border-bottom: none; }
+    .table-wrap tr:hover td { background: var(--bg-hover); color: var(--ink); }
+    .table-source { font-family: var(--sans); font-size: 0.68rem; color: var(--ink-muted); margin-top: 0.4rem; text-align: right; }
+    @media (max-width: 600px) { body { font-size: 17px; } h1 { font-size: 1.7rem; } .chart-grid, .pie-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- 오버레이 -->
+<div class="overlay" id="overlay"></div>
+
+<!-- 네비 바 -->
+<nav class="nav">
+  <div class="nav-left">
+    <div class="toc-btn" id="toc-btn"><span></span><span></span><span></span></div>
+    <div class="nav-site">무제</div>
+  </div>
+  <div class="nav-right">
+    <a class="nav-back" href="../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Economics ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <div class="td-item d2">▾ Austrian / ABCT</div>
+        <div class="td-item d3 active">대공황은 자본주의의 실패였는가</div>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <div class="td-item d2">▾ Asset Pricing</div>
+        <div class="td-item d3"><a href="capm-report.html" style="color:inherit;text-decoration:none;">IS SML의 OOS 설명력 검정</a></div>
+        <div class="td-item d2">▸ Volatility</div>
+        <div class="td-divider"></div>
+        <div class="td-item d1">CS</div>
+      </div>
+    </span>
+    <span class="nav-date">2025. 5</span>
+  </div>
+</nav>
+
+<!-- TOC 패널 -->
+<div class="toc-panel" id="toc-panel">
+  <div class="toc-head">목차</div>
+  <a class="toc-item" href="#sec-abct">오스트리아 학파란</a>
+  <a class="toc-item" href="#sec-1920">1920년대: 번영의 이면</a>
+  <a class="toc-item" href="#sec-trigger">방아쇠</a>
+  <a class="toc-item" href="#sec-bust">버스트</a>
+  <a class="toc-item sub" href="#sec-debt">가계부채와 소비 급감</a>
+  <a class="toc-item sub" href="#sec-asset">주가폭락과 순자산 붕괴</a>
+  <a class="toc-item sub" href="#sec-bank">은행공황과 연준</a>
+  <a class="toc-item" href="#sec-end">마치며</a>
+</div>
+
+<!-- 본문 래퍼 -->
+<div class="page-wrap" id="page-wrap">
+
+<header>
+  <div class="category">Economics · Austrian / ABCT</div>
+  <h1>대공황은 자본주의의 실패였는가</h1>
+  <p class="subtitle">오스트리아 학파 경기변동이론으로 본 1929년</p>
+  <div class="meta"><span>2025. 5</span></div>
+</header>
+
+<article>
+
+  <div class="viz-wrap">
+    <div class="viz-title">대공황의 충격 — 주요 경제 지표 (1929–1933)</div>
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div class="chart-label">실질 GDP (1929 = 100)</div>
+        <div class="chart-val">−30%</div>
+        <canvas id="gdp-chart" height="90"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-label">산업생산 지수 (1929 = 100)</div>
+        <div class="chart-val">−47%</div>
+        <canvas id="ip-chart" height="90"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-label">실업률 (%)</div>
+        <div class="chart-val">24.9%</div>
+        <canvas id="unemp-chart" height="90"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-label">다우존스 산업지수 (DJIA)</div>
+        <div class="chart-val">−89%</div>
+        <canvas id="dow-chart" height="90"></canvas>
+      </div>
+    </div>
+    <div class="pie-row">
+      <div class="pie-box">
+        <canvas id="bank-chart" width="110" height="110"></canvas>
+        <div style="flex:1;">
+          <div class="chart-label" style="margin-bottom:0.7rem;">미국 상업은행 현황 (1929→1933)</div>
+          <div style="display:flex;gap:1.4rem;">
+            <div>
+              <div style="font-family:var(--sans);font-size:0.63rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.3rem;">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;"></span>파산·합병
+              </div>
+              <div style="padding-left:1rem;">
+                <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--accent);line-height:1.1;white-space:nowrap;">10,763개</div>
+                <div style="font-family:var(--sans);font-size:0.6rem;color:var(--accent);">43.1%</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--sans);font-size:0.63rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.3rem;">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--ink-dim);display:inline-block;flex-shrink:0;"></span>존속
+              </div>
+              <div style="padding-left:1rem;">
+                <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--ink-muted);line-height:1.1;white-space:nowrap;">14,207개</div>
+                <div style="font-family:var(--sans);font-size:0.6rem;color:var(--ink-muted);">56.9%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pie-box" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:0.3rem;">
+        <div class="chart-label">침체 지속</div>
+        <div style="font-family:var(--serif);font-size:3rem;font-weight:600;color:var(--accent);line-height:1;">10년</div>
+        <div style="font-family:var(--sans);font-size:0.72rem;color:var(--ink-muted);margin-top:0.3rem;">1930년대 전반에 걸쳐<br>회복 지연</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="dropcap">"주가는 영구적으로 높은 고원에 도달했다(Stock prices have reached what looks like a permanently high plateau)." 1929년 10월 17일, 어빙 피셔(Irving Fisher)가 뉴욕 타임즈를 통해 남긴 발언이었다. 단순한 낙관론이 아니었다. 1920년대 내내 물가는 안정적이었고, 실업률은 낮았으며, 자동차·라디오·전기제품이 보급되며 미국 가정의 생활 수준은 눈에 띄게 높아졌다. 연방준비제도가 통화를 안정적으로 관리하고 있다는 것이 그 근거였고, 경기침체는 이제 과거의 일이 됐다는 믿음이 경제학계 전반에 퍼져 있었다.</p>
+
+  <p>그러나 피셔가 강력한 경제 지표를 근거로 낙관적인 전망을 펼치는 사이, 루트비히 폰 미제스(Ludwig von Mises)와 프리드리히 하이에크(Friedrich Hayek)를 중심으로 한 <strong>오스트리아 학파</strong>는 전혀 다른 곳을 들여다보고 있었다. 신용이었다. 물가가 안정적이더라도 은행이 인위적으로 신용을 팽창시키면 자원 배분이 왜곡되고, 그 왜곡은 반드시 청산된다는 것이 이들의 결론이었다. 미제스는 1920년대 초부터 이 팽창이 지속 불가능한 호황을 만들고 있다고 경고했으며, 하이에크는 피셔보다 여덟 달 앞선 1929년 2월 연준의 정책이 주식·신용 시장의 위기로 이어질 것이라는 논문을 발표했다.<sup>1</sup></p>
+
+  <p>그리고 불과 일주일 뒤인 10월 24일, 월스트리트가 무너졌다.</p>
+
+  <div class="divider">· · ·</div>
+
+  <h2 id="sec-abct">오스트리아 학파는 경기침체를 어떻게 보는가</h2>
+
+  <p>오스트리아 학파 경기변동이론(Austrian Business Cycle Theory, ABCT)은 금리를 단순한 가격이 아니라 저축과 투자 사이의 신호로 본다.</p>
+
+  <p>자유로운 시장에서 금리는 사람들의 시간선호, 즉 현재 소비와 미래 소비 사이의 선택에 대한 집합적 판단을 반영한다. 저축이 늘면 금리는 이 의사결정을 반영해 내려가고, 기업가는 그 신호를 받아 생산 구조를 더 자본집약적이고 장기적인 투자 방향으로 전환한다.</p>
+
+  <p>문제는 중앙은행이 이 신호 자체를 조작할 때 생긴다. 인위적인 신용팽창은 실제 저축이 늘지 않았는데도 금리를 낮춘다. 기업가들은 마치 사람들이 저축으로 이 투자를 뒷받침할 것이라 착각하고, 평시라면 시작하지 않았을 사업에 자본을 투입한다. 새로 공급된 화폐가 경제 전체에 균등하게 퍼지는 것도 아니다. 금융권에서 건설로, 건설에서 소비재로 흘러들어가면서 각 부문의 가격이 서로 다른 속도로 오른다.<sup>2</sup> 조작된 가격 신호를 보고 내려진 투자 결정은 실물 수요가 뒷받침되지 않는 <strong>'말투자(malinvestment)'</strong>가 된다.</p>
+
+  <p>이러한 팽창에는 한계가 있다. 은행이 신용을 계속 늘리려면 지급준비금이 뒷받침되어야 하고, 중앙은행이 그 팽창을 무한정 허용하지도 않는다. 신용팽창이 멈추거나 금리가 오르는 순간, 낮은 이자를 전제로 설계된 장기 투자들은 수익성을 잃는다. 말투자의 민낯이 드러나고, 시장은 고통스러운 조정 국면에 들어간다. 오스트리아 학파가 보기에, 이 조정을 막으려는 재정·통화 부양책은 치료를 지연시키고 왜곡을 더 키울 뿐이다.<sup>1</sup></p>
+
+  <blockquote>
+    "이것이 경기 순환에서 불황 국면이 갖는 의미다. 이 국면은 선행하는 팽창적 호황에서 비롯되며, 필연적으로 그럴 수밖에 없다. 불황 국면을 불가피하게 만드는 것은 바로 앞선 인플레이션이다."
+    <br><br>
+    <span style="font-style:normal;font-size:0.88em;color:var(--ink-muted);">"This, then, is the meaning of the depression phase of the business cycle. Note that it is a phase that comes out of, and inevitably comes out of, the preceding expansionary boom. It is the preceding inflation that makes the depression phase necessary."</span>
+    <span class="bq-source">— Murray N. Rothbard, <em>Economic Depressions: Their Cause and Cure</em> (1969)</span>
+  </blockquote>
+
+  <div class="divider">· · ·</div>
+
+  <h2 id="sec-1920">1920년대: 번영의 이면</h2>
+
+  <p>1차 세계대전 이후 미국 경제는 빠르게 회복했다. 1919년부터 1929년까지 GNP 연평균 성장률은 3.4%였고, 소비는 10년간 55% 늘었다. 호황이었다. 그런데 그 호황을 떠받친 것이 무엇이었는지 보면 전혀 다른 그림이 나온다.</p>
+
+  <p>1921년부터 1929년까지 M1(요구불예금+현금)은 26% 오르는 데 그쳤지만, 상업은행의 대출은 37%, 은행 투자는 무려 <strong>70%</strong> 증가했다.<sup>3</sup> 실제 저축이 뒷받침되지 않은 채 은행이 신용을 만들어냈고, 낮아진 금리는 평시라면 채산성이 맞지 않았을 장기 투자들을 수익성 있어 보이게 만들었다.</p>
+
+  <div class="table-wrap">
+    <p class="table-num">표 1</p>
+    <p class="table-caption">상업은행 대출·투자와 통화량 비교 (단위: 십억 달러)</p>
+    <table>
+      <thead><tr><th>연도</th><th>M1</th><th>은행대출</th><th>은행투자</th></tr></thead>
+      <tbody>
+        <tr><td>1921</td><td>20.9</td><td>26.2</td><td>8.1</td></tr>
+        <tr><td>1927</td><td>22.7</td><td>26.9</td><td>13.4</td></tr>
+        <tr class="highlight"><td>1929</td><td>26.2</td><td>35.7</td><td>13.7</td></tr>
+        <tr><td>증감 ('21→'29)</td><td>+26%</td><td>+37%</td><td>+70%</td></tr>
+      </tbody>
+    </table>
+    <p class="table-source">자료: Gordon(1974)</p>
+  </div>
+
+  <p>먼저 주택 부문을 살펴보면, 은행과 저축대부조합으로 인한 건설 대출이 급격히 증가했다.<sup>4</sup> 모기지 부채는 1919년 80억 달러에서 1929년 270억 달러로 10년 새 세 배 이상 폭증했고, 많은 지역에서 수년째 비어 있는 건물들이 쌓여갔다. 내구소비재 시장에서는 할부금융이 소비를 떠받쳤는데, 개인 소득에서 소비자 부채가 차지하는 비율이 1918~1920년 4.5%에서 1929년 9%로 두 배가 되었으며, 1927년에는 미국 신차의 3분의 2가 할부로 팔렸다. 신기술 산업에서의 낙관주의는 더욱 극단적이었다. 당시 라디오는 지금의 인터넷에 비견할 만한 혁신적 매체였고, 업계 선두 기업이었던 RCA의 주가는 1921년 12달러에서 1929년 549달러로 치솟았다. 기술이 상업적으로 성숙하기까지 얼마나 걸릴지는 아무도 따지지 않았다.</p>
+
+  <div class="divider">· · ·</div>
+
+  <h2 id="sec-trigger">방아쇠: 신용팽창이 멈추는 순간</h2>
+
+  <p>1928년에 접어들자 연방준비제도는 주식시장의 투기 열풍을 진정시켜야 한다는 압박을 받기 시작했다. 재할인율은 1928년 초 3.5%에서 세 차례 인상을 거쳐 그해 여름 5%까지 올랐고, 1929년 8월에는 6%에 달했다. 통화량 증가율도 1928년 말부터 정체되기 시작했다.</p>
+
+  <p>금리가 오르자 낮은 이자를 전제로 설계된 장기 투자 프로젝트들이 직격탄을 맞았다. 저축이 충분하지 않은 상태에서 신용으로 부풀려진 주택 건설과 내구재 생산은 더 이상 채산성을 맞출 수 없었다. 1929년 여름부터 이미 산업생산과 건설 지표가 하락하기 시작했다. 주가 폭락보다 먼저, 실물에서 균열이 왔다.</p>
+
+  <p>그해 10월 24일 '검은 목요일(Black Thursday)'은 갑작스러운 심리적 패닉이 아니었다. 낮은 금리를 전제로 성립했던 투자들의 채산성이 무너지면서, 그것을 선반영하던 주식시장도 뒤따라 무너졌다. 피셔가 "영구적으로 높은 고원"이라고 불렀던 것은 신용이 만들어낸 허공이었다.</p>
+
+  <div class="divider">· · ·</div>
+
+  <h2 id="sec-bust">버스트: 왜 그렇게 깊고 길었는가</h2>
+
+  <p>주가 폭락 이후 말투자가 청산되고 시장이 조정되었어야 한다. 그런데 대공황은 단순한 조정을 넘어 10년 이상 지속되는 침체가 되었다. 오스트리아 학파의 설명은 이 지점에서 비판을 받아왔다. 신용팽창이 붐을 만든다는 것은 설명하지만, 왜 이후의 조정이 그토록 심각하고 길었는지에 대해서는 구체적이지 않다는 것이다.</p>
+
+  <p>오스트리아 학파 내에서도 이 한계는 일찍이 인식됐다. 이에 하벌러(Haberler)는 자본구조의 왜곡이라는 1차적 현상에 더해, 시장 조정 과정에서 비롯하는 <strong>'2차적 현상들'</strong>이 대공황을 심화시켰다고 지적했다.<sup>5</sup></p>
+
+  <h3 id="sec-debt">가계부채와 소비 급감: 당겨 쓴 미래가 돌아오다</h3>
+
+  <p>1929년 당시 소비자 비모기지 부채는 소득의 9.3%에 달했다. 1939년이 될 때까지 다시 경신되지 않을 만큼 이례적인 수준이었다. 당시 할부금융 계약은 연체 즉시 제품이 회수되고 이미 납부한 원금마저 잃는 구조였다.<sup>6</sup> 디폴트의 비용이 컸기 때문에 소비자들은 채무불이행 대신 다른 모든 지출을 극단적으로 줄이는 방식을 택했다.</p>
+
+  <p>이 점은 전간기 다른 침체들과 비교하면 더 선명해진다. 1920~1921년의 침체에서 소비지출은 4.6% 감소했고, 1937~1938년 침체에서는 2.2% 감소하는 데 그쳤다. 반면 1929~1930년에는 6.2%가 감소했다. 1930년대 중반 이후 할부금융 계약의 조건이 완화되고 채무불이행의 비용이 낮아진 뒤에야, 이후의 침체에서 소비자들은 소비를 극단적으로 줄이는 대신 디폴트를 선택할 수 있었다.</p>
+
+  <div class="table-wrap">
+    <p class="table-num">표 2</p>
+    <p class="table-caption">경기침체 시기별 소비지출 변화 비교</p>
+    <table>
+      <thead><tr><th>시기</th><th>소비지출 변화율</th></tr></thead>
+      <tbody>
+        <tr><td style="line-height:1.4;padding:0.6rem 0.9rem;">1920–1921<br><span style="font-size:0.68rem;color:var(--accent-muted);">(1차 대전 전후 불황)</span></td><td>−4.6%</td></tr>
+        <tr class="highlight"><td style="line-height:1.4;padding:0.6rem 0.9rem;">1929–1930<br><span style="font-size:0.68rem;color:var(--accent-muted);">(대공황 초기)</span></td><td>−6.2%</td></tr>
+        <tr><td style="line-height:1.4;padding:0.6rem 0.9rem;">1937–1938<br><span style="font-size:0.68rem;color:var(--accent-muted);">(루스벨트 침체)</span></td><td>−2.2%</td></tr>
+      </tbody>
+    </table>
+    <p class="table-source">자료: Romer(1990)</p>
+  </div>
+
+  <h3 id="sec-asset">주가폭락과 가계 순자산 붕괴: 두 개의 충격이 겹치다</h3>
+
+  <p>당시 주식을 보유한 가계는 전체의 2%에 불과했지만, 폭락은 미래 소득에 대한 불확실성을 경제 전반에 퍼뜨렸다.<sup>7</sup> 소득을 예측할 수 없게 된 소비자들에게 내구재 구매는 위험한 선택이 됐다. 냉장고나 자동차를 지금 사면 수년간 할부금을 감당해야 하는데, 소득이 줄어들면 그 부담을 질 수 없다. 되팔기도 쉽지 않았다. 주가 폭락 직후 소비재 지출이 소폭 상승한 반면에도, 내구재 지출은 급격히 감소할 수밖에 없었다.</p>
+
+  <p>동시에 가계의 자산 자체가 무너지고 있었다. 주가폭락 이후 금융자산은 빠르게 쪼그라들었고, 디플레이션이 부채의 실질 부담을 키웠다. 명목 부채 금액은 그대로여도 물가가 내려가면 실질 상환 부담은 올라간다. 1929년 한 해에만 실질 가계부채는 약 20% 증가했다.<sup>8</sup></p>
+
+  <div class="table-wrap">
+    <p class="table-num">표 3</p>
+    <p class="table-caption">가계부채 및 순자산 추이 (단위: 10억 달러, 1958년 불변가격)</p>
+    <table>
+      <thead><tr><th>연도</th><th>가계부채</th><th>명목 금융자산</th><th>가계 순자산</th></tr></thead>
+      <tbody>
+        <tr><td>1929</td><td>65.3</td><td>637.8</td><td>844.1</td></tr>
+        <tr><td>1930</td><td>78.1</td><td>613.0</td><td>828.9</td></tr>
+        <tr><td>1931</td><td>79.5</td><td>578.6</td><td>801.0</td></tr>
+        <tr><td>1932</td><td>81.0</td><td>533.7</td><td>755.1</td></tr>
+        <tr class="highlight"><td>1933</td><td>75.9</td><td>545.3</td><td>752.7</td></tr>
+      </tbody>
+    </table>
+    <p class="table-source">자료: Mishkin(1978)</p>
+  </div>
+
+  <h3 id="sec-bank">은행공황과 연준의 부재: 작은 불이 대화재가 되다</h3>
+
+  <p>1930년부터 은행 도산이 농촌에서 시작해 전국으로 번졌다. 연준은 본래 이런 위기를 관리하기 위해 만들어진 기관이었지만, 내부에서는 적극적 통화확장론과 청산주의가 충돌했고 결정적 순간에 은행시스템을 방치했다.<sup>9</sup> 같은 해 12월 뉴욕의 유나이티드 스테이츠 은행(Bank of United States) 도산이 기폭제가 됐다. 공포는 전국으로 번졌다. 예금자들의 뱅크런이 건전한 은행까지 끌어내렸고, 신용 경색은 기업 투자를 추가로 위축시켰다. 1929~1933년 사이 전체 상업은행의 절반 가까이가 문을 닫거나 다른 은행에 합병되었다.</p>
+
+  <p>할부로 쌓인 가계부채, 신용이 부풀린 자산 가격, 경쟁적 신용 공급으로 취약해진 은행들. 붐이 쌓아올린 것들이 무너지는 순서대로 침체를 깊게 했다.</p>
+
+  <div class="divider">· · ·</div>
+
+  <h2 id="sec-end">마치며</h2>
+
+  <p>오스트리아 학파의 시각에서 대공황은 자본주의의 실패가 아니다. 인위적 신용팽창이 금리라는 가격 신호를 왜곡했고, 그 신호를 믿고 내려진 투자 결정들이 말투자로 쌓였다. 붕괴 그 자체는 시장경제의 결함이 아니라, 그 결함 없는 시장이 조작된 신호를 얼마나 충실히 따랐는지의 결과였다.</p>
+
+  <p>물론 이것이 대공황의 모든 것을 설명하는 것은 아니다. 통화주의는 1930년대 연준의 뒤늦은 긴축 실패를 더욱 결정적인 변수로 보고, 케인즈 학파는 총수요 붕괴와 재정정책의 부재를 지적한다. 대공황은 지금도 단일한 설명으로 수렴되지 않는 역사다.</p>
+
+  <p>다만 오스트리아 학파의 시선은 출발점이 달랐다. 케인즈 학파와 통화주의가 1929년 이후의 붕괴를 분석하는 동안, 오스트리아 학파는 번영이 한창이던 1920년대에 이미 경고를 보내고 있었다. 물가가 안정됐는데도, 고용이 늘었는데도, 왜 지금의 성장이 지속될 수 없는지를.</p>
+
+  <p>피셔가 "영구적으로 높은 고원"을 선언하던 1929년 10월, 하이에크의 경고는 이미 여덟 달이 지나 있었다.</p>
+
+  <div class="footnotes">
+    <p><sup>1</sup> Rothbard, M.N. (1969). <em>Economic Depressions: Their Cause and Cure.</em> Ludwig von Mises Institute.; Ebeling, R.M. (2017). "America's Great Depression and Austrian Business Cycle Theory." <em>The Future of Freedom Foundation.</em></p>
+    <p><sup>2</sup> Herger, N. (2021). "Mr. Hayek and the Classics." <em>Quarterly Journal of Austrian Economics</em>, 24(1), 79–109.</p>
+    <p><sup>3</sup> Gordon, R.A. (1974). <em>Economic Instability and Growth: The American Record.</em> Harper and Row.</p>
+    <p><sup>4</sup> Eichengreen, B. &amp; Mitchener, K. (2004). "The Great Depression as a Credit Boom Gone Wrong." <em>Research in Economic History</em>, 22, 183–237.</p>
+    <p><sup>5</sup> Haberler, G. (1937). <em>Prosperity and Depression.</em> Geneva: League of Nations.; Garrison, R.W. (1996). <em>The Austrian Theory of Trade Cycle and Other Essays.</em> Ludwig von Mises Institute.</p>
+    <p><sup>6</sup> Olney, M.L. (1999). "Avoiding Default: The Role of Credit in the Consumption Collapse of 1930." <em>Quarterly Journal of Economics</em>, 114(1), 319–335.</p>
+    <p><sup>7</sup> Romer, C.D. (1990). "The Great Crash and the Onset of the Great Depression." <em>Quarterly Journal of Economics</em>, 105(3), 597–624.</p>
+    <p><sup>8</sup> Mishkin, F.S. (1978). "The Household Balance Sheet and the Great Depression." <em>Journal of Economic History</em>, 38(4), 918–937.</p>
+    <p><sup>9</sup> Friedman, M. &amp; Schwartz, A.J. (1963). <em>A Monetary History of the United States, 1867–1960.</em> Princeton University Press.</p>
+  </div>
+
+</article>
+</div>
+
+<script>
+  const lineOpts = (labels, data, unit='') => ({
+    type: 'line',
+    data: { labels, datasets: [{ data, borderColor: '#92400e', backgroundColor: 'rgba(146,64,14,0.07)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#92400e', fill: true, tension: 0.3 }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y + unit } } },
+      scales: {
+        x: { ticks: { color: '#78716c', font: { size: 10, family: 'Noto Sans KR' } }, grid: { color: '#e7e2d8' }, border: { color: '#e7e2d8' } },
+        y: { ticks: { color: '#78716c', font: { size: 10, family: 'Noto Sans KR' } }, grid: { color: '#e7e2d8' }, border: { color: '#e7e2d8' } }
+      }
+    }
+  });
+  new Chart(document.getElementById('gdp-chart'), lineOpts(['1929','1930','1931','1932','1933'],[100,91.1,83.5,72.2,72.0]));
+  new Chart(document.getElementById('ip-chart'), lineOpts(['1929','1930','1931','1932','1933'],[100,83,75,58,69]));
+  new Chart(document.getElementById('unemp-chart'), lineOpts(['1929','1930','1931','1932','1933'],[3.2,8.7,15.9,23.6,24.9],'%'));
+  new Chart(document.getElementById('dow-chart'), lineOpts(['1929.9','1930.3','1930.9','1931.3','1931.9','1932.3','1932.7','1933.3'],[381,273,215,180,100,73,41,66]));
+  new Chart(document.getElementById('bank-chart'), {
+    type: 'doughnut',
+    data: { labels: ['파산·합병','존속'], datasets: [{ data: [10763,14207], backgroundColor: ['#92400e','#a8a29e'], borderWidth: 0, hoverOffset: 4 }] },
+    options: { responsive: false, cutout: '60%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toLocaleString() + '개' } } } }
+  });
+
+  const tocBtn = document.getElementById('toc-btn');
+  const tocPanel = document.getElementById('toc-panel');
+  const pageWrap = document.getElementById('page-wrap');
+  const tagBtn = document.getElementById('tag-btn');
+  const treeDrop = document.getElementById('tree-drop');
+  const overlay = document.getElementById('overlay');
+  let tocOpen = false, dropOpen = false;
+
+  function closeDrop() { dropOpen = false; treeDrop.classList.remove('open'); tagBtn.classList.remove('open'); overlay.classList.remove('show'); }
+  function closeToc() { tocOpen = false; tocBtn.classList.remove('open'); tocPanel.classList.remove('open'); pageWrap.classList.remove('shifted'); }
+
+  tocBtn.addEventListener('click', e => { e.stopPropagation(); closeDrop(); tocOpen = !tocOpen; tocBtn.classList.toggle('open', tocOpen); tocPanel.classList.toggle('open', tocOpen); pageWrap.classList.toggle('shifted', tocOpen); });
+  tagBtn.addEventListener('click', e => { e.stopPropagation(); closeToc(); dropOpen = !dropOpen; treeDrop.classList.toggle('open', dropOpen); tagBtn.classList.toggle('open', dropOpen); overlay.classList.toggle('show', dropOpen); });
+  overlay.addEventListener('click', () => { closeDrop(); });
+  document.addEventListener('click', () => { closeDrop(); closeToc(); });
+</script>
+</body>
+</html>
