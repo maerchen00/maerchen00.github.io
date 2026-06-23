@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>무제</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── 토큰 ── */
+    :root {
+      --bg:          #0d0d0d;
+      --bg-hover:    #181818;
+      --ink:         #e8e4dc;
+      --ink-muted:   #888070;
+      --ink-dim:     #3e3a35;
+      --accent:      #c4907a;
+      --accent-dim:  #3d2318;
+      --rule:        #1e1c18;
+      --sidebar-w:   220px;
+      --serif: 'EB Garamond', 'Noto Serif KR', Georgia, serif;
+      --sans:  'Noto Sans KR', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── 레이아웃 ── */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      grid-column: 1 / -1;
+      padding: 3rem 2rem 1.8rem;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: baseline;
+      gap: 1.2rem;
+    }
+    .site-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .site-desc {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+    }
+
+    /* ── 사이드바 ── */
+    aside {
+      border-right: 1px solid var(--rule);
+      padding: 1.8rem 0 4rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ink-dim) transparent;
+    }
+
+    /* ── 트리 공통 ── */
+    .tree, .tree ul { list-style: none; padding: 0; margin: 0; }
+
+    /* 노드 공통 버튼 */
+    .t-node {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: 100%;
+      background: none;
+      border: none;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      text-align: left;
+      color: var(--ink-muted);
+      font-family: var(--sans);
+      transition: color 0.13s, border-color 0.13s, background 0.13s;
+      user-select: none;
+    }
+    .t-node:hover { color: var(--ink); }
+    .t-node.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    /* depth별 들여쓰기·크기 */
+    .t-node[data-depth="0"] {
+      padding: 0.32rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .t-node[data-depth="1"] {
+      padding: 0.28rem 1.2rem 0.28rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .t-node[data-depth="2"] {
+      padding: 0.24rem 1.2rem 0.24rem 2.2rem;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: var(--ink-dim);
+    }
+    .t-node[data-depth="3"] {
+      padding: 0.2rem 1.2rem 0.2rem 3rem;
+      font-size: 0.7rem;
+      color: var(--ink-dim);
+      letter-spacing: 0;
+    }
+
+    /* 화살표 — 토글 전용 클릭 영역 */
+    .t-arrow {
+      font-size: 0.5rem;
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      transition: transform 0.18s, background 0.12s;
+      color: var(--ink-dim);
+      cursor: pointer;
+    }
+    .t-arrow:hover { background: var(--bg-hover); color: var(--ink-muted); }
+    .t-arrow.open { transform: rotate(90deg); }
+
+    /* 레이블 — 필터/이동 전용 클릭 영역 */
+    .t-label { flex: 1; cursor: pointer; }
+    .t-label:hover { color: var(--ink); }
+
+    /* 서브트리 collapse */
+    .t-sub {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.22s ease;
+    }
+    .t-sub.open { max-height: 1000px; }
+
+    /* 구분선 */
+    .t-divider {
+      height: 1px;
+      background: var(--rule);
+      margin: 0.6rem 1.2rem;
+    }
+
+    /* ── 메인 ── */
+    main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
+
+    .post-list { display: flex; flex-direction: column; }
+
+    .post-item {
+      border-bottom: 0.5px solid var(--rule);
+      padding: 1.6rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.12s, padding 0.12s, margin 0.12s;
+    }
+    .post-item:first-child { border-top: 0.5px solid var(--rule); }
+    .post-item:hover {
+      background: var(--bg-hover);
+      margin: 0 -2.5rem;
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+    .post-item.hidden { display: none; }
+
+    .post-meta-row { display: flex; align-items: center; gap: 0.75rem; }
+
+    .post-tag {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 0.15rem 0.55rem;
+      border-radius: 2px;
+    }
+    .post-date { font-size: 0.72rem; color: var(--ink-dim); }
+
+    .post-title {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+    .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
+    .post-read { font-size: 0.68rem; color: var(--ink-dim); }
+
+    /* ── 모바일 ── */
+    @media (max-width: 640px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { display: none; }
+      header { flex-direction: column; gap: 0.3rem; padding: 2rem 1.2rem 1.2rem; }
+      main { padding: 1.8rem 1.2rem 5rem; }
+      .post-item:hover { margin: 0 -1.2rem; padding-left: 1.2rem; padding-right: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- 헤더 -->
+  <header>
+    <div class="site-title">무제</div>
+    <div class="site-desc">경제학·금융·컴퓨터과학 에세이</div>
+  </header>
+
+  <!-- 사이드바 트리 -->
+  <aside>
+    <ul class="tree" id="nav-tree">
+
+      <!-- 모두 보기 — 자식 없음, 화살표 없음 -->
+      <li>
+        <div class="t-node active" data-depth="0">
+          <span class="t-label" data-action="filter" data-filter="all">모두 보기</span>
+        </div>
+      </li>
+
+      <li><div class="t-divider"></div></li>
+
+      <!-- Economics -->
+      <li>
+        <div class="t-node open" data-depth="1">
+          <span class="t-arrow open" data-toggle="sub-economics">▶</span>
+          <span class="t-label" data-action="filter" data-filter="Economics">Economics</span>
+        </div>
+        <ul class="t-sub open" id="sub-economics">
+
+          <!-- Economics > ABCT — 자식 없음, 화살표 없음 -->
+          <li>
+            <div class="t-node" data-depth="2">
+              <span class="t-label" data-action="filter" data-filter="ABCT">Austrian / ABCT</span>
+            </div>
+          </li>
+
+        </ul>
+      </li>
+
+      <!-- Finance -->
+      <li>
+        <div class="t-node open" data-depth="1">
+          <span class="t-arrow open" data-toggle="sub-finance">▶</span>
+          <span class="t-label" data-action="filter" data-filter="Finance">Finance</span>
+        </div>
+        <ul class="t-sub open" id="sub-finance">
+
+          <!-- Finance > Asset Pricing — 자식 없음, 화살표 없음 -->
+          <li>
+            <div class="t-node" data-depth="2">
+              <span class="t-label" data-action="filter" data-filter="Asset Pricing">Asset Pricing</span>
+            </div>
+          </li>
+
+          <!-- Finance > Volatility — 자식 없음, 화살표 없음 -->
+          <li>
+            <div class="t-node" data-depth="2">
+              <span class="t-label" data-action="filter" data-filter="Volatility">Volatility</span>
+            </div>
+          </li>
+
+        </ul>
+      </li>
+
+      <!-- CS — 자식 없음, 화살표 없음 (생기면 추가) -->
+      <li>
+        <div class="t-node" data-depth="1">
+          <span class="t-label" data-action="filter" data-filter="CS">CS</span>
+        </div>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- 글 목록 -->
+  <main>
+    <div class="post-list" id="post-list">
+
+      <a class="post-item"
+         id="post-capm-report"
+         href="posts/capm-report.html"
+         data-tags="Finance,Asset Pricing">
+        <div class="post-meta-row">
+          <span class="post-tag">Finance</span>
+          <span class="post-date">2025. 6</span>
+        </div>
+        <div class="post-title">IS SML의 Out-of-Sample 설명력 실증검정</div>
+        <div class="post-desc">S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</div>
+        <div class="post-read">읽기 약 15분</div>
+      </a>
+
+      <a class="post-item"
+         id="post-great-depression"
+         href="posts/great-depression.html"
+         data-tags="Economics,ABCT">
+        <div class="post-meta-row">
+          <span class="post-tag">Economics</span>
+          <span class="post-date">2025. 5</span>
+        </div>
+        <div class="post-title">대공황은 자본주의의 실패였는가</div>
+        <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
+        <div class="post-read">읽기 약 12분</div>
+      </a>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+  const posts = document.querySelectorAll('.post-item');
+  const tree  = document.getElementById('nav-tree');
+
+  tree.addEventListener('click', e => {
+
+    // ── 화살표 클릭 → 펼치기/접기만 ──
+    const arrow = e.target.closest('.t-arrow');
+    if (arrow) {
+      const toggleId = arrow.dataset.toggle;
+      if (!toggleId) return;
+      const sub   = document.getElementById(toggleId);
+      const isOpen = sub.classList.contains('open');
+      sub.classList.toggle('open', !isOpen);
+      arrow.classList.toggle('open', !isOpen);
+      return; // 레이블 이벤트로 전파 차단
+    }
+
+    // ── 레이블 클릭 → 필터 또는 이동 ──
+    const label = e.target.closest('.t-label');
+    if (!label) return;
+
+    const action = label.dataset.action;
+
+    if (action === 'filter') {
+      // active 표시 — 레이블 기준
+      document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
+      label.closest('.t-node').classList.add('active');
+
+      const tag = label.dataset.filter;
+      posts.forEach(p => {
+        const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
+        p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
+      });
+    }
+
+    if (action === 'go') {
+      document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
+      label.closest('.t-node').classList.add('active');
+      const postEl = document.getElementById('post-' + label.dataset.post);
+      if (postEl) window.location.href = postEl.href;
+    }
+  });
+</script>
+
+</body>
+</html>
