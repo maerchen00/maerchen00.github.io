@@ -1,9 +1,9 @@
 /* ================================================================
-   style.css — Warm Dark 공통 테마
+   style.css — Off-white 공통 테마
    파일 구조:
      username.github.io/
-     ├── style.css          ← 이 파일
-     ├── index.html         ← href="style.css"
+     ├── style.css
+     ├── index.html
      └── posts/
          ├── capm-report.html      ← href="../style.css"
          └── great-depression.html ← href="../style.css"
@@ -11,17 +11,17 @@
 
 /* ── 토큰 ── */
 :root {
-  --bg:          #1c1917;   /* 페이지 배경 — Warm Dark */
-  --bg-card:     #231f1c;   /* 카드·인용구 배경 */
-  --bg-hover:    #28231f;   /* hover */
-  --ink:         #e7e5e4;   /* 본문 텍스트 */
+  --bg:          #faf8f5;   /* 페이지 배경 — 따뜻한 오프화이트 */
+  --bg-card:     #f3f0eb;   /* 카드·인용구 배경 */
+  --bg-hover:    #f0ece5;   /* hover */
+  --ink:         #1c1917;   /* 본문 텍스트 */
   --ink-muted:   #78716c;   /* 보조 텍스트 */
-  --ink-dim:     #44403c;   /* 흐린 텍스트·구분선 */
-  --accent:      #c4907a;   /* 강조색 */
-  --accent-muted:#6b4a3a;   /* 보조 강조 */
-  --accent-dim:  #2c1a10;   /* 태그 배경 */
-  --rule:        #292524;   /* 테두리·구분선 */
-  --block-bg:    #231f1c;   /* blockquote·viz-wrap */
+  --ink-dim:     #a8a29e;   /* 흐린 텍스트·구분선 */
+  --accent:      #92400e;   /* 강조색 — 딥 앰버브라운 */
+  --accent-muted:#c4907a;   /* 보조 강조 */
+  --accent-dim:  #fef3c7;   /* 태그 배경 */
+  --rule:        #e7e2d8;   /* 테두리·구분선 */
+  --block-bg:    #f3f0eb;   /* blockquote·viz-wrap */
   --sidebar-w:   220px;
   --serif: 'EB Garamond', 'Noto Serif KR', Georgia, serif;
   --sans:  'Noto Sans KR', sans-serif;
@@ -55,7 +55,7 @@ a:hover { text-decoration: underline; }
   max-width: 720px;
   margin: 0 auto;
   padding: 5rem 1rem 2.5rem;
-  border-bottom: 2px solid var(--ink-dim);
+  border-bottom: 2px solid var(--ink);
 }
 .post-body {
   max-width: 720px;
@@ -200,8 +200,8 @@ blockquote {
   margin-bottom: 0.5rem;
 }
 .table-wrap th {
-  background: var(--ink-dim);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
   padding: 0.5rem 0.9rem;
   text-align: center;
   font-weight: 500;
@@ -216,7 +216,7 @@ blockquote {
 .table-wrap .highlight td,
 .table-wrap .hl td { color: var(--ink); font-weight: 500; }
 .table-wrap tr:last-child td { border-bottom: none; }
-.table-wrap tr:hover td { background: var(--block-bg); color: var(--ink); }
+.table-wrap tr:hover td { background: var(--bg-hover); color: var(--ink); }
 .table-source {
   font-family: var(--sans);
   font-size: 0.68rem;
@@ -257,14 +257,13 @@ blockquote {
 }
 
 /* ================================================================
-   Chart.js 다크 옵션 — posts/*.html 에서 JS로 적용
-   (CSS 변수로 제어 불가한 부분이라 여기에 참고용으로 기재)
+   Chart.js 오프화이트 옵션 참고값 (JS에서 하드코딩)
 
-   grid:  '#2a2520'
-   tick:  '#78716c'
-   line:  '#c4907a'
-   fill:  'rgba(196,144,122,0.08)'
-   tooltip bg: '#231f1c'
-   tooltip title: '#e7e5e4'
+   grid:         '#e7e2d8'
+   tick:         '#78716c'
+   line:         '#92400e'
+   fill:         'rgba(146,64,14,0.07)'
+   tooltip bg:   '#1c1917'
+   tooltip title:'#faf8f5'
    tooltip body: '#78716c'
 ================================================================ */
