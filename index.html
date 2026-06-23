@@ -89,7 +89,6 @@
     .t-label:hover { color: var(--ink); }
 
     .t-sub { overflow: hidden; max-height: 0; transition: max-height 0.22s ease; }
-    .t-sub.open { max-height: 1000px; }
 
     .t-divider { height: 1px; background: var(--rule); margin: 0.6rem 1.2rem; }
 
@@ -101,22 +100,34 @@
       border-bottom: 0.5px solid var(--rule);
       padding: 1.6rem 0;
       display: flex; flex-direction: column; gap: 0.45rem;
-      text-decoration: none; cursor: pointer;
       transition: background 0.12s, padding 0.12s, margin 0.12s;
     }
     .post-item:first-child { border-top: 0.5px solid var(--rule); }
-    .post-item:hover { background: var(--bg-hover); margin: 0 -2.5rem; padding-left: 2.5rem; padding-right: 2.5rem; }
     .post-item.hidden { display: none; }
+    .post-item:hover {
+      background: var(--bg-hover);
+      margin: 0 -2.5rem;
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
 
     .post-meta-row { display: flex; align-items: center; gap: 0.75rem; }
     .post-tag {
       font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--accent); background: var(--accent-dim); padding: 0.15rem 0.55rem; border-radius: 2px;
+      text-decoration: none; cursor: pointer;
+      transition: background 0.12s, color 0.12s;
     }
+    .post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
     .post-date { font-size: 0.72rem; color: var(--ink-dim); }
+
+    .post-link {
+      display: flex; flex-direction: column; gap: 0.45rem;
+      text-decoration: none; cursor: pointer;
+    }
+    .post-link:hover { text-decoration: none; }
     .post-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--ink); line-height: 1.35; letter-spacing: -0.01em; }
     .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
-    .post-read { font-size: 0.68rem; color: var(--ink-dim); }
 
     @media (max-width: 640px) {
       .layout { grid-template-columns: 1fr; }
@@ -191,25 +202,27 @@
   <main>
     <div class="post-list" id="post-list">
 
-      <a class="post-item" id="post-capm-report" href="posts/capm-report.html" data-tags="Finance,Asset Pricing">
+      <div class="post-item" id="post-capm-report" data-tags="Finance,Asset Pricing">
         <div class="post-meta-row">
-          <span class="post-tag">Finance</span>
+          <a class="post-tag" href="#" data-action="filter" data-filter="Finance">Finance</a>
           <span class="post-date">2025. 6</span>
         </div>
-        <div class="post-title">IS SML의 Out-of-Sample 설명력 실증검정</div>
-        <div class="post-desc">S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</div>
-        <div class="post-read">읽기 약 15분</div>
-      </a>
+        <a class="post-link" href="posts/capm-report.html">
+          <div class="post-title">IS SML의 Out-of-Sample 설명력 실증검정</div>
+          <div class="post-desc">S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</div>
+        </a>
+      </div>
 
-      <a class="post-item" id="post-great-depression" href="posts/great-depression.html" data-tags="Economics,ABCT">
+      <div class="post-item" id="post-great-depression" data-tags="Economics,ABCT">
         <div class="post-meta-row">
-          <span class="post-tag">Economics</span>
+          <a class="post-tag" href="#" data-action="filter" data-filter="Economics">Economics</a>
           <span class="post-date">2025. 5</span>
         </div>
-        <div class="post-title">대공황은 자본주의의 실패였는가</div>
-        <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
-        <div class="post-read">읽기 약 12분</div>
-      </a>
+        <a class="post-link" href="posts/great-depression.html">
+          <div class="post-title">대공황은 자본주의의 실패였는가</div>
+          <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
+        </a>
+      </div>
 
     </div>
   </main>
@@ -220,12 +233,39 @@
   const posts = document.querySelectorAll('.post-item');
   const tree  = document.getElementById('nav-tree');
 
+  document.querySelectorAll('.t-sub.open').forEach(sub => {
+    sub.style.maxHeight = sub.scrollHeight + 'px';
+  });
+
+  function applyFilter(tag) {
+    document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
+    const node = document.querySelector(`.t-label[data-filter="${tag}"]`);
+    if (node) node.closest('.t-node').classList.add('active');
+    posts.forEach(p => {
+      const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
+      p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
+    });
+  }
+
+  document.querySelectorAll('.post-tag').forEach(tagEl => {
+    tagEl.addEventListener('click', e => {
+      e.preventDefault();
+      applyFilter(tagEl.dataset.filter);
+    });
+  });
+
   tree.addEventListener('click', e => {
     const arrow = e.target.closest('.t-arrow');
     if (arrow) {
       const sub = document.getElementById(arrow.dataset.toggle);
       if (!sub) return;
       const isOpen = sub.classList.contains('open');
+      if (isOpen) {
+        sub.style.maxHeight = sub.scrollHeight + 'px';
+        requestAnimationFrame(() => { sub.style.maxHeight = '0px'; });
+      } else {
+        sub.style.maxHeight = sub.scrollHeight + 'px';
+      }
       sub.classList.toggle('open', !isOpen);
       arrow.classList.toggle('open', !isOpen);
       return;
@@ -236,13 +276,7 @@
     const action = label.dataset.action;
 
     if (action === 'filter') {
-      document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
-      label.closest('.t-node').classList.add('active');
-      const tag = label.dataset.filter;
-      posts.forEach(p => {
-        const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
-        p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
-      });
+      applyFilter(label.dataset.filter);
     }
 
     if (action === 'go') {
