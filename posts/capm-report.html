@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IS SML의 Out-of-Sample 설명력 실증검정</title>
+<title>CAPM SML의 Out-of-Sample 설명력 실증검정</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../common.css"/>
 <link rel="stylesheet" href="../article.css"/>
@@ -26,7 +26,7 @@
         <a class="td-item d2" href="great-depression.html">대공황은 자본주의의 실패였는가</a>
         <div class="td-divider"></div>
         <div class="td-item d1">Finance</div>
-        <a class="td-item d2 active" href="capm-report.html">IS SML의 OOS 설명력 검정</a>
+        <a class="td-item d2 active" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
       </div>
     </span>
     <span class="nav-date">2025. 6</span>
@@ -53,7 +53,7 @@
   <div class="post-wrap">
     <div class="post-header">
       <div class="post-cat">Finance</div>
-      <h1>IS SML의 Out-of-Sample 설명력 실증검정</h1>
+      <h1>CAPM SML의 Out-of-Sample 설명력 실증검정</h1>
       <p class="post-sub">CAPM 증권시장선은 미래 수익률을 설명하는가</p>
       <div class="post-meta">2025. 6</div>
     </div>
@@ -335,11 +335,11 @@
 
 <h2 id="sec-conc">7. 결론</h2>
 
-<p>퀸타일 Q1→Q5 단조증가와 Pred-High의 Jensen \(\alpha\) +0.554%는 SML 예측값이 종목 선별 지표로서 실효성을 가짐을 보여준다. 반면 IS 알파 기반 Alpha-Long은 OS에서 유효하지 않았다. IS 알파가 OS로 이어지지 않는다는 결과는, 구간 특수 초과수익을 구조적 초과수익과 혼동했을 때의 한계를 드러낸다.</p>
+<p>실증 검정 결과, CAPM SML은 OS 수익률을 유의하게 설명하며 \(\beta\)가 미래 수익률의 방향을 예고하는 유효한 지표임을 확인하였다(\(\delta\) = 2.856, HC3 p = 0.0017). 다만 \(\delta \gg 1\)로 규모 과소추정이 뚜렷하고 \(R^2 = 0.189\)로 설명력은 제한적이어서, 단일 팩터 모형의 한계가 그대로 드러난다. IS 횡단면 회귀를 거치면 \(\delta\)가 1.892로 줄고 RMSE도 개선되는 등 예측 정확도의 가능성은 확인되었다. 이론(0.639%) → IS(0.965%) → OS(1.699%)로 가팔라진 기울기는 AI 주도 강세장이라는 구간 특성을 반영한 것으로, 다양한 시장 국면에서의 추가 검증이 필요하다.</p>
 
-<p>이 결과의 통계적 배경은 다음과 같다. CAPM SML은 OS 수익률을 유의하게 설명하며(\(\delta\) = 2.856, HC3 p = 0.0017), IS 횡단면 회귀를 거치면 \(\delta\)가 1.892로 줄고 RMSE도 개선된다. 다만 \(\delta \gg 1\)로 규모 과소추정이 잔존하고, \(R^2 = 0.189\)로 설명력은 제한적이다. 이론(0.639%) → IS(0.965%) → OS(1.699%)로 이어지는 기울기 확대는 본 분석 구간에서 관찰된 패턴이며, AI 주도 강세장이라는 구간 특성을 감안하면 일반화에 주의가 필요하다.</p>
+<p>이 통계적 유의성이 실제 수익으로 연결되는지는 포트폴리오 전략에서 엇갈린 방식으로 확인되었다. 퀸타일 Q1→Q5 단조증가와 Pred-High의 Jensen \(\alpha\) +0.554%는 SML 예측값이 통계적 잔상을 넘어 실효성 있는 종목 선별 지표로 작동했음을 보여준다. 반면 Alpha-Long의 실패는 주목할 만하다. IS 알파가 OS로 이어지지 않는다는 결과는, 구간 특수 초과수익을 구조적 초과수익과 혼동했을 때의 한계를 드러낸다.</p>
 
-<p>분석 구간이 강세장에 편중되어 있고, 60개 종목·36개월이라는 표본 제약도 남아 있다. 단일 팩터 모형의 구조적 한계는 어느 구간이든 존재하며, 다요인 모형으로의 확장이 후속 과제이다.</p>
+<p>본 분석은 강세장에 편중된 구간과 60개 종목·36개월이라는 표본 안에서 이루어졌기에, 하락장이나 횡보장에서의 복원력은 충분히 검증되지 않았다. \(\beta\)의 예측력을 기반으로 규모 예측의 오차를 줄이고 다양한 변수를 통합하는 다요인 모형으로의 확장이 후속 과제이다.</p>
 
 <div class="footnotes">
   <p><sup>1</sup> FDX: DW=1.294, Newey-West 조정 후 p(\(\beta\))=0.000 / NEE: DW=2.696, p(\(\beta\))=0.003</p>
