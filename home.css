@@ -94,7 +94,6 @@ aside {
 .t-label:hover { color: var(--ink); }
 
 .t-sub { overflow: hidden; max-height: 0; transition: max-height 0.22s ease; }
-.t-sub.open { max-height: 1000px; }
 
 .t-divider { height: 1px; background: var(--rule); margin: 0.6rem 1.2rem; }
 
@@ -107,8 +106,9 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   border-bottom: 0.5px solid var(--rule);
   padding: 1.6rem 0;
   display: flex; flex-direction: column; gap: 0.45rem;
-  text-decoration: none; cursor: pointer;
-  transition: background 0.12s, padding 0.12s, margin 0.12s;
+  cursor: pointer;
+  opacity: 1;
+  transition: background 0.12s, padding 0.12s, margin 0.12s, opacity 0.18s ease, max-height 0.18s ease;
 }
 .post-item:first-child { border-top: 0.5px solid var(--rule); }
 .post-item:hover {
@@ -117,19 +117,38 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   padding-left: 2.5rem;
   padding-right: 2.5rem;
 }
-.post-item.hidden { display: none; }
+.post-item.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 
 .post-meta-row { display: flex; align-items: center; gap: 0.75rem; }
 .post-tag {
   font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--accent); background: var(--accent-dim);
   padding: 0.15rem 0.55rem; border-radius: 2px;
+  text-decoration: none; cursor: pointer;
+  transition: background 0.12s, color 0.12s;
 }
+.post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
 .post-date { font-size: 0.72rem; color: var(--ink-dim); }
+
+.post-link {
+  display: flex; flex-direction: column; gap: 0.45rem;
+  text-decoration: none; cursor: pointer;
+}
+.post-link:hover { text-decoration: none; }
+.post-link:hover .post-title { color: var(--accent); }
 .post-title {
   font-family: var(--serif);
   font-size: 1.25rem; font-weight: 600;
   color: var(--ink); line-height: 1.35; letter-spacing: -0.01em;
+  transition: color 0.12s;
 }
 .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
 

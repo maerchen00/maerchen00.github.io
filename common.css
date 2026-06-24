@@ -17,7 +17,7 @@
   --rule:        #e7e2d8;
   --sidebar-w:   220px;
   --serif: 'EB Garamond', 'Noto Serif KR', Georgia, serif;
-  --sans:  'Noto Sans KR', sans-serif;
+  --sans:  'Noto Sans KR', 'EB Garamond', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
