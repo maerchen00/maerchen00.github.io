@@ -100,29 +100,31 @@ aside {
 /* ── 글 목록 ── */
 main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 
-.post-list { display: flex; flex-direction: column; }
+.post-list { display: flex; flex-direction: column; border-top: 0.5px solid var(--rule); }
 
 .post-item {
+  position: relative;
   border-bottom: 0.5px solid var(--rule);
   padding: 1.6rem 0;
   display: flex; flex-direction: column; gap: 0.45rem;
   cursor: pointer;
-  opacity: 1;
-  transition: background 0.12s, padding 0.12s, margin 0.12s, opacity 0.18s ease, max-height 0.18s ease;
+  transition: max-height 0.18s ease, padding 0.18s ease, border-color 0.18s ease;
 }
-.post-item:first-child { border-top: 0.5px solid var(--rule); }
-.post-item:hover {
-  background: var(--bg-hover);
-  margin: 0 -2.5rem;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
+.post-item::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -2.5rem; right: -2.5rem;
+  background: transparent;
+  z-index: -1;
+  transition: background 0.12s;
 }
+.post-item:hover::before { background: var(--bg-hover); }
 .post-item.hidden {
-  opacity: 0;
   max-height: 0;
   padding-top: 0;
   padding-bottom: 0;
-  border-bottom-width: 0;
+  border-bottom-color: transparent;
   overflow: hidden;
   pointer-events: none;
 }
@@ -133,9 +135,21 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   color: var(--accent); background: var(--accent-dim);
   padding: 0.15rem 0.55rem; border-radius: 2px;
   text-decoration: none; cursor: pointer;
-  transition: background 0.12s, color 0.12s;
+  /* 활성 -> 비활성으로 바뀔 때(카드가 접힐 때) 쓰이는 전환 속도.
+     카드가 접히는 0.18s보다 느리게 잡아서, 카드가 다 보이는 동안에는
+     계속 진한 색에 머물다가 다 접혀 안 보이게 된 뒤에야 원래 색(노란색)에
+     도달하도록 한다 — 노란색이 노출되지 않는다. */
+  transition: background 0.5s, color 0.5s;
 }
 .post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
+.post-tag.active {
+  background: var(--accent); color: #fff;
+  /* 비활성 -> 활성으로 바뀔 때(카드가 펼쳐질 때) 쓰이는 전환 속도.
+     카드가 펼쳐지는 0.18s보다 빠르게 잡아서, 펼쳐지는 동작이 끝나기 전에
+     이미 색이 다 바뀌어 있도록 한다 — 펼쳐지는 동안 노란색이 보이지 않는다. */
+  transition: background 0.08s, color 0.08s;
+}
+.post-tag.active:hover { background: var(--accent-dim); color: var(--accent); }
 .post-date { font-size: 0.72rem; color: var(--ink-dim); }
 
 .post-link {
@@ -158,5 +172,5 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   aside { display: none; }
   header { flex-direction: column; gap: 0.3rem; padding: 2rem 1.2rem 1.2rem; }
   main { padding: 1.8rem 1.2rem 5rem; }
-  .post-item:hover { margin: 0 -1.2rem; padding-left: 1.2rem; padding-right: 1.2rem; }
+  .post-item::before { left: -1.2rem; right: -1.2rem; }
 }

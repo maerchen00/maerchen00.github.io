@@ -76,24 +76,65 @@
   const posts = document.querySelectorAll('.post-item');
   const tree  = document.getElementById('nav-tree');
 
+  posts.forEach(p => { p.dataset.fullHeight = p.scrollHeight + 'px'; p.style.maxHeight = p.dataset.fullHeight; });
+
   document.querySelectorAll('.t-sub.open').forEach(sub => {
     sub.style.maxHeight = sub.scrollHeight + 'px';
   });
 
+  // 사이드바 태그별 글 개수 표시
+  document.querySelectorAll('.t-label[data-filter]').forEach(label => {
+    const tag = label.dataset.filter;
+    const count = tag === 'all'
+      ? posts.length
+      : Array.from(posts).filter(p => (p.dataset.tags || '').split(',').map(t => t.trim()).includes(tag)).length;
+    label.textContent += ` (${count})`;
+  });
+
+  let currentFilter = 'all';
+
   function applyFilter(tag) {
+    currentFilter = tag;
     document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
     const node = document.querySelector(`.t-label[data-filter="${tag}"]`);
     if (node) node.closest('.t-node').classList.add('active');
+    // 숨길 항목을 먼저 접고, 그게 끝난 뒤에 보일 항목을 펼친다.
+    // 동시에 진행하면 두 카드의 테두리가 서로 다른 위치에서 겹쳐
+    // 사라졌다 나타나는 것처럼 보이는 깜박임이 생긴다.
+    // 태그 색은 카드 모양이 바뀌기 시작하는 시점에 같이 바꾼다 — 색
+    // 전환 속도 자체를 (CSS에서) 방향별로 다르게 줘서, 접힐 때는 카드가
+    // 다 사라질 때까지 진한 색을 유지하다 느리게 풀리고, 펼쳐질 때는
+    // 거의 즉시 색이 자리잡아 펼쳐지는 동안 계속 올바른 색으로 보인다.
+    const toShow = [];
     posts.forEach(p => {
       const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
-      p.classList.toggle('hidden', tag !== 'all' && !tags.includes(tag));
+      const shouldHide = tag !== 'all' && !tags.includes(tag);
+      const wasHidden = p.classList.contains('hidden');
+      const tagEl = p.querySelector('.post-tag');
+      if (shouldHide) {
+        if (tagEl) tagEl.classList.remove('active');
+        p.classList.add('hidden');
+        p.style.maxHeight = '0px';
+      } else if (wasHidden) {
+        toShow.push({ p, tagEl });
+      } else {
+        if (tagEl) tagEl.classList.toggle('active', tag !== 'all' && tagEl.dataset.filter === tag);
+      }
     });
+    setTimeout(() => {
+      toShow.forEach(({ p, tagEl }) => {
+        p.classList.remove('hidden');
+        p.style.maxHeight = p.dataset.fullHeight;
+        if (tagEl) tagEl.classList.toggle('active', tag !== 'all' && tagEl.dataset.filter === tag);
+      });
+    }, 190);
   }
 
   document.querySelectorAll('.post-tag').forEach(tagEl => {
     tagEl.addEventListener('click', e => {
       e.preventDefault();
-      applyFilter(tagEl.dataset.filter);
+      const tag = tagEl.dataset.filter;
+      applyFilter(currentFilter === tag ? 'all' : tag);
     });
   });
 

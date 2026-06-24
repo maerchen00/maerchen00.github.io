@@ -138,6 +138,21 @@ h1 {
 }
 .side-rail .viz-wrap { margin: 0; }
 
+.side-table-wrap { max-height: 480px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-dim) transparent; }
+.side-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: var(--sans); font-size: 0.7rem; }
+.side-table th {
+  position: sticky; top: 0; background: var(--bg-card);
+  padding: 0.4rem 0.15rem; text-align: center; color: var(--ink-muted);
+  font-weight: 500; border-bottom: 1px solid var(--rule);
+}
+.side-table td { padding: 0.32rem 0.15rem; text-align: center; border-bottom: 0.5px solid var(--rule); color: var(--ink-muted); }
+.side-table td:first-child, .side-table th:first-child { text-align: left; }
+.side-table tr:hover td { background: var(--bg-hover); }
+.side-table td.pos { color: #2e7d4f; }
+.side-table td.neg { color: #c0392b; }
+.side-table td.sig { font-weight: 700; }
+.side-table-wrap + .table-source { margin-top: 0.8rem; }
+
 @media (min-width: 1301px) {
   .side-rail .pie-row { grid-template-columns: 1fr; }
 }
@@ -246,7 +261,33 @@ canvas { width: 100% !important; }
   font-family: var(--sans); font-size: 0.72rem;
   color: var(--ink-muted); line-height: 1.8;
 }
-.footnotes p { margin-bottom: 0.35rem; }
+.footnotes p { margin-bottom: 0.35rem; scroll-margin-top: 70px; transition: background-color 0.3s; border-radius: 3px; }
+.footnotes p.fn-flash { background: var(--accent-dim); }
+
+/* ── 각주 참조: 호버 미리보기 + 클릭 이동 (footnotes.js) ── */
+.fn-ref {
+  font-size: 0.65rem; vertical-align: super;
+  font-family: var(--sans); color: var(--accent);
+  text-decoration: none; cursor: pointer;
+  scroll-margin-top: 70px;
+  border-radius: 2px;
+  transition: background-color 0.3s;
+}
+.fn-ref.fn-flash { background: var(--accent-dim); }
+.fn-ref:hover { text-decoration: underline; }
+.fn-back { font-size: 0.7rem; color: var(--ink-dim); text-decoration: none; margin-left: 0.3rem; }
+.fn-back:hover { color: var(--accent); }
+.fn-tooltip {
+  position: absolute; max-width: 420px; z-index: 300;
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  padding: 0.9rem 1.1rem; font-family: var(--sans); font-size: 0.82rem;
+  color: var(--ink-muted); line-height: 1.7;
+  opacity: 0; visibility: hidden; transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+.fn-tooltip.show { opacity: 1; visibility: visible; transform: translateY(0); }
 
 /* ── 반응형 ── */
 @media (max-width: 768px) {

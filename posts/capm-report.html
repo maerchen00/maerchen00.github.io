@@ -43,7 +43,11 @@
     <a class="toc-item sub" href="#sec-dw">자기상관 검정</a>
     <a class="toc-item sub" href="#sec-alpha">\(\alpha\) 검정</a>
     <a class="toc-item" href="#sec-sml">3. 세 SML 비교</a>
+    <a class="toc-item sub" href="#sec-cs-is">IS SML 추정</a>
     <a class="toc-item" href="#sec-os">4. OS 설명력 검정</a>
+    <a class="toc-item sub" href="#sec-hetero">이분산성 검정</a>
+    <a class="toc-item sub" href="#sec-sml-test">CAPM·IS SML 비교</a>
+    <a class="toc-item sub" href="#sec-slope-test">SML 기울기 동일성</a>
     <a class="toc-item" href="#sec-quint">5. 퀸타일 포트폴리오</a>
     <a class="toc-item" href="#sec-port">6. 전략 비교</a>
     <a class="toc-item" href="#sec-conc">7. 결론</a>
@@ -58,6 +62,7 @@
       <div class="post-meta">2025. 6</div>
     </div>
 
+    <div class="post-body">
     <article>
 
 <h2 id="sec-intro">1. 서론</h2>
@@ -99,7 +104,6 @@
 <div class="viz-wrap">
   <p class="viz-title">Fig. 1 — \(\beta\) 분포 · 섹터별 색상 분류 (60종목)</p>
   <canvas id="beta-hist" height="130"></canvas>
-  <p class="axis-cap">\(\beta_{\mathrm{IS}}\) (IS 추정값)</p>
   <div class="legend-row">
     <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>Tech</div>
     <div class="legend-item"><span class="legend-dot" style="background:rgba(91,140,90,0.85)"></span>Health</div>
@@ -112,7 +116,7 @@
 </div>
 
 <h3 id="sec-dw">자기상관 검정</h3>
-<p>잔차의 자기상관을 Durbin-Watson(DW) 검정으로 확인하였다. 60개 종목 중 58개가 정상 범위(1.5~2.5) 내에 위치한다(mean = 1.993). FDX(DW=1.294)·NEE(DW=2.696)는 경계선이나 Newey-West 조정 후에도 \(\beta\) 유의성이 유지된다.<sup>1</sup></p>
+<p>잔차의 자기상관을 Durbin-Watson(DW) 검정으로 확인하였다. 60개 종목 중 58개가 정상 범위(1.5~2.5) 내에 위치한다(mean = 1.993). FDX(DW=1.294)·NEE(DW=2.696)는 경계선이나 Newey-West 조정 후에도 \(\beta\) 유의성이 유지된다.</p>
 
 <h3 id="sec-alpha">\(\alpha\) 검정</h3>
 <p>CAPM이 성립한다면 모든 종목의 \(\alpha\)는 0이어야 한다. <strong>58개 종목에서 \(H_0: \alpha=0\)을 5% 수준에서 기각하지 못한다.</strong> 유의한 종목은 MSFT(+1.316%, p=0.009)와 MMM(−1.339%, p=0.023) 두 개뿐이다. MSFT는 IS 기간 클라우드 전환 성공, MMM은 과불화화합물(PFAS) 환경 오염 소송 및 전투 귀마개 결함 관련 집단소송이 기업 고유 요인으로 작용하였다.</p>
@@ -145,9 +149,9 @@
 
 <p>세 SML을 비교하면 일관된 방향이 나타난다. <strong>기울기가 이론 → IS → OS 순으로 계속 가팔라진다.</strong> 이론 ERP(0.639%)에서 IS 실증값(0.965%)으로, 다시 OS 실제값(1.699%)으로 확대된다. \(\beta\)가 높을수록 실현 수익률이 이론 예측보다 더 높았다는 의미다. 특히 2023–2025년 AI 수요 급증으로 고베타 테크 종목의 초과수익이 두드러졌던 OS 구간의 특성이 반영된 결과로 해석된다.</p>
 
-<p>절편은 반대 방향이다. IS 추정 \(\gamma_0\)(0.328%)가 이론 \(R_{\mathrm{f}}\)(0.110%)보다 높고, OS에서는 음수(−0.157%)로 떨어진다. \(\beta=0\)인 자산의 수익률이 무위험수익률과 일치하지 않는다는 이 현상은 CAPM의 잘 알려진 경험적 한계이다.<sup>2</sup></p>
+<p>절편은 반대 방향이다. IS 추정 \(\gamma_0\)(0.328%)가 이론 \(R_{\mathrm{f}}\)(0.110%)보다 높고, OS에서는 음수(−0.157%)로 떨어진다. \(\beta=0\)인 자산의 수익률이 무위험수익률과 일치하지 않는다는 이 현상은 CAPM의 잘 알려진 경험적 한계이다.<sup>1</sup></p>
 
-<h3>IS SML 추정 — 횡단면 회귀</h3>
+<h3 id="sec-cs-is">IS SML 추정 — 횡단면 회귀</h3>
 
 <div class="disp-eq">\[ E(R_i)_{\mathrm{IS}} = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}} + u_i \]</div>
 
@@ -165,7 +169,6 @@
 <div class="viz-wrap">
   <p class="viz-title">Fig. 2 — IS SML: \(\beta\) vs IS 평균수익률 (횡단면 회귀)</p>
   <canvas id="cs-is-chart" height="250"></canvas>
-  <p class="axis-cap">\(\beta_{\mathrm{IS}}\) (가로축) · IS 평균수익률 %/월 (세로축)</p>
   <div class="legend-row" style="margin-top:.6rem;">
     <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>Tech</div>
     <div class="legend-item"><span class="legend-dot" style="background:rgba(91,140,90,0.85)"></span>Health</div>
@@ -188,7 +191,7 @@
 <span style="font-size:0.8em;color:var(--ink-muted);">\[ H_0: \delta = 0, \quad H_1: \delta > 0 \]</span>
 </div>
 
-<h3>이분산성 검정 및 강건 표준오차</h3>
+<h3 id="sec-hetero">이분산성 검정 및 강건 표준오차</h3>
 <p>Breusch-Pagan 검정(LM = 7.413, p = 0.0065)과 White 검정(LM = 7.595, p = 0.0224) 모두 5% 수준에서 이분산을 확인한다. White HC3 표준오차를 적용한다.</p>
 
 <div class="table-wrap">
@@ -203,7 +206,7 @@
   </table>
 </div>
 
-<h3>CAPM SML 검정 및 IS 실증 SML 비교</h3>
+<h3 id="sec-sml-test">CAPM SML 검정 및 IS 실증 SML 비교</h3>
 
 <div class="table-wrap">
   <p class="table-num">표 3</p>
@@ -230,7 +233,6 @@
 <div class="viz-wrap">
   <p class="viz-title">Fig. 3 — OOS 설명력 검정: \(\mathrm{Pred}_i\) vs \(\mathrm{Actual}_{i,\mathrm{OS}}\)</p>
   <canvas id="oos-scatter" height="290"></canvas>
-  <p class="axis-cap">\(\mathrm{Pred}_i\) %/월 (가로축) · \(\mathrm{Actual}_{i,\mathrm{OS}}\) %/월 (세로축)</p>
   <p class="table-source" style="margin-top:.4rem;">실선: 회귀선 \(\delta\)=1.892 (HC3 p=0.0017) &nbsp;/&nbsp; 점선: \(\delta\)=1 완벽예측 기준</p>
 </div>
 
@@ -238,7 +240,7 @@
 
 <p>잔차 기준 CAPM SML을 크게 상회한 종목은 NVDA(+6.64%), GE(+4.46%), META(+4.46%), TSLA(+3.60%) 등 테크·산업재이며, PFE(−2.34%), EL(−2.72%), NKE(−2.54%) 등은 하회하였다. IS 기간에 포착되지 않은 AI 수요 급증이 테크 상회의 주된 요인이고, 헬스케어·소비재 부진은 금리 상승과 소비 둔화가 복합적으로 작용한 결과로 해석된다.</p>
 
-<h3>SML 기울기 동일성 검정</h3>
+<h3 id="sec-slope-test">SML 기울기 동일성 검정</h3>
 <div class="disp-eq">
 \[ t = \dfrac{\gamma_{1,\mathrm{OS}} - \gamma_{1,\mathrm{IS}}}{\sqrt{\mathrm{SE}_{\mathrm{IS}}^2 + \mathrm{SE}_{\mathrm{OS}}^2}} = 1.734 \]
 </div>
@@ -342,15 +344,91 @@
 <p>본 분석은 강세장에 편중된 구간과 60개 종목·36개월이라는 표본 안에서 이루어졌기에, 하락장이나 횡보장에서의 복원력은 충분히 검증되지 않았다. \(\beta\)의 예측력을 기반으로 규모 예측의 오차를 줄이고 다양한 변수를 통합하는 다요인 모형으로의 확장이 후속 과제이다.</p>
 
 <div class="footnotes">
-  <p><sup>1</sup> FDX: DW=1.294, Newey-West 조정 후 p(\(\beta\))=0.000 / NEE: DW=2.696, p(\(\beta\))=0.003</p>
-  <p><sup>2</sup> Black, F., Jensen, M. C., &amp; Scholes, M. (1972). The capital asset pricing model: Some empirical tests. In M. C. Jensen (Ed.), <em>Studies in the Theory of Capital Markets</em>. Praeger.</p>
-  <p><sup>3</sup> Sharpe, W. F. (1964). Capital asset prices: A theory of market equilibrium under conditions of risk. <em>Journal of Finance</em>, 19(3), 425–442.</p>
-  <p><sup>4</sup> Lintner, J. (1965). The valuation of risk assets and the selection of risky investments in stock portfolios and capital budgets. <em>Review of Economics and Statistics</em>, 47(1), 13–37.</p>
-  <p><sup>5</sup> Fama, E. F., &amp; MacBeth, J. D. (1973). Risk, return, and equilibrium: Empirical tests. <em>Journal of Political Economy</em>, 81(3), 607–636.</p>
-  <p><sup>6</sup> 데이터: Yahoo Finance 월말 Adj Close (2017.12–2025.12) &nbsp;/&nbsp; 무위험수익률: Investing.com, United States 3-Month Bond Yield 월별 종가 연율 → 월환산</p>
+  <p><sup>1</sup> Black, F., Jensen, M. C., &amp; Scholes, M. (1972). The capital asset pricing model: Some empirical tests. In M. C. Jensen (Ed.), <em>Studies in the Theory of Capital Markets</em>. Praeger.</p>
+  <p><sup>2</sup> Sharpe, W. F. (1964). Capital asset prices: A theory of market equilibrium under conditions of risk. <em>Journal of Finance</em>, 19(3), 425–442.</p>
+  <p><sup>3</sup> Lintner, J. (1965). The valuation of risk assets and the selection of risky investments in stock portfolios and capital budgets. <em>Review of Economics and Statistics</em>, 47(1), 13–37.</p>
+  <p><sup>4</sup> Fama, E. F., &amp; MacBeth, J. D. (1973). Risk, return, and equilibrium: Empirical tests. <em>Journal of Political Economy</em>, 81(3), 607–636.</p>
+  <p><sup>5</sup> 데이터: Yahoo Finance 월말 Adj Close (2017.12–2025.12) &nbsp;/&nbsp; 무위험수익률: Investing.com, United States 3-Month Bond Yield 월별 종가 연율 → 월환산</p>
 </div>
 
     </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <div class="viz-title">종목별 회귀 결과 (60종목, IS 2018.01–2022.12)</div>
+        <div class="side-table-wrap">
+          <table class="side-table">
+            <colgroup><col style="width:26%"><col style="width:18%"><col style="width:28%"><col style="width:28%"></colgroup>
+            <thead><tr><th>종목</th><th>\(\beta\)</th><th>\(\alpha\)(%/월)</th><th>Pred(%/월)</th></tr></thead>
+            <tbody>
+          <tr><td style="color:#2c5f8a;font-weight:600;">AAPL</td><td>1.24</td><td class="pos sig">+1.49*</td><td>1.53%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">MSFT</td><td>0.94</td><td class="pos sig">+1.32**</td><td>1.23%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">NVDA</td><td>1.77</td><td class="pos">+1.67</td><td>2.04%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">META</td><td>1.17</td><td class="neg">-0.85</td><td>1.45%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">INTC</td><td>0.75</td><td class="neg">-0.96</td><td>1.05%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">AMD</td><td>2.03</td><td class="pos sig">+3.18*</td><td>2.29%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">TSLA</td><td>2.04</td><td class="pos">+3.61</td><td>2.30%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">ORCL</td><td>1.01</td><td class="pos">+0.57</td><td>1.30%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">QCOM</td><td>1.26</td><td class="pos">+0.91</td><td>1.54%</td></tr>
+          <tr><td style="color:#2c5f8a;font-weight:600;">ADBE</td><td>1.24</td><td class="pos">+0.60</td><td>1.52%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">JNJ</td><td>0.55</td><td class="pos">+0.28</td><td>0.86%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">PFE</td><td>0.66</td><td class="pos">+0.71</td><td>0.96%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">UNH</td><td>0.74</td><td class="pos sig">+1.22*</td><td>1.04%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">ABT</td><td>0.68</td><td class="pos">+0.85</td><td>0.99%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">MRK</td><td>0.42</td><td class="pos sig">+1.29*</td><td>0.73%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">AMGN</td><td>0.65</td><td class="pos">+0.65</td><td>0.96%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">MDT</td><td>0.75</td><td class="neg">-0.28</td><td>1.05%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">BMY</td><td>0.43</td><td class="pos">+0.36</td><td>0.75%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">ISRG</td><td>1.35</td><td class="pos">+0.79</td><td>1.63%</td></tr>
+          <tr><td style="color:#5b8c5a;font-weight:600;">GILD</td><td>0.48</td><td class="pos">+0.49</td><td>0.80%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">JPM</td><td>1.12</td><td class="pos">+0.11</td><td>1.41%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">BAC</td><td>1.42</td><td class="neg">-0.22</td><td>1.69%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">GS</td><td>1.39</td><td class="pos">+0.09</td><td>1.67%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">MS</td><td>1.33</td><td class="pos">+0.48</td><td>1.61%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">WFC</td><td>1.17</td><td class="neg">-0.81</td><td>1.46%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">BLK</td><td>1.30</td><td class="pos">+0.16</td><td>1.58%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">AXP</td><td>1.15</td><td class="pos">+0.29</td><td>1.43%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">TRV</td><td>0.67</td><td class="pos">+0.40</td><td>0.98%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">PGR</td><td>0.44</td><td class="pos sig">+1.48*</td><td>0.75%</td></tr>
+          <tr><td style="color:#8b1a1a;font-weight:600;">COF</td><td>1.41</td><td class="neg">-0.40</td><td>1.69%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">KO</td><td>0.59</td><td class="pos">+0.48</td><td>0.90%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">PG</td><td>0.41</td><td class="pos">+0.82</td><td>0.72%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">WMT</td><td>0.55</td><td class="pos">+0.47</td><td>0.85%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">MCD</td><td>0.63</td><td class="pos">+0.55</td><td>0.94%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">HD</td><td>0.95</td><td class="pos">+0.59</td><td>1.24%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">TGT</td><td>1.02</td><td class="pos">+1.30</td><td>1.32%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">COST</td><td>0.76</td><td class="pos sig">+1.23*</td><td>1.06%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">NKE</td><td>1.09</td><td class="pos">+0.68</td><td>1.38%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">CL</td><td>0.50</td><td class="neg">-0.03</td><td>0.81%</td></tr>
+          <tr><td style="color:#8a6b2c;font-weight:600;">EL</td><td>0.94</td><td class="pos">+0.80</td><td>1.23%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">XOM</td><td>1.08</td><td class="pos">+0.59</td><td>1.37%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">CVX</td><td>1.15</td><td class="pos">+0.55</td><td>1.44%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">COP</td><td>1.33</td><td class="pos">+1.39</td><td>1.61%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">SLB</td><td>1.81</td><td class="neg">-0.20</td><td>2.07%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">EOG</td><td>1.55</td><td class="pos">+0.48</td><td>1.82%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">PSX</td><td>1.39</td><td class="pos">+0.11</td><td>1.67%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">VLO</td><td>1.60</td><td class="pos">+0.76</td><td>1.88%</td></tr>
+          <tr><td style="color:#c4907a;font-weight:600;">MPC</td><td>1.57</td><td class="pos">+1.15</td><td>1.85%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">BA</td><td>1.42</td><td class="neg">-0.73</td><td>1.70%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">HON</td><td>1.10</td><td class="pos">+0.24</td><td>1.39%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">CAT</td><td>1.09</td><td class="pos">+0.50</td><td>1.38%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">GE</td><td>1.22</td><td class="neg">-0.84</td><td>1.51%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">MMM</td><td>0.98</td><td class="neg sig">-1.34**</td><td>1.27%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">UPS</td><td>1.11</td><td class="pos">+0.50</td><td>1.40%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">FDX</td><td>1.34</td><td class="neg">-0.87</td><td>1.62%</td></tr>
+          <tr><td style="color:#7a4b8c;font-weight:600;">DE</td><td>1.10</td><td class="pos">+1.40</td><td>1.39%</td></tr>
+          <tr><td style="color:#806050;font-weight:600;">AMT</td><td>0.55</td><td class="pos">+0.57</td><td>0.86%</td></tr>
+          <tr><td style="color:#806050;font-weight:600;">NEE</td><td>0.47</td><td class="pos sig">+1.24*</td><td>0.78%</td></tr>
+          <tr><td style="color:#806050;font-weight:600;">DUK</td><td>0.37</td><td class="pos">+0.48</td><td>0.69%</td></tr>
+          <tr><td style="color:#806050;font-weight:600;">SO</td><td>0.46</td><td class="pos">+0.80</td><td>0.77%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-source">*p≤0.10 &nbsp;**p≤0.05 (IS 횡단면 α 유의성) &nbsp;/&nbsp; 색상 = 섹터 (Fig.1과 동일)</p>
+      </div>
+    </aside>
+
+    </div>
   </div>
 </div>
 
@@ -365,7 +443,7 @@ new Chart(document.getElementById('beta-hist'),{type:'bar',
   backgroundColor:["rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)"],
   borderWidth:0,borderRadius:2}]},
   options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{label:c=>`β=${c.parsed.y.toFixed(3)}`}}},
-    scales:{x:{...base.scales.x,ticks:{...base.scales.x.ticks,font:{family:FONT,size:7},maxRotation:72}},y:{...base.scales.y}}}
+    scales:{x:{...base.scales.x,ticks:{...base.scales.x.ticks,font:{family:FONT,size:7},maxRotation:72},title:{display:true,text:'종목 (60개, 섹터별)',color:TC,font:{family:FONT,size:11}}},y:{...base.scales.y,title:{display:true,text:'β 추정값',color:TC,font:{family:FONT,size:11}}}}}
 });
 
 const g0=0.3283,g1=0.9647;
@@ -378,7 +456,7 @@ new Chart(document.getElementById('cs-is-chart'),{type:'scatter',
     {data:sX.map((x,i)=>({'x':x,'y':sY[i]})),type:'line',borderColor:'#92400e',borderWidth:1.8,pointRadius:0,fill:false,borderDash:[5,3]}
   ]},
   options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{label:c=>c.datasetIndex===0?`β=${c.parsed.x.toFixed(2)} r=${c.parsed.y.toFixed(3)}%`:null}}},
-    scales:{x:{...base.scales.x},y:{...base.scales.y}}}
+    scales:{x:{...base.scales.x,title:{display:true,text:'β',color:TC,font:{family:FONT,size:11}}},y:{...base.scales.y,title:{display:true,text:'IS 평균수익률 (%/월)',color:TC,font:{family:FONT,size:11}}}}}
 });
 
 const od=[{"x":1.5285,"y":2.2902,"name":"AAPL"},{"x":1.2306,"y":2.2022,"name":"MSFT"},{"x":2.038,"y":8.0769,"name":"NVDA"},{"x":1.4526,"y":5.3178,"name":"META"},{"x":1.0548,"y":2.1078,"name":"INTC"},{"x":2.2862,"y":4.474,"name":"AMD"},{"x":2.3009,"y":5.0104,"name":"TSLA"},{"x":1.3006,"y":3.2157,"name":"ORCL"},{"x":1.5408,"y":1.7768,"name":"QCOM"},{"x":1.5218,"y":0.5548,"name":"ADBE"},{"x":0.8555,"y":0.8139,"name":"JNJ"},{"x":0.9644,"y":-1.379,"name":"PFE"},{"x":1.0449,"y":-0.6649,"name":"UNH"},{"x":0.9858,"y":0.6862,"name":"ABT"},{"x":0.7305,"y":0.2845,"name":"MRK"},{"x":0.9589,"y":1.1044,"name":"AMGN"},{"x":1.0479,"y":1.0952,"name":"MDT"},{"x":0.7472,"y":-0.1685,"name":"BMY"},{"x":1.6328,"y":2.4796,"name":"ISRG"},{"x":0.7959,"y":1.4416,"name":"GILD"},{"x":1.4089,"y":2.8394,"name":"JPM"},{"x":1.6936,"y":1.8922,"name":"BAC"},{"x":1.6702,"y":3.1007,"name":"GS"},{"x":1.6118,"y":2.6476,"name":"MS"},{"x":1.4563,"y":2.7895,"name":"WFC"},{"x":1.5843,"y":1.5678,"name":"BLK"},{"x":1.4343,"y":2.9203,"name":"AXP"},{"x":0.9785,"y":1.5145,"name":"TRV"},{"x":0.7542,"y":1.9268,"name":"PGR"},{"x":1.6856,"y":3.2097,"name":"COF"},{"x":0.8995,"y":0.5835,"name":"KO"},{"x":0.7207,"y":0.1645,"name":"PG"},{"x":0.854,"y":2.6399,"name":"WMT"},{"x":0.9375,"y":0.6738,"name":"MCD"},{"x":1.2437,"y":0.635,"name":"HD"},{"x":1.316,"y":-0.5333,"name":"TGT"},{"x":1.0617,"y":2.0536,"name":"COST"},{"x":1.3798,"y":-1.1569,"name":"NKE"},{"x":0.8093,"y":0.3052,"name":"CL"},{"x":1.2318,"y":-1.4875,"name":"EL"},{"x":1.3702,"y":0.6763,"name":"XOM"},{"x":1.441,"y":0.094,"name":"CVX"},{"x":1.6079,"y":-0.1562,"name":"COP"},{"x":2.0714,"y":-0.3777,"name":"SLB"},{"x":1.8191,"y":-0.0306,"name":"EOG"},{"x":1.6678,"y":1.1917,"name":"PSX"},{"x":1.876,"y":1.304,"name":"VLO"},{"x":1.8476,"y":1.4682,"name":"MPC"},{"x":1.6991,"y":0.7905,"name":"BA"},{"x":1.3867,"y":0.1971,"name":"HON"},{"x":1.3841,"y":2.9896,"name":"CAT"},{"x":1.509,"y":5.3815,"name":"GE"},{"x":1.2709,"y":1.9575,"name":"MMM"},{"x":1.3963,"y":-0.8911,"name":"UPS"},{"x":1.6172,"y":1.9005,"name":"FDX"},{"x":1.3885,"y":0.5678,"name":"DE"},{"x":0.859,"y":0.0339,"name":"AMT"},{"x":0.7847,"y":0.3886,"name":"NEE"},{"x":0.6891,"y":0.7787,"name":"DUK"},{"x":0.7717,"y":0.9692,"name":"SO"}];
@@ -456,5 +534,6 @@ renderMathInElement(document.body,{
   ]
 });
 </script>
+<script src="../footnotes.js"></script>
 </body>
 </html>
