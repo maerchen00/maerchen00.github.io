@@ -135,19 +135,14 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   color: var(--accent); background: var(--accent-dim);
   padding: 0.15rem 0.55rem; border-radius: 2px;
   text-decoration: none; cursor: pointer;
-  /* 활성 -> 비활성으로 바뀔 때(카드가 접힐 때) 쓰이는 전환 속도.
-     카드가 접히는 0.18s보다 느리게 잡아서, 카드가 다 보이는 동안에는
-     계속 진한 색에 머물다가 다 접혀 안 보이게 된 뒤에야 원래 색(노란색)에
-     도달하도록 한다 — 노란색이 노출되지 않는다. */
-  transition: background 0.5s, color 0.5s;
+  /* 이미 보이는 카드의 색이 바뀔 때는 항상 이 속도로 부드럽게 페이드된다.
+     숨김->등장처럼 모양이 같이 바뀌는 경우엔 JS에서 이 트랜지션을
+     일시적으로 꺼서 색이 먼저 자리잡은 채로 등장하게 만든다. */
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
 .post-tag.active {
   background: var(--accent); color: #fff;
-  /* 비활성 -> 활성으로 바뀔 때(카드가 펼쳐질 때) 쓰이는 전환 속도.
-     카드가 펼쳐지는 0.18s보다 빠르게 잡아서, 펼쳐지는 동작이 끝나기 전에
-     이미 색이 다 바뀌어 있도록 한다 — 펼쳐지는 동안 노란색이 보이지 않는다. */
-  transition: background 0.08s, color 0.08s;
 }
 .post-tag.active:hover { background: var(--accent-dim); color: var(--accent); }
 .post-date { font-size: 0.72rem; color: var(--ink-dim); }
