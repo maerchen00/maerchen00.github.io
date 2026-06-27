@@ -98,9 +98,8 @@
     document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
     const node = document.querySelector(`.t-label[data-filter="${tag}"]`);
     if (node) node.closest('.t-node').classList.add('active');
-    // 숨길 항목을 먼저 접고, 그게 끝난 뒤에 보일 항목을 펼친다.
-    // 동시에 진행하면 두 카드의 테두리가 서로 다른 위치에서 겹쳐
-    // 사라졌다 나타나는 것처럼 보이는 깜박임이 생긴다.
+    // 숨는 카드와 나타나는 카드를 같은 프레임에서 동시에 움직인다 — 따로
+    // 시차를 두면 "접혔다가 잠시 후 펼쳐지는" 순차적인 느낌이 들기 때문.
     //
     // 접히는 카드는 색을 건드리지 않는다 — 안 보이게 될 카드라 색이
     // 무슨 색이든 보이지 않으므로, 굳이 끄면서 노란색이 노출될 일이 없다.
@@ -110,10 +109,9 @@
     //    누르면 Fin은 계속 보이는 채로 비활성화된다)는 CSS 트랜지션으로
     //    부드럽게 페이드된다.
     //  - 숨김 -> 등장하는 카드는 활성/비활성 어느 쪽으로 가든 트랜지션을
-    //    잠깐 꺼서 자라기 시작하기 전에 색을 미리 박아둔다. 등장과 동시에
-    //    올바른 색으로 "톡" 나타나며, 등장하면서 색이 따로 페이드되는
-    //    어색함이나 노란색 노출이 없다.
-    const toShow = [];
+    //    잠깐 꺼서 펼쳐지기 시작하기 전에(같은 동기 실행 안에서) 색을
+    //    미리 박아둔다. 펼쳐짐과 동시에 올바른 색으로 "톡" 나타나며,
+    //    등장하면서 색이 따로 페이드되는 어색함이나 노란색 노출이 없다.
     posts.forEach(p => {
       const tags = (p.dataset.tags || '').split(',').map(t => t.trim());
       const shouldHide = tag !== 'all' && !tags.includes(tag);
@@ -124,13 +122,6 @@
         p.style.maxHeight = '0px';
       } else if (wasHidden) {
         const willBeActive = tag !== 'all' && tagEl && tagEl.dataset.filter === tag;
-        toShow.push({ p, tagEl, willBeActive });
-      } else {
-        if (tagEl) tagEl.classList.toggle('active', tag !== 'all' && tagEl.dataset.filter === tag);
-      }
-    });
-    setTimeout(() => {
-      toShow.forEach(({ p, tagEl, willBeActive }) => {
         if (tagEl) {
           tagEl.style.transition = 'none';
           tagEl.classList.toggle('active', willBeActive);
@@ -139,8 +130,10 @@
         }
         p.classList.remove('hidden');
         p.style.maxHeight = p.dataset.fullHeight;
-      });
-    }, 190);
+      } else {
+        if (tagEl) tagEl.classList.toggle('active', tag !== 'all' && tagEl.dataset.filter === tag);
+      }
+    });
   }
 
   document.querySelectorAll('.post-tag').forEach(tagEl => {

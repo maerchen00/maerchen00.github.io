@@ -12,7 +12,7 @@
     .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
     .chart-box { background: var(--bg); border-radius: 2px; padding: 0.8rem 0.9rem 0.6rem; }
     .chart-label { font-family: var(--sans); font-size: 0.65rem; color: var(--ink-muted); margin-bottom: 0.4rem; }
-    .chart-val { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+    .chart-val { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--accent); line-height: 1.2; margin-bottom: 0.5rem; }
     .chart-box canvas { width: 100% !important; }
     .pie-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .pie-box { background: var(--bg); border-radius: 2px; padding: 0.8rem 0.9rem; display: flex; align-items: center; gap: 1rem; }
@@ -216,22 +216,22 @@
         <div class="chart-grid">
           <div class="chart-box">
             <div class="chart-label">실질 GDP (1929 = 100)</div>
-            <div class="chart-val">−30%</div>
+            <div class="chart-val">▾30% 감소</div>
             <canvas id="gdp-chart" height="90"></canvas>
           </div>
           <div class="chart-box">
             <div class="chart-label">산업생산 지수 (1929 = 100)</div>
-            <div class="chart-val">−47%</div>
+            <div class="chart-val">▾47% 감소</div>
             <canvas id="ip-chart" height="90"></canvas>
           </div>
           <div class="chart-box">
             <div class="chart-label">실업률 (%)</div>
-            <div class="chart-val">24.9%</div>
+            <div class="chart-val">▴24.9%</div>
             <canvas id="unemp-chart" height="90"></canvas>
           </div>
           <div class="chart-box">
             <div class="chart-label">다우존스 산업지수 (DJIA)</div>
-            <div class="chart-val">−89%</div>
+            <div class="chart-val">▾89% 감소</div>
             <canvas id="dow-chart" height="90"></canvas>
           </div>
         </div>

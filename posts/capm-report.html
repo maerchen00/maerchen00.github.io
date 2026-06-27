@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<p>세 SML을 비교하면 일관된 방향이 나타난다. <strong>기울기가 이론 → IS → OS 순으로 계속 가팔라진다.</strong> 이론 ERP(0.639%)에서 IS 실증값(0.965%)으로, 다시 OS 실제값(1.699%)으로 확대된다. \(\beta\)가 높을수록 실현 수익률이 이론 예측보다 더 높았다는 의미다. 특히 2023–2025년 AI 수요 급증으로 고베타 테크 종목의 초과수익이 두드러졌던 OS 구간의 특성이 반영된 결과로 해석된다.</p>
+<p>세 SML을 비교하면 일관된 방향이 나타난다. <strong>기울기가 이론 → IS → OS 순으로 계속 가팔라진다.</strong> 이론 ERP(0.639%)에서 IS 실증값(0.965%)으로, 다시 OS 실제값(1.699%)으로 확대된다. \(\beta\)가 높을수록 실현 수익률이 이론 예측보다 더 높았다는 의미다. 2023–2025년 AI 수요 급증으로 고베타 테크 종목의 초과수익이 두드러졌던 OS 구간의 특성이 반영된 결과로 해석된다.</p>
 
 <p>절편은 반대 방향이다. IS 추정 \(\gamma_0\)(0.328%)가 이론 \(R_{\mathrm{f}}\)(0.110%)보다 높고, OS에서는 음수(−0.157%)로 떨어진다. \(\beta=0\)인 자산의 수익률이 무위험수익률과 일치하지 않는다는 이 현상은 CAPM의 잘 알려진 경험적 한계이다.<sup>1</sup></p>
 
@@ -233,7 +233,7 @@
 <div class="viz-wrap">
   <p class="viz-title">Fig. 3 — OOS 설명력 검정: \(\mathrm{Pred}_i\) vs \(\mathrm{Actual}_{i,\mathrm{OS}}\)</p>
   <canvas id="oos-scatter" height="290"></canvas>
-  <p class="table-source" style="margin-top:.4rem;">실선: 회귀선 \(\delta\)=1.892 (HC3 p=0.0017) &nbsp;/&nbsp; 점선: \(\delta\)=1 완벽예측 기준</p>
+  <p class="table-source" style="margin-top:.4rem;">실선: IS 실증 \(\delta\)=1.892 &nbsp;/&nbsp; 1점쇄선: CAPM 이론 \(\delta\)=2.856 (HC3 p=0.0017) &nbsp;/&nbsp; 점선: \(\delta\)=1 완벽예측 기준</p>
 </div>
 
 <p>HC3 기준 p(단측) = 0.0017로 \(H_0\)를 기각한다. <strong>CAPM SML은 OS 실제 수익률을 통계적으로 유의하게 설명한다.</strong> 다만 \(\delta = 2.856 \gg 1\)로 규모 과소추정이 두드러지며, \(R^2 = 0.189\)로 설명력은 제한적이다.</p>
@@ -437,8 +437,9 @@ const FONT="'Noto Sans KR','EB Garamond',sans-serif";
 const GR='#e7e2d8',TC='#78716c';
 const base={responsive:true,plugins:{legend:{display:false},tooltip:{titleFont:{family:FONT},bodyFont:{family:FONT}}},scales:{x:{ticks:{color:TC,font:{family:FONT,size:10}},grid:{color:GR},border:{color:GR}},y:{ticks:{color:TC,font:{family:FONT,size:10}},grid:{color:GR},border:{color:GR}}}};
 
+const tickers=["AAPL","MSFT","NVDA","META","INTC","AMD","TSLA","ORCL","QCOM","ADBE","JNJ","PFE","UNH","ABT","MRK","AMGN","MDT","BMY","ISRG","GILD","JPM","BAC","GS","MS","WFC","BLK","AXP","TRV","PGR","COF","KO","PG","WMT","MCD","HD","TGT","COST","NKE","CL","EL","XOM","CVX","COP","SLB","EOG","PSX","VLO","MPC","BA","HON","CAT","GE","MMM","UPS","FDX","DE","AMT","NEE","DUK","SO"];
 new Chart(document.getElementById('beta-hist'),{type:'bar',
-  data:{labels:["AAPL","MSFT","NVDA","META","INTC","AMD","TSLA","ORCL","QCOM","ADBE","JNJ","PFE","UNH","ABT","MRK","AMGN","MDT","BMY","ISRG","GILD","JPM","BAC","GS","MS","WFC","BLK","AXP","TRV","PGR","COF","KO","PG","WMT","MCD","HD","TGT","COST","NKE","CL","EL","XOM","CVX","COP","SLB","EOG","PSX","VLO","MPC","BA","HON","CAT","GE","MMM","UPS","FDX","DE","AMT","NEE","DUK","SO"],
+  data:{labels:tickers,
   datasets:[{data:[1.2441,0.9353,1.7723,1.1655,0.7531,2.0296,2.0449,1.0079,1.2569,1.2372,0.5465,0.6594,0.7429,0.6816,0.4169,0.6537,0.7459,0.4343,1.3522,0.4848,1.1201,1.4152,1.391,1.3305,1.1693,1.302,1.1465,0.674,0.4415,1.407,0.5921,0.4068,0.545,0.6316,0.949,1.0239,0.7603,1.09,0.4986,0.9366,1.08,1.1534,1.3264,1.8069,1.5454,1.3886,1.6043,1.575,1.421,1.0972,1.0944,1.2239,0.9771,1.1071,1.3361,1.0991,0.5501,0.4731,0.374,0.4596],
   backgroundColor:["rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)"],
   borderWidth:0,borderRadius:2}]},
@@ -455,22 +456,29 @@ new Chart(document.getElementById('cs-is-chart'),{type:'scatter',
     pointRadius:5,pointHoverRadius:7},
     {data:sX.map((x,i)=>({'x':x,'y':sY[i]})),type:'line',borderColor:'#92400e',borderWidth:1.8,pointRadius:0,fill:false,borderDash:[5,3]}
   ]},
-  options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{label:c=>c.datasetIndex===0?`β=${c.parsed.x.toFixed(2)} r=${c.parsed.y.toFixed(3)}%`:null}}},
+  options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{
+    title:items=>items[0].datasetIndex===0?tickers[items[0].dataIndex]:'',
+    label:c=>c.datasetIndex===0?[`β: ${c.parsed.x.toFixed(2)}`,`IS 평균수익률: ${c.parsed.y.toFixed(3)}%`]:null
+  }}},
     scales:{x:{...base.scales.x,title:{display:true,text:'β',color:TC,font:{family:FONT,size:11}}},y:{...base.scales.y,title:{display:true,text:'IS 평균수익률 (%/월)',color:TC,font:{family:FONT,size:11}}}}}
 });
 
 const od=[{"x":1.5285,"y":2.2902,"name":"AAPL"},{"x":1.2306,"y":2.2022,"name":"MSFT"},{"x":2.038,"y":8.0769,"name":"NVDA"},{"x":1.4526,"y":5.3178,"name":"META"},{"x":1.0548,"y":2.1078,"name":"INTC"},{"x":2.2862,"y":4.474,"name":"AMD"},{"x":2.3009,"y":5.0104,"name":"TSLA"},{"x":1.3006,"y":3.2157,"name":"ORCL"},{"x":1.5408,"y":1.7768,"name":"QCOM"},{"x":1.5218,"y":0.5548,"name":"ADBE"},{"x":0.8555,"y":0.8139,"name":"JNJ"},{"x":0.9644,"y":-1.379,"name":"PFE"},{"x":1.0449,"y":-0.6649,"name":"UNH"},{"x":0.9858,"y":0.6862,"name":"ABT"},{"x":0.7305,"y":0.2845,"name":"MRK"},{"x":0.9589,"y":1.1044,"name":"AMGN"},{"x":1.0479,"y":1.0952,"name":"MDT"},{"x":0.7472,"y":-0.1685,"name":"BMY"},{"x":1.6328,"y":2.4796,"name":"ISRG"},{"x":0.7959,"y":1.4416,"name":"GILD"},{"x":1.4089,"y":2.8394,"name":"JPM"},{"x":1.6936,"y":1.8922,"name":"BAC"},{"x":1.6702,"y":3.1007,"name":"GS"},{"x":1.6118,"y":2.6476,"name":"MS"},{"x":1.4563,"y":2.7895,"name":"WFC"},{"x":1.5843,"y":1.5678,"name":"BLK"},{"x":1.4343,"y":2.9203,"name":"AXP"},{"x":0.9785,"y":1.5145,"name":"TRV"},{"x":0.7542,"y":1.9268,"name":"PGR"},{"x":1.6856,"y":3.2097,"name":"COF"},{"x":0.8995,"y":0.5835,"name":"KO"},{"x":0.7207,"y":0.1645,"name":"PG"},{"x":0.854,"y":2.6399,"name":"WMT"},{"x":0.9375,"y":0.6738,"name":"MCD"},{"x":1.2437,"y":0.635,"name":"HD"},{"x":1.316,"y":-0.5333,"name":"TGT"},{"x":1.0617,"y":2.0536,"name":"COST"},{"x":1.3798,"y":-1.1569,"name":"NKE"},{"x":0.8093,"y":0.3052,"name":"CL"},{"x":1.2318,"y":-1.4875,"name":"EL"},{"x":1.3702,"y":0.6763,"name":"XOM"},{"x":1.441,"y":0.094,"name":"CVX"},{"x":1.6079,"y":-0.1562,"name":"COP"},{"x":2.0714,"y":-0.3777,"name":"SLB"},{"x":1.8191,"y":-0.0306,"name":"EOG"},{"x":1.6678,"y":1.1917,"name":"PSX"},{"x":1.876,"y":1.304,"name":"VLO"},{"x":1.8476,"y":1.4682,"name":"MPC"},{"x":1.6991,"y":0.7905,"name":"BA"},{"x":1.3867,"y":0.1971,"name":"HON"},{"x":1.3841,"y":2.9896,"name":"CAT"},{"x":1.509,"y":5.3815,"name":"GE"},{"x":1.2709,"y":1.9575,"name":"MMM"},{"x":1.3963,"y":-0.8911,"name":"UPS"},{"x":1.6172,"y":1.9005,"name":"FDX"},{"x":1.3885,"y":0.5678,"name":"DE"},{"x":0.859,"y":0.0339,"name":"AMT"},{"x":0.7847,"y":0.3886,"name":"NEE"},{"x":0.6891,"y":0.7787,"name":"DUK"},{"x":0.7717,"y":0.9692,"name":"SO"}];
 const oc=["rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)"];
-const aO=-1.0276,de=1.8925;
+const aO=-1.0276,de=1.8925,deT=2.856;
 const pMn=Math.min(...od.map(d=>d.x))-0.05,pMx=Math.max(...od.map(d=>d.x))+0.05;
 new Chart(document.getElementById('oos-scatter'),{type:'scatter',
   data:{datasets:[
     {data:od.map(d=>({'x':d.x,'y':d.y})),backgroundColor:oc,pointRadius:5,pointHoverRadius:7},
-    {data:[{x:pMn,y:aO+de*pMn},{x:pMx,y:aO+de*pMx}],type:'line',borderColor:'#92400e',borderWidth:2,pointRadius:0,fill:false,label:`δ=${de.toFixed(3)}`},
+    {data:[{x:pMn,y:aO+de*pMn},{x:pMx,y:aO+de*pMx}],type:'line',borderColor:'#92400e',borderWidth:2,pointRadius:0,fill:false,label:`δ=${de.toFixed(3)} (IS 실증)`},
+    {data:[{x:pMn,y:aO+deT*pMn},{x:pMx,y:aO+deT*pMx}],type:'line',borderColor:'#5b8c5a',borderWidth:1.6,borderDash:[3,2],pointRadius:0,fill:false,label:`δ=${deT.toFixed(3)} (CAPM 이론)`},
     {data:[{x:pMn,y:aO+pMn},{x:pMx,y:aO+pMx}],type:'line',borderColor:'#a8a29e',borderWidth:1.3,borderDash:[6,3],pointRadius:0,fill:false,label:'δ=1 기준'}
   ]},
   options:{...base,
-    plugins:{legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},filter:it=>it.datasetIndex!==0}},tooltip:{callbacks:{label:c=>c.datasetIndex===0?`${od[c.dataIndex].name}: Pred=${c.parsed.x.toFixed(3)}% Actual=${c.parsed.y.toFixed(3)}%`:null}}},
+    plugins:{legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},filter:it=>it.datasetIndex!==0}},tooltip:{callbacks:{
+      title:items=>items[0].datasetIndex===0?od[items[0].dataIndex].name:'',
+      label:c=>c.datasetIndex===0?[`Pred: ${c.parsed.x.toFixed(3)}%`,`Actual: ${c.parsed.y.toFixed(3)}%`]:null
+    }}},
     scales:{x:{...base.scales.x},y:{...base.scales.y}}}
 });
 
