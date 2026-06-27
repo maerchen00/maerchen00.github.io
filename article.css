@@ -138,15 +138,16 @@ h1 {
 }
 .side-rail .viz-wrap { margin: 0; }
 
-.side-table-wrap { max-height: 480px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-dim) transparent; }
+.side-table-wrap { max-height: 480px; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--ink-dim) transparent; padding-right: 0.5rem; }
 .side-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: var(--sans); font-size: 0.7rem; }
 .side-table th {
   position: sticky; top: 0; background: var(--bg-card);
-  padding: 0.4rem 0.15rem; text-align: center; color: var(--ink-muted);
+  padding: 0.4rem 0.2rem; text-align: center; color: var(--ink-muted);
   font-weight: 500; border-bottom: 1px solid var(--rule);
 }
-.side-table td { padding: 0.32rem 0.15rem; text-align: center; border-bottom: 0.5px solid var(--rule); color: var(--ink-muted); }
-.side-table td:first-child, .side-table th:first-child { text-align: left; }
+.side-table td { padding: 0.32rem 0.2rem; text-align: center; border-bottom: 0.5px solid var(--rule); color: var(--ink-muted); }
+.side-table td:first-child, .side-table th:first-child { text-align: left; padding-left: 0.15rem; }
+.side-table td:last-child, .side-table th:last-child { padding-right: 0.4rem; }
 .side-table td:not(:first-child) { font-weight: 600; }
 .side-table tr:hover td { background: var(--bg-hover); }
 .side-table td.pos { color: #2e7d4f; }
