@@ -147,6 +147,7 @@ h1 {
 }
 .side-table td { padding: 0.32rem 0.15rem; text-align: center; border-bottom: 0.5px solid var(--rule); color: var(--ink-muted); }
 .side-table td:first-child, .side-table th:first-child { text-align: left; }
+.side-table td:not(:first-child) { font-weight: 600; }
 .side-table tr:hover td { background: var(--bg-hover); }
 .side-table td.pos { color: #2e7d4f; }
 .side-table td.neg { color: #c0392b; }
