@@ -164,7 +164,7 @@ h1 {
 
 /* ── 본문 타이포 ── */
 article { max-width: 780px; flex: 1 1 480px; min-width: 0; order: 1; }
-p { margin-bottom: 1rem; word-break: keep-all; text-align: justify; text-justify: inter-word; }
+p { margin-bottom: 1rem; word-break: keep-all; }
 h2 {
   font-family: var(--serif); font-size: 1.2rem; font-weight: 600;
   margin: 2.5rem 0 0.8rem; padding-bottom: 0.3rem;
