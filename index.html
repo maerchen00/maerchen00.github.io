@@ -17,29 +17,32 @@
   </header>
 
   <aside>
-    <ul class="tree" id="nav-tree">
+    <div class="tree-wrap">
+      <div class="t-active-bar" id="t-active-bar"></div>
+      <ul class="tree" id="nav-tree">
 
-      <li>
-        <div class="t-node active" data-depth="0">
-          <span class="t-label" data-action="filter" data-filter="all">모두 보기</span>
-        </div>
-      </li>
+        <li>
+          <div class="t-node active" data-depth="0">
+            <span class="t-label" data-action="filter" data-filter="all">모두 보기</span>
+          </div>
+        </li>
 
-      <li><div class="t-divider"></div></li>
+        <li><div class="t-divider"></div></li>
 
-      <li>
-        <div class="t-node" data-depth="1">
-          <span class="t-label" data-action="filter" data-filter="Economics">Economics</span>
-        </div>
-      </li>
+        <li>
+          <div class="t-node" data-depth="1">
+            <span class="t-label" data-action="filter" data-filter="Economics">Economics</span>
+          </div>
+        </li>
 
-      <li>
-        <div class="t-node" data-depth="1">
-          <span class="t-label" data-action="filter" data-filter="Finance">Finance</span>
-        </div>
-      </li>
+        <li>
+          <div class="t-node" data-depth="1">
+            <span class="t-label" data-action="filter" data-filter="Finance">Finance</span>
+          </div>
+        </li>
 
-    </ul>
+      </ul>
+    </div>
   </aside>
 
   <main>
@@ -75,8 +78,15 @@
 <script>
   const posts = document.querySelectorAll('.post-item');
   const tree  = document.getElementById('nav-tree');
+  const postList = document.getElementById('post-list');
 
-  posts.forEach(p => { p.dataset.fullHeight = p.scrollHeight + 'px'; p.style.maxHeight = p.dataset.fullHeight; });
+  let totalHeight = 0;
+  posts.forEach(p => {
+    p.dataset.fullHeight = p.scrollHeight + 'px';
+    p.style.maxHeight = p.dataset.fullHeight;
+    totalHeight += p.scrollHeight;
+  });
+  postList.style.minHeight = totalHeight + 'px';
 
   document.querySelectorAll('.t-sub.open').forEach(sub => {
     sub.style.maxHeight = sub.scrollHeight + 'px';
@@ -93,11 +103,20 @@
 
   let currentFilter = 'all';
 
+  const activeBar = document.getElementById('t-active-bar');
+  function moveActiveBar(node) {
+    if (!activeBar || !node) return;
+    activeBar.style.top = node.offsetTop + 'px';
+    activeBar.style.height = node.offsetHeight + 'px';
+  }
+  moveActiveBar(document.querySelector('.t-node.active'));
+
   function applyFilter(tag) {
     currentFilter = tag;
     document.querySelectorAll('.t-label').forEach(l => l.closest('.t-node').classList.remove('active'));
     const node = document.querySelector(`.t-label[data-filter="${tag}"]`);
     if (node) node.closest('.t-node').classList.add('active');
+    moveActiveBar(node ? node.closest('.t-node') : null);
     // 숨는 카드와 나타나는 카드를 같은 프레임에서 동시에 움직인다 — 따로
     // 시차를 두면 "접혔다가 잠시 후 펼쳐지는" 순차적인 느낌이 들기 때문.
     //

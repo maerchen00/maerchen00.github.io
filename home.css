@@ -54,7 +54,18 @@ aside {
 }
 
 /* ── 트리 ── */
+.tree-wrap { position: relative; }
 .tree, .tree ul { list-style: none; padding: 0; margin: 0; }
+
+/* 활성 표시를 항목마다 켜고 끄는 대신, 하나의 바가 위치만 옮겨가며
+   부드럽게 슬라이드하게 한다 — 전환 시 다른 자리에서 따로 점멸하는
+   느낌을 없애기 위함. */
+.t-active-bar {
+  position: absolute; left: 0; width: 2px;
+  background: var(--accent);
+  transition: top 0.3s cubic-bezier(0.4,0,0.2,1), height 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
 
 .t-node {
   display: flex;
@@ -63,16 +74,15 @@ aside {
   width: 100%;
   background: none;
   border: none;
-  border-left: 2px solid transparent;
   cursor: pointer;
   text-align: left;
   color: var(--ink-muted);
   font-family: var(--sans);
-  transition: color 0.13s, border-color 0.13s, background 0.13s;
+  transition: color 0.13s, background 0.13s;
   user-select: none;
 }
 .t-node:hover { color: var(--ink); }
-.t-node.active { color: var(--accent); border-left-color: var(--accent); }
+.t-node.active { color: var(--accent); }
 
 .t-node[data-depth="0"] { padding: 0.32rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
 .t-node[data-depth="1"] { padding: 0.28rem 1.2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
@@ -100,6 +110,9 @@ aside {
 /* ── 글 목록 ── */
 main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 
+/* min-height는 JS가 "모두 보기" 기준 전체 높이로 채워준다 — 필터링으로
+   리스트가 줄어들 때 페이지 전체 높이가 출렁이며 스크롤바가 깜빡이는
+   현상을 막기 위함. */
 .post-list { display: flex; flex-direction: column; border-top: 0.5px solid var(--rule); }
 
 .post-item {
@@ -108,7 +121,11 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   padding: 1.6rem 0;
   display: flex; flex-direction: column; gap: 0.45rem;
   cursor: pointer;
-  transition: max-height 0.18s ease, padding 0.18s ease, border-color 0.18s ease;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.4s cubic-bezier(0.4,0,0.2,1),
+    border-color 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease, transform 0.4s cubic-bezier(0.4,0,0.2,1);
 }
 .post-item::before {
   content: '';
@@ -125,7 +142,8 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   padding-top: 0;
   padding-bottom: 0;
   border-bottom-color: transparent;
-  overflow: hidden;
+  opacity: 0;
+  transform: translateY(8px);
   pointer-events: none;
 }
 
@@ -138,7 +156,7 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   /* 이미 보이는 카드의 색이 바뀔 때는 항상 이 속도로 부드럽게 페이드된다.
      숨김->등장처럼 모양이 같이 바뀌는 경우엔 JS에서 이 트랜지션을
      일시적으로 꺼서 색이 먼저 자리잡은 채로 등장하게 만든다. */
-  transition: background 0.18s ease, color 0.18s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 .post-tag:hover { background: var(--accent); color: #fff; text-decoration: none; }
 .post-tag.active {

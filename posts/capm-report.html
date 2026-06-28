@@ -129,6 +129,33 @@
 
 <p>\(\beta\) 추정이 끝나면 세 SML을 도출할 수 있다. CAPM SML(\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\))은 이론값을 그대로 대입하면 되고, IS 실증 SML은 \(\beta\)를 설명변수로 한 횡단면 회귀로 추정한다. OS 실제 SML은 OS 기간 데이터로 사후적으로 관찰한 것으로 예측에 사용하지 않는다.</p>
 
+<h3 id="sec-cs-is">IS SML 추정 — 횡단면 회귀</h3>
+
+<div class="disp-eq">\[ E(R_i)_{\mathrm{IS}} = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}} + u_i \]</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">\(\gamma_{0,\mathrm{IS}}\)</div><div class="kpi-val">0.328%</div><div class="kpi-sub">이론 \(R_{\mathrm{f}}\) = 0.110%</div></div>
+  <div class="kpi"><div class="kpi-label">\(\gamma_{1,\mathrm{IS}}\)</div><div class="kpi-val">0.965%</div><div class="kpi-sub">이론 ERP = 0.639%</div></div>
+  <div class="kpi"><div class="kpi-label">\(R^2_{\mathrm{IS}}\)</div><div class="kpi-val">0.185</div><div class="kpi-sub">F = 13.21, p = 0.0006</div></div>
+  <div class="kpi"><div class="kpi-label">\(\gamma_1\) / ERP</div><div class="kpi-val">151%</div><div class="kpi-sub">이론 대비 β 프리미엄 확대</div></div>
+</div>
+
+<p>\(\gamma_{1,\mathrm{IS}} = 0.965\%\)로 이론 ERP(0.639%)의 151% 수준이며 유의하다(p = 0.0006). IS 기간(2018–2022)에 실현된 \(\beta\) 프리미엄이 CAPM의 이론 예측보다 높았다는 의미다. 코로나 이후 회복장(2020–2021)에서 고베타 종목이 저베타를 크게 상회하며 기울기를 끌어올린 것이 주된 원인으로 보인다.</p>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 2 — IS SML: \(\beta\) vs IS 평균수익률 (횡단면 회귀)</p>
+  <canvas id="cs-is-chart" height="250"></canvas>
+  <div class="legend-row" style="margin-top:.6rem;">
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>Tech</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(91,140,90,0.85)"></span>Health</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(139,26,26,0.85)"></span>Finance</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(138,107,44,0.85)"></span>Consumer</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(196,144,122,0.85)"></span>Energy</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(122,75,140,0.85)"></span>Indust</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(128,96,80,0.85)"></span>Util</div>
+  </div>
+</div>
+
 <div class="compare-grid">
   <div class="compare-card">
     <div class="cc-label" style="color:var(--ink-muted);">CAPM SML</div>
@@ -151,44 +178,17 @@
 
 <p>절편은 반대 방향이다. IS 추정 \(\gamma_0\)(0.328%)가 이론 \(R_{\mathrm{f}}\)(0.110%)보다 높고, OS에서는 음수(−0.157%)로 떨어진다. \(\beta=0\)인 자산의 수익률이 무위험수익률과 일치하지 않는다는 이 현상은 CAPM의 잘 알려진 경험적 한계이다.<sup>1</sup></p>
 
-<h3 id="sec-cs-is">IS SML 추정 — 횡단면 회귀</h3>
 
-<div class="disp-eq">\[ E(R_i)_{\mathrm{IS}} = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}} + u_i \]</div>
-
-<div class="kpi-grid">
-  <div class="kpi"><div class="kpi-label">\(\gamma_{0,\mathrm{IS}}\)</div><div class="kpi-val">0.328%</div><div class="kpi-sub">이론 \(R_{\mathrm{f}}\) = 0.110%</div></div>
-  <div class="kpi"><div class="kpi-label">\(\gamma_{1,\mathrm{IS}}\)</div><div class="kpi-val">0.965%</div><div class="kpi-sub">이론 ERP = 0.639%</div></div>
-  <div class="kpi"><div class="kpi-label">\(R^2_{\mathrm{IS}}\)</div><div class="kpi-val">0.185</div><div class="kpi-sub">F = 13.21, p = 0.0006</div></div>
-  <div class="kpi"><div class="kpi-label">\(\gamma_1\) / ERP</div><div class="kpi-val">151%</div><div class="kpi-sub">이론 대비 β 프리미엄 확대</div></div>
-</div>
-
-<p>\(\gamma_{1,\mathrm{IS}} = 0.965\%\)로 이론 ERP(0.639%)의 151% 수준이며 유의하다(p = 0.0006). IS 기간(2018–2022)에 실현된 \(\beta\) 프리미엄이 CAPM의 이론 예측보다 높았다는 의미다. 코로나 이후 회복장(2020–2021)에서 고베타 종목이 저베타를 크게 상회하며 기울기를 끌어올린 것이 주된 원인으로 보인다. 이로부터 OS 예측값을 생성한다.</p>
-
-<div class="disp-eq">\[ \mathrm{Pred}_i = 0.3283\% + 0.9647\%\cdot\beta_{i,\mathrm{IS}} \]</div>
-
-<div class="viz-wrap">
-  <p class="viz-title">Fig. 2 — IS SML: \(\beta\) vs IS 평균수익률 (횡단면 회귀)</p>
-  <canvas id="cs-is-chart" height="250"></canvas>
-  <div class="legend-row" style="margin-top:.6rem;">
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>Tech</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(91,140,90,0.85)"></span>Health</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(139,26,26,0.85)"></span>Finance</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(138,107,44,0.85)"></span>Consumer</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(196,144,122,0.85)"></span>Energy</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(122,75,140,0.85)"></span>Indust</div>
-    <div class="legend-item"><span class="legend-dot" style="background:rgba(128,96,80,0.85)"></span>Util</div>
-  </div>
-</div>
 
 <div class="divider">· · ·</div>
 
 <h2 id="sec-os">4. CAPM SML의 OS 설명력 검정</h2>
 
-<p>CAPM SML(\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\))이 OS 실제 수익률을 설명하는지 검정한다. IS 실증 SML(\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta\))이 규모 예측을 개선하는지도 함께 확인한다.</p>
+<p>CAPM SML(\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\))이 OS 실제 수익률을 설명하는지 검정한다. 아울러 IS 실증 SML(\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta\))이 규모 예측을 개선하는지도 함께 확인한다.</p>
 
 <div class="disp-eq">
 \[ \mathrm{Actual}_{i,\mathrm{OS}} = \alpha + \delta\cdot \mathrm{Pred}_i + u_i \]
-<span style="font-size:0.8em;color:var(--ink-muted);">\[ H_0: \delta = 0, \quad H_1: \delta > 0 \]</span>
+<span style="display:block;margin-top:0.6rem;font-size:0.8em;color:var(--ink-muted);">\[ H_0: \delta = 0, \quad H_1: \delta > 0 \]</span>
 </div>
 
 <h3 id="sec-hetero">이분산성 검정 및 강건 표준오차</h3>
@@ -221,7 +221,11 @@
   <p class="table-source">R²·Corr 동일(둘 다 β의 선형함수) / δ와 RMSE에서 차이</p>
 </div>
 
-<p><strong>CAPM SML은 OS 수익률을 유의하게 설명한다</strong>(\(\delta\) = 2.856, p = 0.0017). 그러나 \(\delta \gg 1\)로 규모를 크게 과소추정한다. IS 횡단면 회귀를 거치면 \(\delta\)가 1.892로 줄고 RMSE도 1.804% → 1.633%로 감소한다.</p>
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 3 — OOS 설명력 검정: \(\mathrm{Pred}_i\) vs \(\mathrm{Actual}_{i,\mathrm{OS}}\)</p>
+  <canvas id="oos-scatter" height="290"></canvas>
+  <p class="table-source" style="margin-top:.4rem;">실선: IS 실증 \(\delta\)=1.892 &nbsp;/&nbsp; 1점쇄선: CAPM 이론 \(\delta\)=2.856 (HC3 p=0.0017) &nbsp;/&nbsp; 점선: \(\delta\)=1 완벽예측 기준</p>
+</div>
 
 <div class="kpi-grid">
   <div class="kpi"><div class="kpi-label">\(\delta\) — 이론 SML</div><div class="kpi-val">2.856</div><div class="kpi-sub">t(HC3) = 3.058 / p = 0.0017</div></div>
@@ -230,19 +234,15 @@
   <div class="kpi"><div class="kpi-label">RMSE 비교</div><div class="kpi-val">1.804%</div><div class="kpi-sub">→ IS 실증 1.633%</div></div>
 </div>
 
-<div class="viz-wrap">
-  <p class="viz-title">Fig. 3 — OOS 설명력 검정: \(\mathrm{Pred}_i\) vs \(\mathrm{Actual}_{i,\mathrm{OS}}\)</p>
-  <canvas id="oos-scatter" height="290"></canvas>
-  <p class="table-source" style="margin-top:.4rem;">실선: IS 실증 \(\delta\)=1.892 &nbsp;/&nbsp; 1점쇄선: CAPM 이론 \(\delta\)=2.856 (HC3 p=0.0017) &nbsp;/&nbsp; 점선: \(\delta\)=1 완벽예측 기준</p>
-</div>
-
-<p>HC3 기준 p(단측) = 0.0017로 \(H_0\)를 기각한다. <strong>CAPM SML은 OS 실제 수익률을 통계적으로 유의하게 설명한다.</strong> 다만 \(\delta = 2.856 \gg 1\)로 규모 과소추정이 두드러지며, \(R^2 = 0.189\)로 설명력은 제한적이다.</p>
+<p>HC3 기준 p(단측) = 0.0017로 \(H_0\)를 기각한다. <strong>CAPM SML은 OS 실제 수익률을 통계적으로 유의하게 설명한다.</strong> 다만 \(\delta = 2.856 \gg 1\)로 규모 과소추정이 두드러지며, \(R^2 = 0.189\)로 설명력은 제한적이다. IS 횡단면 회귀를 거치면 \(\delta\)가 1.892로 줄고 RMSE도 1.804% → 1.633%로 감소한다.</p>
 
 <p>잔차 기준 CAPM SML을 크게 상회한 종목은 NVDA(+6.64%), GE(+4.46%), META(+4.46%), TSLA(+3.60%) 등 테크·산업재이며, PFE(−2.34%), EL(−2.72%), NKE(−2.54%) 등은 하회하였다. IS 기간에 포착되지 않은 AI 수요 급증이 테크 상회의 주된 요인이고, 헬스케어·소비재 부진은 금리 상승과 소비 둔화가 복합적으로 작용한 결과로 해석된다.</p>
 
 <h3 id="sec-slope-test">SML 기울기 동일성 검정</h3>
+<p>IS 실증 SML과 OS 실제 SML의 기울기가 같은지를 Wald 검정으로 확인한다.</p>
 <div class="disp-eq">
 \[ t = \dfrac{\gamma_{1,\mathrm{OS}} - \gamma_{1,\mathrm{IS}}}{\sqrt{\mathrm{SE}_{\mathrm{IS}}^2 + \mathrm{SE}_{\mathrm{OS}}^2}} = 1.734 \]
+<span style="display:block;margin-top:0.6rem;font-size:0.8em;color:var(--ink-muted);">\[ H_0: \gamma_{1,\mathrm{IS}} = \gamma_{1,\mathrm{OS}}, \quad H_1: \gamma_{1,\mathrm{IS}} \neq \gamma_{1,\mathrm{OS}} \]</span>
 </div>
 <p>5% 수준에서 \(H_0\)를 기각하지 못한다. 다만 기울기 차이(0.735%p)와 p = 0.086이라는 10% 경계선, 그리고 n=60의 표본 제약을 감안하면 검정력 부족 가능성을 배제할 수 없다.</p>
 
@@ -448,18 +448,23 @@ new Chart(document.getElementById('beta-hist'),{type:'bar',
 });
 
 const g0=0.3283,g1=0.9647;
-const sX=[0.2,2.2],sY=sX.map(x=>g0+g1*x);
+const rf=0.110,erp=0.639;
+const sX=[0.2,2.2],sY=sX.map(x=>g0+g1*x),cY=sX.map(x=>rf+erp*x);
 new Chart(document.getElementById('cs-is-chart'),{type:'scatter',
   data:{datasets:[
     {data:[{"x":1.2441,"y":2.3961},{"x":0.9353,"y":2.0237},{"x":1.7723,"y":2.9116},{"x":1.1655,"y":0.0065},{"x":0.7531,"y":-0.3661},{"x":2.0296,"y":4.5906},{"x":2.0449,"y":5.0292},{"x":1.0079,"y":1.3256},{"x":1.2569,"y":1.828},{"x":1.2372,"y":1.5022},{"x":0.5465,"y":0.7423},{"x":0.6594,"y":1.2394},{"x":0.7429,"y":1.8078},{"x":0.6816,"y":1.3972},{"x":0.4169,"y":1.6656},{"x":0.6537,"y":1.1746},{"x":0.7459,"y":0.3056},{"x":0.4343,"y":0.7472},{"x":1.3522,"y":1.7686},{"x":0.4848,"y":0.9108},{"x":1.1201,"y":0.9369},{"x":1.4152,"y":0.7969},{"x":1.391,"y":1.0909},{"x":1.3305,"y":1.4429},{"x":1.1693,"y":0.0463},{"x":1.302,"y":1.1031},{"x":1.1465,"y":1.1324},{"x":0.674,"y":0.9399},{"x":0.4415,"y":1.8701},{"x":1.407,"y":0.6055},{"x":0.5921,"y":0.9717},{"x":0.4068,"y":1.1918},{"x":0.545,"y":0.9294},{"x":0.6316,"y":1.063},{"x":0.949,"y":1.3031},{"x":1.0239,"y":2.0609},{"x":0.7603,"y":1.8221},{"x":1.09,"y":1.4835},{"x":0.4986,"y":0.3952},{"x":0.9366,"y":1.513},{"x":1.08,"y":1.3922},{"x":1.1534,"y":1.3999},{"x":1.3264,"y":2.3519},{"x":1.8069,"y":1.0639},{"x":1.5454,"y":1.5801},{"x":1.3886,"y":1.109},{"x":1.6043,"y":1.9004},{"x":1.575,"y":2.2623},{"x":1.421,"y":0.2928},{"x":1.0972,"y":1.0516},{"x":1.0944,"y":1.3125},{"x":1.2239,"y":0.0511},{"x":0.9771,"y":-0.6049},{"x":1.1071,"y":1.3224},{"x":1.3361,"y":0.0925},{"x":1.0991,"y":2.2083},{"x":0.5501,"y":1.0275},{"x":0.4731,"y":1.6491},{"x":0.374,"y":0.8335},{"x":0.4596,"y":1.2061}],
     backgroundColor:["rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(44,95,138,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(91,140,90,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(139,26,26,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(138,107,44,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(196,144,122,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(122,75,140,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)","rgba(128,96,80,0.82)"],
     pointRadius:5,pointHoverRadius:7},
-    {data:sX.map((x,i)=>({'x':x,'y':sY[i]})),type:'line',borderColor:'#92400e',borderWidth:1.8,pointRadius:0,fill:false,borderDash:[5,3]}
+    {data:sX.map((x,i)=>({'x':x,'y':sY[i]})),type:'line',borderColor:'#92400e',borderWidth:1.8,pointRadius:0,fill:false,borderDash:[5,3],label:'IS 실증 SML'},
+    {data:sX.map((x,i)=>({'x':x,'y':cY[i]})),type:'line',borderColor:'#5b8c5a',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[8,4],label:'CAPM SML'}
   ]},
-  options:{...base,interaction:{mode:'point',intersect:true},plugins:{...base.plugins,tooltip:{callbacks:{
-    title:()=>'',
-    label:c=>c.datasetIndex===0?[tickers[c.dataIndex],`β: ${c.parsed.x.toFixed(2)}`,`IS 평균수익률: ${c.parsed.y.toFixed(3)}%`]:null
-  }}},
+  options:{...base,interaction:{mode:'point',intersect:true},
+    plugins:{...base.plugins,
+      legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},filter:it=>it.datasetIndex!==0}},
+      tooltip:{callbacks:{
+        title:()=>'',
+        label:c=>c.datasetIndex===0?[tickers[c.dataIndex],`β: ${c.parsed.x.toFixed(2)}`,`IS 평균수익률: ${c.parsed.y.toFixed(3)}%`]:null
+      }}},
     scales:{x:{...base.scales.x,title:{display:true,text:'β',color:TC,font:{family:FONT,size:11}}},y:{...base.scales.y,title:{display:true,text:'IS 평균수익률 (%/월)',color:TC,font:{family:FONT,size:11}}}}}
 });
 
