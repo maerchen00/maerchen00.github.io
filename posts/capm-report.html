@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CAPM SML의 Out-of-Sample 설명력 실증검정</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="../common.css"/>
-  <link rel="stylesheet" href="../article.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CAPM SML의 Out-of-Sample 설명력 실증검정</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../common.css"/>
+<link rel="stylesheet" href="../article.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>.compare-card .cc-eq { font-size: 0.88rem; }</style>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -43,11 +44,9 @@
     <a class="toc-item sub" href="#sec-dw">자기상관 검정</a>
     <a class="toc-item sub" href="#sec-alpha">\(\alpha\) 검정</a>
     <a class="toc-item" href="#sec-sml">3. 세 SML 비교</a>
-    <a class="toc-item sub" href="#sec-cs-is">IS SML 추정</a>
-    <a class="toc-item" href="#sec-os">4. OS 설명력 검정</a>
-    <a class="toc-item sub" href="#sec-hetero">이분산성 검정</a>
-    <a class="toc-item sub" href="#sec-sml-test">CAPM·IS SML 비교</a>
-    <a class="toc-item sub" href="#sec-slope-test">SML 기울기 동일성</a>
+        <a class="toc-item" href="#sec-os">4. OS 설명력 검정</a>
+    <a class="toc-item sub" href="#sec-hetero">CAPM SML 검정 및 IS 실증 SML 비교</a>
+    <a class="toc-item sub" href="#sec-slope-test">IS·OS 구조 동일성</a>
     <a class="toc-item" href="#sec-quint">5. 퀸타일 포트폴리오</a>
     <a class="toc-item" href="#sec-port">6. 전략 비교</a>
     <a class="toc-item" href="#sec-conc">7. 결론</a>
@@ -69,7 +68,7 @@
 
 <p>자본자산가격결정모형(Capital Asset Pricing Model, CAPM)은 체계적 위험(\(\beta\))과 기대수익률 사이의 선형 관계를 예측한다. 이 관계는 증권시장선(Security Market Line, SML)으로 표현되는데, CAPM이 성립한다면 SML의 절편은 무위험수익률(\(R_{\mathrm{f}}\))과, 기울기는 시장위험프리미엄(Equity Risk Premium, \(\mathrm{ERP} = R_{\mathrm{m}} - R_{\mathrm{f}}\))과 일치해야 한다.</p>
 
-<p>그러나 이론이 현실에서 작동하는지는 별개의 문제다. CAPM이 예측하는 SML, 즉 \(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\)라는 관계식이 실제 미래 수익률을 설명할 수 있는가? 본 글은 추정 구간(In-Sample, IS)과 검증 구간(Out-of-Sample, OS)으로 구분한 실증 검정을 통해 이를 검토해보고자 한다. 아울러 IS 실증 SML이 이론 대비 규모 예측을 개선하는지도 함께 살펴본다.</p>
+<p>그러나 이론이 현실에서 작동하는지는 별개의 문제다. CAPM이 예측하는 SML, 즉 \(R_{\mathrm{f}} + \beta_{i,\mathrm{IS}}\cdot\mathrm{ERP}\)라는 관계식이 실제 미래 수익률을 설명할 수 있는가? 본 글은 추정 구간(In-Sample, IS)과 검증 구간(Out-of-Sample, OS)으로 구분한 실증 검정을 통해 이를 검토해보고자 한다. 아울러 IS 실증 SML이 이론 대비 규모 예측을 개선하는지도 함께 살펴본다.</p>
 
 <p>분석 대상은 S&amp;P500 구성 종목 중 7개 섹터 60개 종목이다. IS 기간(2018.01–2022.12)에서 \(\beta\)와 SML을 추정하고, OS 기간(2023.01–2025.12)의 실제 수익률과 대조한다. OS 정보는 검증에만 쓰며 예측에 사용하지 않는다.</p>
 
@@ -127,9 +126,7 @@
 
 <h2 id="sec-sml">3. 세 SML 비교 — CAPM, IS 실증, OS 실제</h2>
 
-<p>\(\beta\) 추정이 끝나면 세 SML을 도출할 수 있다. CAPM SML(\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\))은 이론값을 그대로 대입하면 되고, IS 실증 SML은 \(\beta\)를 설명변수로 한 횡단면 회귀로 추정한다. OS 실제 SML은 OS 기간 데이터로 사후적으로 관찰한 것으로 예측에 사용하지 않는다.</p>
-
-<h3 id="sec-cs-is">IS SML 추정 — 횡단면 회귀</h3>
+<p>\(\beta\) 추정이 끝나면 세 SML을 도출할 수 있다. CAPM SML(\(R_{\mathrm{f}} + \beta_{i,\mathrm{IS}}\cdot\mathrm{ERP}\))은 이론값을 그대로 대입하면 되고, IS 실증 SML은 \(\beta\)를 설명변수로 한 횡단면 회귀로 추정한다. OS 실제 SML은 OS 기간 데이터로 사후적으로 관찰한 것으로 예측에 사용하지 않는다.</p>
 
 <div class="disp-eq">\[ E(R_i)_{\mathrm{IS}} = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}} + u_i \]</div>
 
@@ -159,22 +156,22 @@
 <div class="compare-grid">
   <div class="compare-card">
     <div class="cc-label" style="color:var(--ink-muted);">CAPM SML</div>
-    <div class="cc-eq">\(E(R_i) = R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\)</div>
+    <div class="cc-eq">\(E(R_i) = R_{\mathrm{f}} + \beta_{i,\mathrm{IS}}\cdot\mathrm{ERP}\)</div>
     <div class="cc-sub">절편 = \(R_{\mathrm{f}}\) = 0.110%<br>기울기 = ERP = 0.639%<br>CAPM이 예측하는 기댓값</div>
   </div>
   <div class="compare-card">
     <div class="cc-label" style="color:#2c5f8a;">IS 실증 SML</div>
-    <div class="cc-eq">\(E(R_i) = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta\)</div>
+    <div class="cc-eq">\(E(R_i) = \gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}}\)</div>
     <div class="cc-sub">절편 = 0.328% (이론의 299%)<br>기울기 = 0.965% (이론의 151%)<br>IS 횡단면 회귀로 추정</div>
   </div>
   <div class="compare-card">
     <div class="cc-label" style="color:#5b8c5a;">OS 실제 SML</div>
-    <div class="cc-eq">\(E(R_i) = \gamma_{0,\mathrm{OS}} + \gamma_{1,\mathrm{OS}}\cdot\beta\)</div>
+    <div class="cc-eq">\(E(R_i) = \gamma_{0,\mathrm{OS}} + \gamma_{1,\mathrm{OS}}\cdot\beta_{i,\mathrm{OS}}\)</div>
     <div class="cc-sub">절편 = -0.157%<br>기울기 = 1.699% (이론의 266%)<br>OS에서 관찰 (보조)</div>
   </div>
 </div>
 
-<p>세 SML을 비교하면 일관된 방향이 나타난다. <strong>기울기가 이론 → IS → OS 순으로 계속 가팔라진다.</strong> 이론 ERP(0.639%)에서 IS 실증값(0.965%)으로, 다시 OS 실제값(1.699%)으로 확대된다. \(\beta\)가 높을수록 실현 수익률이 이론 예측보다 더 높았다는 의미다. 2023–2025년 AI 수요 급증으로 고베타 테크 종목의 초과수익이 두드러졌던 OS 구간의 특성이 반영된 결과로 해석된다.</p>
+<p>이 추정값을 CAPM SML, OS 실제 SML과 나란히 놓으면 세 SML의 차이가 드러나는데, <strong>기울기가 이론 → IS → OS 순으로 계속 가팔라진다.</strong> 이론 ERP(0.639%)에서 IS 실증값(0.965%)으로, 다시 OS 실제값(1.699%)으로 확대된다. \(\beta\)가 높을수록 실현 수익률이 이론 예측보다 더 높았다는 의미다. 2023–2025년 AI 수요 급증으로 고베타 테크 종목의 초과수익이 두드러졌던 OS 구간의 특성이 반영된 결과로 해석된다.</p>
 
 <p>절편은 반대 방향이다. IS 추정 \(\gamma_0\)(0.328%)가 이론 \(R_{\mathrm{f}}\)(0.110%)보다 높고, OS에서는 음수(−0.157%)로 떨어진다. \(\beta=0\)인 자산의 수익률이 무위험수익률과 일치하지 않는다는 이 현상은 CAPM의 잘 알려진 경험적 한계이다.<sup>1</sup></p>
 
@@ -184,14 +181,14 @@
 
 <h2 id="sec-os">4. CAPM SML의 OS 설명력 검정</h2>
 
-<p>CAPM SML(\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\))이 OS 실제 수익률을 설명하는지 검정한다. 아울러 IS 실증 SML(\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta\))이 규모 예측을 개선하는지도 함께 확인한다.</p>
+<p>CAPM SML(\(R_{\mathrm{f}} + \beta_{i,\mathrm{IS}}\cdot\mathrm{ERP}\))이 OS 실제 수익률을 설명하는지 검정한다. 아울러 IS 실증 SML(\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}}\))이 규모 예측을 개선하는지도 함께 확인한다.</p>
 
 <div class="disp-eq">
 \[ \mathrm{Actual}_{i,\mathrm{OS}} = \alpha + \delta\cdot \mathrm{Pred}_i + u_i \]
 <span style="display:block;margin-top:0.6rem;font-size:0.8em;color:var(--ink-muted);">\[ H_0: \delta = 0, \quad H_1: \delta > 0 \]</span>
 </div>
 
-<h3 id="sec-hetero">이분산성 검정 및 강건 표준오차</h3>
+<h3 id="sec-hetero">CAPM SML 검정 및 IS 실증 SML 비교</h3>
 <p>Breusch-Pagan 검정(LM = 7.413, p = 0.0065)과 White 검정(LM = 7.595, p = 0.0224) 모두 5% 수준에서 이분산을 확인한다. White HC3 표준오차를 적용한다.</p>
 
 <div class="table-wrap">
@@ -206,16 +203,14 @@
   </table>
 </div>
 
-<h3 id="sec-sml-test">CAPM SML 검정 및 IS 실증 SML 비교</h3>
-
 <div class="table-wrap">
   <p class="table-num">표 3</p>
   <p class="table-caption">CAPM SML과 IS 실증 SML의 OS 설명력 비교 (HC3 기준)</p>
   <table>
     <thead><tr><th>예측 모형</th><th>예측식</th><th>δ</th><th>R²</th><th>RMSE</th><th>p (HC3, 단측)</th></tr></thead>
     <tbody>
-      <tr><td>CAPM SML</td><td>\(R_{\mathrm{f}} + \beta\cdot\mathrm{ERP}\)</td><td>2.856</td><td>0.189</td><td>1.804%</td><td>0.0017</td></tr>
-      <tr class="hl"><td><strong>IS 실증 SML</strong></td><td><strong>\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta\)</strong></td><td><strong>1.892</strong></td><td>0.189</td><td><strong>1.633%</strong></td><td>0.0017</td></tr>
+      <tr><td>CAPM SML</td><td>\(R_{\mathrm{f}} + \beta_{i,\mathrm{IS}}\cdot\mathrm{ERP}\)</td><td>2.856</td><td>0.189</td><td>1.804%</td><td>0.0017</td></tr>
+      <tr class="hl"><td><strong>IS 실증 SML</strong></td><td><strong>\(\gamma_{0,\mathrm{IS}} + \gamma_{1,\mathrm{IS}}\cdot\beta_{i,\mathrm{IS}}\)</strong></td><td><strong>1.892</strong></td><td>0.189</td><td><strong>1.633%</strong></td><td>0.0017</td></tr>
     </tbody>
   </table>
   <p class="table-source">R²·Corr 동일(둘 다 β의 선형함수) / δ와 RMSE에서 차이</p>
@@ -238,13 +233,25 @@
 
 <p>잔차 기준 CAPM SML을 크게 상회한 종목은 NVDA(+6.64%), GE(+4.46%), META(+4.46%), TSLA(+3.60%) 등 테크·산업재이며, PFE(−2.34%), EL(−2.72%), NKE(−2.54%) 등은 하회하였다. IS 기간에 포착되지 않은 AI 수요 급증이 테크 상회의 주된 요인이고, 헬스케어·소비재 부진은 금리 상승과 소비 둔화가 복합적으로 작용한 결과로 해석된다.</p>
 
-<h3 id="sec-slope-test">SML 기울기 동일성 검정</h3>
-<p>IS 실증 SML과 OS 실제 SML의 기울기가 같은지를 Wald 검정으로 확인한다.</p>
+<h3 id="sec-slope-test">IS·OS 횡단면 구조 동일성 검정</h3>
+<p>IS와 OS에서 추정된 횡단면 회귀가 구조적으로 동일한지를 Chow 검정으로 확인한다. 두 회귀 모두 동일한 \(\beta_{\mathrm{IS}}\)를 설명변수로 사용하며, \(\gamma_0\)·\(\gamma_1\) 두 계수를 동시에 비교한다.</p>
 <div class="disp-eq">
-\[ t = \dfrac{\gamma_{1,\mathrm{OS}} - \gamma_{1,\mathrm{IS}}}{\sqrt{\mathrm{SE}_{\mathrm{IS}}^2 + \mathrm{SE}_{\mathrm{OS}}^2}} = 1.734 \]
-<span style="display:block;margin-top:0.6rem;font-size:0.8em;color:var(--ink-muted);">\[ H_0: \gamma_{1,\mathrm{IS}} = \gamma_{1,\mathrm{OS}}, \quad H_1: \gamma_{1,\mathrm{IS}} \neq \gamma_{1,\mathrm{OS}} \]</span>
+\[ F = \dfrac{(\mathrm{SSE}_{\mathrm{pool}} - \mathrm{SSE}_{\mathrm{IS}} - \mathrm{SSE}_{\mathrm{OS}}) / k}{(\mathrm{SSE}_{\mathrm{IS}} + \mathrm{SSE}_{\mathrm{OS}}) / (2n - 2k)} \]
+<span style="display:block;margin-top:0.6rem;font-size:0.8em;color:var(--ink-muted);">\[ H_0: \gamma_{0,\mathrm{IS}} = \gamma_{0,\mathrm{OS}} \;\text{and}\; \gamma_{1,\mathrm{IS}} = \gamma_{1,\mathrm{OS}} \]</span>
 </div>
-<p>5% 수준에서 \(H_0\)를 기각하지 못한다. 다만 기울기 차이(0.735%p)와 p = 0.086이라는 10% 경계선, 그리고 n=60의 표본 제약을 감안하면 검정력 부족 가능성을 배제할 수 없다.</p>
+<div class="table-wrap">
+  <p class="table-caption">Chow 검정 결과 (\(k=2,\; n=60\))</p>
+  <table>
+    <thead><tr><th></th><th>IS 횡단면</th><th>OS 횡단면</th></tr></thead>
+    <tbody>
+      <tr><td>\(\gamma_0\) (절편)</td><td>0.328%</td><td>−0.406%</td></tr>
+      <tr><td>\(\gamma_1\) (기울기)</td><td>0.965%</td><td>1.826%</td></tr>
+      <tr class="hl"><td><strong>F(2, 116)</strong></td><td colspan="2" style="text-align:center;"><strong>1.372</strong></td></tr>
+      <tr><td>p값</td><td colspan="2" style="text-align:center;">0.258</td></tr>
+    </tbody>
+  </table>
+</div>
+<p>5% 수준에서 \(H_0\)를 기각하지 못한다. IS와 OS 횡단면 관계가 구조적으로 동일하다는 귀무가설을 통계적으로 부정할 수 없다. 다만 \(\gamma_0\)(0.328% → −0.406%)와 \(\gamma_1\)(0.965% → 1.826%)의 실질적 변화, 그리고 n=60의 표본 제약을 감안하면 검정력 부족 가능성을 배제할 수 없다.</p>
 
 <div class="divider">· · ·</div>
 
