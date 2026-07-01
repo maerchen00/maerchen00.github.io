@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>잃는 두 자산이 만나면 — 변동성 수확의 역설</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../common.css"/>
+<link rel="stylesheet" href="../article.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<nav class="nav">
+  <div class="nav-logo">무제</div>
+  <div class="nav-right">
+    <a class="nav-back" href="../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Finance ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <a class="td-item d2" href="great-depression.html">대공황은 자본주의의 실패였는가</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2 active" href="volatility-harvesting.html">잃는 두 자산이 만나면</a>
+      </div>
+    </span>
+    <span class="nav-date">2025. 7</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="toc-panel">
+    <div class="toc-head">목차</div>
+    <a class="toc-item on"  href="#sec-intro">1. 역설</a>
+    <a class="toc-item"     href="#sec-shannon">2. 섀넌의 도깨비</a>
+    <a class="toc-item"     href="#sec-why">3. 왜 작동하는가</a>
+    <a class="toc-item sub" href="#sec-drag">분산 드래그</a>
+    <a class="toc-item sub" href="#sec-prem">리밸런싱 프리미엄</a>
+    <a class="toc-item"     href="#sec-joy">4. Joy of Volatility</a>
+    <a class="toc-item"     href="#sec-real">5. 실제 데이터</a>
+    <a class="toc-item"     href="#sec-limit">6. 한계와 함의</a>
+  </div>
+
+  <div class="post-wrap">
+    <div class="post-header">
+      <div class="post-cat">Finance</div>
+      <h1>잃는 두 자산이 만나면</h1>
+      <p class="post-sub">변동성 수확의 역설 — 섀넌의 도깨비에서 리밸런싱 프리미엄까지</p>
+      <div class="post-meta">2025. 7</div>
+    </div>
+
+    <div class="post-body">
+    <article>
+
+<h2 id="sec-intro">1. 역설</h2>
+
+<p>장기적으로 손실을 내는 두 자산이 있다. 둘 중 어느 하나를 단독으로 들고 있으면 10년 후 원금을 잃는다. 그런데 이 두 자산을 절반씩 나눠 들고, 매달 그 비중을 다시 맞춰주면 어떻게 될까.</p>
+
+<p>직관은 "더 빨리 잃는다"고 답한다. 나쁜 자산 두 개를 합친다고 좋아질 리 없다. 그런데 수학은 다르게 말한다. 조건이 맞으면 — 두 자산이 서로 다른 타이밍에 오르내리고, 정기적으로 비중을 리셋해준다면 — 개별 자산보다 훨씬 나은 결과가 나온다. 경우에 따라서는 플러스 수익도 가능하다.</p>
+
+<p>이 현상을 <strong>변동성 수확(Volatility Harvesting)</strong>이라 부른다. 그리고 이 역설의 가장 순수한 형태가 <strong>섀넌의 도깨비(Shannon's Demon)</strong>다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-shannon">2. 섀넌의 도깨비</h2>
+
+<p>1940년대 클로드 섀넌(Claude Shannon)은 정보이론의 아버지로 알려진 수학자이자, 평생 연평균 28%의 수익률을 올린 투자자였다.<sup>1</sup> 그는 다음과 같은 사고 실험을 설계했다.</p>
+
+<p>동전을 던진다. 앞면이 나오면 자산 가치가 두 배가 된다(+100%). 뒷면이 나오면 절반이 된다(−50%). 확률은 각각 50%다.</p>
+
+<p>이 자산의 장기 성과는 어떨까. 산술평균 수익률은 +25%이지만, 기하평균 — 복리로 실제로 쌓이는 수익 — 은 정확히 0%다.</p>
+
+<div class="disp-eq">\[ \sqrt{(1+1.00)\times(1-0.50)} - 1 = \sqrt{2 \times 0.5} - 1 = 0\% \]</div>
+
+<p>앞면 10번, 뒷면 10번을 반복하면 자산은 정확히 제자리다. 충분히 오래 기다리면 초기 금액으로 돌아온다. 기댓값이 0인 자산이다.</p>
+
+<p>이제 섀넌의 제안이다. 이 자산을 전액 보유하는 대신, 절반은 자산에, 절반은 현금에 넣는다. 그리고 매번 동전을 던진 뒤 다시 50:50으로 비중을 맞춘다.</p>
+
+<ul style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-muted);line-height:2;margin:0.8rem 0 1rem 1.2rem;">
+  <li>앞면: 자산 +100%, 현금 0% → 포트폴리오 +50% → 리밸런싱으로 다시 50:50</li>
+  <li>뒷면: 자산 −50%, 현금 0% → 포트폴리오 −25% → 리밸런싱으로 다시 50:50</li>
+</ul>
+
+<p>포트폴리오의 기하평균 성장률은 얼마인가.</p>
+
+<div class="disp-eq">\[ \sqrt{(1+0.50)\times(1-0.25)} - 1 = \sqrt{1.5 \times 0.75} - 1 = \sqrt{1.125} - 1 \approx +6.07\% \]</div>
+
+<p>기댓값이 정확히 0인 자산에 투자했는데, 포트폴리오는 매 기간 약 6%씩 성장한다. 이것이 섀넌의 도깨비다. 아래 시뮬레이션은 이 과정을 30번의 동전 던지기로 보여준다.</p>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 1 — 섀넌의 도깨비: 기댓값 0 자산 vs 50:50 리밸런싱 포트폴리오 (30회)</p>
+  <canvas id="shannon-chart" height="200"></canvas>
+  <p class="table-source" style="margin-top:.5rem;">자산: 동전 앞면 ×2, 뒷면 ×0.5 (기댓값 0%). 포트: 자산 50% + 현금 50%, 매회 리밸런싱. 시작금액 1,000.</p>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">자산 기댓 기하평균</div><div class="kpi-val">0.00%</div><div class="kpi-sub">앞면×뒷면 반복 시 제자리</div></div>
+  <div class="kpi"><div class="kpi-label">포트 이론 기하평균</div><div class="kpi-val">+6.07%</div><div class="kpi-sub">\(\sqrt{1.5 \times 0.75}-1\)</div></div>
+  <div class="kpi"><div class="kpi-label">자산 최종값</div><div class="kpi-val">250</div><div class="kpi-sub">시작 1,000 → 손실</div></div>
+  <div class="kpi"><div class="kpi-label">포트 최종값</div><div class="kpi-val" style="color:var(--accent)">2,926</div><div class="kpi-sub">시작 1,000 → 이익</div></div>
+</div>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-why">3. 왜 작동하는가</h2>
+
+<h3 id="sec-drag">분산 드래그 — 복리가 변동성을 싫어하는 이유</h3>
+
+<p>+50%, −33.3%가 연속되면 최종 수익률은 0%다. 산술평균은 +8.35%이지만 기하평균은 0%다. 이 차이를 <strong>분산 드래그(Variance Drag)</strong>라 한다. 근사식은 다음과 같다.</p>
+
+<div class="disp-eq">\[ g \approx \mu - \frac{\sigma^2}{2} \]</div>
+
+<p>기하평균 성장률 \(g\)는 산술평균 \(\mu\)에서 분산의 절반을 뺀 값에 근사한다. 동전 자산의 경우, 산술평균은 +25%이지만 분산이 크기 때문에 기하평균이 정확히 0%가 된다. 50:50 포트폴리오는 변동성을 줄여 분산 드래그를 크게 낮춘다. 자산의 변동성 σ = 75%에서 포트폴리오의 σ ≈ 37.5%로, 드래그가 약 75% 감소한다.</p>
+
+<h3 id="sec-prem">리밸런싱 프리미엄 — 변동성이 수익의 재료가 될 때</h3>
+
+<p>50:50 리밸런싱의 핵심은 기계적으로 "오른 것을 팔고 내린 것을 사는" 동작이다. 자산이 오른 날 포트폴리오는 자산 비중이 과해지고, 리밸런싱은 이를 팔아 현금 비중을 채운다. 자산이 내린 날 포트폴리오는 자산이 싸졌고, 리밸런싱은 이를 사들여 비중을 채운다. 이것이 반복되면 장기적으로 프리미엄이 생긴다.</p>
+
+<p>두 자산 간 리밸런싱으로 확장하면, 이 프리미엄의 크기는 두 자산의 <strong>상관계수</strong>에 결정적으로 의존한다. 두 자산이 같은 타이밍에 오르내리면(고상관) 리밸런싱이 아무것도 만들지 못한다. 서로 다른 타이밍에 움직이면(저상관, 음의 상관) 리밸런싱이 지속적으로 "싸게 사고 비싸게 파는" 기회를 만든다.<sup>2</sup></p>
+
+<div class="table-wrap">
+  <p class="table-num">표 1</p>
+  <p class="table-caption">상관계수별 기대 리밸런싱 프리미엄 (가상, \(\sigma_1=\sigma_2=20\%\), 동일 가중)</p>
+  <table>
+    <thead><tr><th>상관계수 \(\rho\)</th><th>두 자산의 관계</th><th>리밸런싱 프리미엄 (근사)</th></tr></thead>
+    <tbody>
+      <tr><td>+1.0</td><td>완전 동행 (함께 오르내림)</td><td>0.00%</td></tr>
+      <tr><td>+0.5</td><td>부분 동행</td><td>0.25%/기간</td></tr>
+      <tr><td>0.0</td><td>무상관</td><td>0.50%/기간</td></tr>
+      <tr class="hl"><td>−0.5</td><td>부분 반행</td><td>0.75%/기간</td></tr>
+      <tr><td>−1.0</td><td>완전 반행 (번갈아 오르내림)</td><td>1.00%/기간</td></tr>
+    </tbody>
+  </table>
+  <p class="table-source">근사: \(\Delta g \approx \frac{1}{8}(\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2)\). 실제값은 리밸런싱 빈도·거래비용에 따라 달라진다.</p>
+</div>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-joy">4. Joy of Volatility — 둘 다 잃어도</h2>
+
+<p>2007년 Dempster, Evstigneev, Schenk-Hoppé의 논문 "The Joy of Volatility"는 섀넌의 도깨비를 두 자산으로 확장한다.<sup>3</sup> 실험 설계는 다음과 같다.</p>
+
+<div class="compare-grid">
+  <div class="compare-card">
+    <div class="cc-label" style="color:#92400e;">Asset 1</div>
+    <div class="cc-eq" style="font-size:0.95rem;">+40% 또는 −30%<br>각 50% 확률 (독립)</div>
+    <div class="cc-sub" style="margin-top:0.5rem;">기하평균/기간:<br>\(\sqrt{1.4\times 0.7}-1\approx -1.0\%\)<br>장기 보유 시 손실</div>
+  </div>
+  <div class="compare-card">
+    <div class="cc-label" style="color:#2c5f8a;">Asset 2</div>
+    <div class="cc-eq" style="font-size:0.95rem;">−20% 또는 +15%<br>각 50% 확률 (독립)</div>
+    <div class="cc-sub" style="margin-top:0.5rem;">기하평균/기간:<br>\(\sqrt{0.8\times 1.15}-1\approx -4.1\%\)<br>장기 보유 시 더 큰 손실</div>
+  </div>
+  <div class="compare-card">
+    <div class="cc-label" style="color:#5b8c5a;">50:50 리밸런싱 포트</div>
+    <div class="cc-eq" style="font-size:0.95rem;">매 기간 비중 재조정</div>
+    <div class="cc-sub" style="margin-top:0.5rem;">두 자산이 독립적으로 움직이므로<br>상관계수 ≈ 0<br>리밸런싱 프리미엄 최대화</div>
+  </div>
+</div>
+
+<p>두 자산 모두 단독 보유 시 장기적으로 0에 수렴한다. 논문의 결론은 명확하다. 리밸런싱 포트폴리오는 두 자산 모두를 장기적으로 앞선다. 아래는 동일 파라미터로 4,000회 시뮬레이션을 실행한 결과다. 세로축은 log(자산)으로, 0이 시작점이고 아래로 갈수록 손실이다.</p>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 2 — Joy of Volatility 재현: 4,000회 코인 플립 시뮬레이션</p>
+  <canvas id="joy-chart" height="260"></canvas>
+  <div class="legend-row" style="margin-top:.6rem;">
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(92,140,14,0.85)"></span>리밸런싱 포트 (50:50)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(146,64,14,0.85)"></span>Asset 1 (+40%/−30%)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>Asset 2 (−20%/+15%)</div>
+  </div>
+  <p class="table-source" style="margin-top:.5rem;">Dempster, Evstigneev & Schenk-Hoppé (2007/2008) 동일 파라미터. 저자들의 표현: "passive investor의 운명은 필연적 빈곤이다."</p>
+</div>
+
+<p>세 선 모두 장기적으로 하락한다. 그러나 기울기가 전혀 다르다. Asset 2(−20%/+15%)는 급격히 0에 수렴하고, Asset 1(+40%/−30%)도 마찬가지다. 리밸런싱 포트폴리오는 훨씬 완만하게 하락하며, 중간 구간에서는 일시적으로 시작점 위에 머물기도 한다. 두 자산이 독립적으로 움직이기 때문에 리밸런싱이 지속적으로 "다른 타이밍에 오르는 쪽"에서 이익을 포착한다.</p>
+
+<p>논문 저자들이 강조하는 것은 포트폴리오의 절대 성과가 아니라 상대적 우위다. "passive investor" — 자산 하나를 그냥 들고 있는 전략 — 의 피할 수 없는 손실에 비해, 리밸런싱은 변동성 자체를 수익의 재료로 전환한다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-real">5. 실제 데이터 — EL + EOG (2015–2024)</h2>
+
+<p>가상 시나리오를 넘어, 실제 S&P500 종목에서 동일한 구조가 관찰되는지 확인한다. 두 조건을 만족하는 종목 쌍을 선정했다. 첫째, 두 종목 모두 2015–2024년 동안 S&P500(연 약 13%)을 크게 하회할 것. 둘째, 두 종목의 월간 수익률 상관계수가 낮을 것.</p>
+
+<p>선정된 쌍은 <strong>EL(에스티 로더)</strong>과 <strong>EOG(EOG 리소시스)</strong>다. EL은 명품 화장품, EOG는 석유·가스 탐사 기업으로 섹터가 전혀 다르다. 상관계수는 0.18로 낮고, 두 종목 모두 10년간 시장을 크게 하회했다.</p>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">EL CAGR</div><div class="kpi-val">+0.6%</div><div class="kpi-sub">10년 누적 ×1.06 (사실상 제자리)</div></div>
+  <div class="kpi"><div class="kpi-label">EOG CAGR</div><div class="kpi-val">+3.3%</div><div class="kpi-sub">10년 누적 ×1.38</div></div>
+  <div class="kpi"><div class="kpi-label">단순평균 / 매수보유</div><div class="kpi-val">+2.0%</div><div class="kpi-sub">상관계수 ρ = 0.18</div></div>
+  <div class="kpi"><div class="kpi-label">리밸런싱 포트</div><div class="kpi-val" style="color:var(--accent)">+4.5%</div><div class="kpi-sub">리밸런싱 프리미엄 +2.5%p</div></div>
+</div>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 3 — EL + EOG: 50:50 리밸런싱 vs 매수보유 (2015.01 = 100)</p>
+  <canvas id="real-chart" height="220"></canvas>
+  <div class="legend-row" style="margin-top:.6rem;">
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(146,64,14,0.85)"></span>EL (에스티 로더)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(44,95,138,0.85)"></span>EOG (EOG 리소시스)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(91,140,90,0.9)"></span>50:50 리밸런싱</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(168,162,158,0.7)"></span>50:50 매수보유</div>
+  </div>
+  <p class="table-source" style="margin-top:.4rem;">Yahoo Finance 월말 Adj Close 기준 / 월별 리밸런싱 / 거래비용 미반영</p>
+</div>
+
+<p>리밸런싱 포트폴리오는 단순 매수보유보다 꾸준히 앞선다. 두 종목이 서로 다른 타이밍에 오르내리기 때문에 — 에너지 가격이 오를 때 소비재가 부진하고, 그 반대도 마찬가지 — 리밸런싱이 지속적으로 저가 매수·고가 매도를 수행한다. 이 프리미엄이 연 2.5%p로 10년간 누적되면 매수보유(×1.22) 대비 리밸런싱(×1.56)의 유의미한 차이가 된다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-limit">6. 한계와 함의</h2>
+
+<p>변동성 수확은 자유 점심이 아니다. 작동하는 조건이 있고, 역효과가 나는 조건도 있다.</p>
+
+<p>가장 중요한 조건은 <strong>성과 균질성</strong>이다. 두 자산의 장기 수익이 비슷할 때만 리밸런싱이 의미를 갖는다. NVDA(연 +76%)와 PGR(연 +25%)을 50:50 리밸런싱하면, 포트폴리오는 매수보유(연 +65%)보다 낮은 +53%에 그친다. NVDA가 폭등하는 구간마다 리밸런싱이 강제로 팔아버리기 때문이다. 좋은 자산을 잘라내는 것이 오히려 독이 된다.</p>
+
+<p>두 번째 조건은 <strong>낮은 상관관계</strong>다. 같은 섹터, 같은 시장 요인에 노출된 두 자산은 함께 오르고 함께 내린다. 상관계수가 높으면 리밸런싱 프리미엄이 0에 수렴한다.</p>
+
+<p>세 번째는 <strong>거래비용</strong>이다. 월별 리밸런싱은 잦은 매매를 요구한다. 세금과 수수료가 리밸런싱 프리미엄을 잠식할 수 있다.</p>
+
+<p>이 분석이 말하는 것은 결국 하나다. 포트폴리오를 구성할 때 좋은 자산을 고르는 것만이 전략이 아니다. 서로 다르게 움직이는 자산들의 <em>조합</em>에서, 변동성은 리스크가 아니라 수익의 재료가 된다. 적과 재료의 차이는 홀로 있느냐, 짝을 만났느냐에 달려 있다.</p>
+
+<div class="footnotes">
+  <p><sup>1</sup> Poundstone, W. (2005). <em>Fortune's Formula: The Untold Story of the Scientific Betting System That Beat the Casinos and Wall Street.</em> Hill and Wang.</p>
+  <p><sup>2</sup> Booth, D. G., &amp; Fama, E. F. (1992). Diversification returns and asset contributions. <em>Financial Analysts Journal</em>, 48(3), 26–32.</p>
+  <p><sup>3</sup> Dempster, M. A. H., Evstigneev, I. V., &amp; Schenk-Hoppé, K. R. (2008). Financial markets: The joy of volatility. <em>Quantitative Finance</em>, 8(1), 1–3.</p>
+  <p><sup>4</sup> Fernholz, R., &amp; Shay, B. (1982). Stochastic portfolio theory and stock market equilibrium. <em>Journal of Finance</em>, 37(2), 615–624.</p>
+  <p><sup>5</sup> 데이터: Yahoo Finance 월말 Adj Close (2015.01–2024.12). 월별 50:50 리밸런싱 시뮬레이션, 거래비용 미반영.</p>
+</div>
+
+    </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <div class="viz-title">분산 드래그 — 변동성이 복리를 갉아먹는다</div>
+        <table class="side-table">
+          <colgroup><col style="width:22%"><col style="width:26%"><col style="width:26%"><col style="width:26%"></colgroup>
+          <thead><tr><th>자산</th><th>산술평균</th><th>월변동성</th><th>실제 CAGR</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;">동전자산</td><td>+25.0%</td><td>75.0%</td><td class="neg">0.00%</td></tr>
+            <tr><td style="font-weight:600;">50:50포트</td><td>+12.5%</td><td>37.5%</td><td class="pos">+6.07%</td></tr>
+            <tr style="border-top:1px solid var(--rule);"><td style="color:#92400e;font-weight:600;">EL</td><td>0.43%</td><td>8.52%</td><td>+0.6%</td></tr>
+            <tr><td style="color:#2c5f8a;font-weight:600;">EOG</td><td>0.71%</td><td>9.80%</td><td>+3.3%</td></tr>
+            <tr class="hl"><td style="font-weight:600;">리밸런싱</td><td>—</td><td>—</td><td class="pos">+4.5%</td></tr>
+            <tr><td style="font-weight:600;">매수보유</td><td>0.57%</td><td>—</td><td>+2.0%</td></tr>
+          </tbody>
+        </table>
+        <p class="table-source">월간 수익률 기준. 섀넌 케이스는 기간당 수익률.</p>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">상관계수와 리밸런싱 프리미엄</div>
+        <canvas id="corr-chart" height="170"></canvas>
+        <p class="table-source" style="margin-top:.3rem;">가상 (\(\sigma_1=\sigma_2=20\%\), 동일 가중)</p>
+      </div>
+    </aside>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const FONT="'Noto Sans KR','EB Garamond',sans-serif";
+const GR='#e7e2d8',TC='#78716c';
+const base={responsive:true,plugins:{legend:{display:false},tooltip:{titleFont:{family:FONT},bodyFont:{family:FONT}}},scales:{x:{ticks:{color:TC,font:{family:FONT,size:10}},grid:{color:GR},border:{color:GR}},y:{ticks:{color:TC,font:{family:FONT,size:10}},grid:{color:GR},border:{color:GR}}}};
+
+// ── Fig.1: 섀넌의 도깨비 ──
+const shannonAsset=[1000,2000,1000,2000,4000,8000,4000,8000,16000,32000,16000,32000,64000,128000,256000,128000,256000,128000,64000,32000,64000,32000,64000,32000,16000,8000,4000,2000,1000,500,250];
+const shannonPort=[1000,1500,1125,1687.5,2531.2,3796.9,2847.7,4271.5,6407.2,9610.8,7208.1,10812.2,16218.3,24327.4,36491.2,27368.4,41052.6,30789.4,23092.1,17319,25978.6,19483.9,29225.9,21919.4,16439.6,12329.7,9247.3,6935.4,5201.6,3901.2,2925.9];
+const shannonLabels=Array.from({length:31},(_,i)=>i);
+
+new Chart(document.getElementById('shannon-chart'),{type:'line',
+  data:{labels:shannonLabels,datasets:[
+    {label:'자산 단독 보유',data:shannonAsset,borderColor:'rgba(146,64,14,0.85)',borderWidth:2,pointRadius:3,pointBackgroundColor:'rgba(146,64,14,0.85)',fill:false,tension:0.1},
+    {label:'50:50 리밸런싱 포트',data:shannonPort,borderColor:'rgba(91,140,90,0.9)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'rgba(91,140,90,0.9)',fill:false,tension:0.1}
+  ]},
+  options:{...base,plugins:{...base.plugins,
+    legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},boxWidth:18}},
+    tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString()}`}}},
+    scales:{
+      x:{...base.scales.x,title:{display:true,text:'동전 던지기 횟수',color:TC,font:{family:FONT,size:11}}},
+      y:{type:'logarithmic',ticks:{color:TC,font:{family:FONT,size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:GR},border:{color:GR},title:{display:true,text:'자산 가치 (로그 스케일)',color:TC,font:{family:FONT,size:10}}}}}
+});
+
+// ── Fig.2: Joy of Volatility ──
+const joyLabels=[0,40,80,120,160,200,240,280,320,360,400,440,480,520,560,600,640,680,720,760,800,840,880,920,960,1000,1040,1080,1120,1160,1200,1240,1280,1320,1360,1400,1440,1480,1520,1560,1600,1640,1680,1720,1760,1800,1840,1880,1920,1960,2000,2040,2080,2120,2160,2200,2240,2280,2320,2360,2400,2440,2480,2520,2560,2600,2640,2680,2720,2760,2800,2840,2880,2920,2960,3000,3040,3080,3120,3160,3200,3240,3280,3320,3360,3400,3440,3480,3520,3560,3600,3640,3680,3720,3760,3800,3840,3880,3920,3960,4000];
+const logA1=[0.0,3.06,6.82,8.49,8.78,6.99,10.75,9.65,7.86,7.45,9.82,5.95,6.93,10.0,9.59,7.11,10.17,10.46,6.59,10.34,9.94,13.0,12.6,11.5,8.32,6.53,6.82,6.42,6.02,2.84,1.74,2.03,1.63,1.22,0.13,2.49,0.7,0.99,1.28,0.88,0.47,-0.62,-1.03,-0.05,0.94,-1.55,-3.34,-3.05,-1.37,-1.78,-3.57,-1.89,-6.45,-3.39,-3.1,-2.12,-1.83,-1.54,0.83,1.11,-1.37,-3.16,-2.87,-6.74,-5.07,-6.86,-10.73,-12.52,-16.39,-16.1,-15.11,-12.05,-11.76,-10.09,-12.57,-12.98,-16.85,-19.33,-21.81,-22.91,-24.7,-26.49,-28.28,-26.61,-25.62,-23.95,-25.04,-26.83,-25.85,-24.87,-24.58,-23.6,-24.7,-27.18,-26.89,-26.6,-27.7,-27.41,-22.27,-22.67,-23.77];
+const logA2=[0.0,-3.12,-3.34,-3.91,-6.67,-8.7,-11.46,-13.13,-14.79,-15.37,-15.59,-16.89,-18.2,-21.32,-21.53,-23.56,-25.23,-28.71,-31.11,-34.95,-37.71,-39.74,-41.41,-43.07,-42.56,-46.05,-47.71,-47.57,-50.32,-53.44,-54.38,-55.69,-56.99,-59.39,-61.78,-62.72,-65.12,-66.06,-66.27,-69.03,-69.97,-71.28,-71.49,-71.71,-72.65,-73.59,-75.26,-75.84,-78.23,-79.54,-81.57,-85.05,-85.99,-88.38,-90.78,-92.08,-93.02,-94.33,-94.55,-96.58,-96.79,-95.92,-97.22,-99.25,-101.28,-102.59,-103.89,-104.84,-105.42,-105.99,-107.66,-107.88,-109.91,-112.66,-115.78,-116.36,-118.76,-119.7,-121.37,-123.76,-125.06,-126.73,-127.67,-128.62,-130.65,-132.31,-135.07,-136.74,-137.32,-138.62,-138.47,-140.14,-142.17,-145.65,-146.96,-148.99,-150.66,-152.69,-156.9,-157.47,-158.42];
+const logP=[0.0,0.86,3.42,4.73,4.28,3.21,4.36,3.89,2.85,3.2,5.12,3.32,4.15,5.14,5.45,4.13,5.65,4.77,2.35,3.3,2.46,3.83,3.56,3.02,2.48,0.7,0.87,1.52,0.74,-1.72,-1.96,-1.64,-1.64,-2.21,-3.22,-1.73,-2.94,-2.41,-1.53,-2.37,-2.22,-2.61,-2.29,-1.27,-0.48,-1.36,-2.4,-1.79,-1.46,-1.46,-2.65,-2.7,-4.79,-3.75,-4.06,-3.48,-3.08,-2.82,-1.04,-1.26,-1.78,-1.42,-1.22,-3.56,-2.89,-3.78,-5.7,-6.26,-7.7,-7.08,-6.59,-4.36,-4.64,-4.58,-6.78,-6.43,-8.79,-9.61,-10.78,-11.79,-12.81,-13.85,-14.41,-13.36,-13.14,-12.21,-13.49,-14.59,-13.66,-13.02,-12.11,-11.68,-12.61,-14.96,-14.7,-14.68,-15.27,-15.43,-13.99,-13.63,-14.12];
+
+new Chart(document.getElementById('joy-chart'),{type:'line',
+  data:{labels:joyLabels.filter((_,i)=>i%2===0),datasets:[
+    {label:'리밸런싱 포트',data:logP.filter((_,i)=>i%2===0),borderColor:'rgba(92,140,14,0.9)',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3},
+    {label:'Asset 1 (+40%/−30%)',data:logA1.filter((_,i)=>i%2===0),borderColor:'rgba(146,64,14,0.85)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.3},
+    {label:'Asset 2 (−20%/+15%)',data:logA2.filter((_,i)=>i%2===0),borderColor:'rgba(44,95,138,0.85)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.3}
+  ]},
+  options:{...base,plugins:{...base.plugins,
+    legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},boxWidth:18}},
+    annotation:{annotations:{zero:{type:'line',yMin:0,yMax:0,borderColor:'rgba(168,162,158,0.5)',borderWidth:1,borderDash:[4,4]}}}},
+    scales:{
+      x:{...base.scales.x,title:{display:true,text:'코인 플립 횟수',color:TC,font:{family:FONT,size:11}},ticks:{...base.scales.x.ticks,maxTicksLimit:10}},
+      y:{...base.scales.y,title:{display:true,text:'log(자산) — 0=시작, 아래=손실',color:TC,font:{family:FONT,size:10}}}}}
+});
+
+// ── Fig.3: EL + EOG 실제 데이터 ──
+const realLabels=['2015-01','2015-02','2015-03','2015-04','2015-05','2015-06','2015-07','2015-08','2015-09','2015-10','2015-11','2015-12','2016-01','2016-02','2016-03','2016-04','2016-05','2016-06','2016-07','2016-08','2016-09','2016-10','2016-11','2016-12','2017-01','2017-02','2017-03','2017-04','2017-05','2017-06','2017-07','2017-08','2017-09','2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06','2018-07','2018-08','2018-09','2018-10','2018-11','2018-12','2019-01','2019-02','2019-03','2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04','2020-05','2020-06','2020-07','2020-08','2020-09','2020-10','2020-11','2020-12','2021-01','2021-02','2021-03','2021-04','2021-05','2021-06','2021-07','2021-08','2021-09','2021-10','2021-11','2021-12','2022-01','2022-02','2022-03','2022-04','2022-05','2022-06','2022-07','2022-08','2022-09','2022-10','2022-11','2022-12','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08','2023-09','2023-10','2023-11','2023-12','2024-01','2024-02','2024-03','2024-04','2024-05','2024-06','2024-07','2024-08','2024-09','2024-10','2024-11','2024-12'];
+const elV=[100.0,117.11,117.81,115.16,123.86,122.77,126.24,113.0,114.29,113.98,119.17,124.75,120.77,129.38,133.6,135.81,130.02,128.94,131.61,126.41,125.46,123.43,110.07,108.36,115.04,117.37,120.12,123.45,133.36,135.97,140.23,151.57,152.77,158.39,176.84,180.25,191.19,196.12,212.1,209.79,211.7,202.14,191.16,198.5,205.86,194.7,202.1,184.3,193.26,222.33,234.52,243.39,228.12,259.4,260.93,280.48,281.84,263.88,276.91,292.59,276.47,260.09,225.73,249.89,279.74,267.29,279.84,314.1,309.18,311.18,347.53,377.09,335.25,404.96,412.03,444.54,434.23,450.6,472.91,482.35,424.89,459.46,470.42,524.44,441.69,419.79,385.78,374.08,360.75,360.77,386.88,360.36,305.85,284.02,334.03,351.48,392.52,344.31,349.14,349.51,260.7,278.2,254.99,227.41,204.77,182.56,180.89,207.18,186.98,210.48,218.37,207.83,174.76,150.73,141.11,129.85,141.22,97.66,102.17,106.22];
+const eogV=[100.0,100.78,102.99,111.14,99.62,98.34,86.7,87.96,81.77,96.43,93.71,79.51,79.77,72.72,81.52,92.8,91.38,93.7,91.77,99.39,108.63,101.56,115.15,113.56,114.1,108.94,109.57,103.9,101.44,101.67,106.86,95.46,108.66,112.18,114.93,121.21,129.17,113.92,118.24,132.73,132.33,139.76,144.83,132.8,143.29,118.32,116.04,97.96,111.42,105.58,106.91,107.88,91.97,104.64,96.43,83.33,83.37,77.85,79.64,94.08,81.89,71.05,40.35,53.36,57.25,56.9,52.62,50.93,40.37,38.46,52.66,56.01,57.24,72.51,81.47,82.71,90.24,93.72,81.84,75.84,90.16,103.85,97.72,99.78,125.22,129.08,133.92,131.15,153.84,124.05,124.92,136.25,125.5,153.34,159.42,145.48,148.55,126.95,128.75,134.19,120.51,128.54,148.86,144.47,142.38,141.81,138.23,135.85,127.81,128.56,143.59,148.41,139.9,141.38,142.42,144.69,138.08,136.99,149.68,137.68];
+const portV=[100.0,108.94,110.46,113.59,111.99,110.78,105.79,101.02,98.04,106.69,107.62,101.98,100.52,99.66,107.32,115.63,112.28,113.24,113.24,115.71,120.65,115.75,117.24,115.51,119.35,117.86,119.58,118.14,121.49,122.82,127.88,126.22,135.45,140.13,150.01,155.56,165.38,157.75,167.17,176.51,177.04,178.02,176.41,172.47,182.48,161.63,163.15,143.25,156.58,164.25,169.79,173.77,155.5,176.88,170.46,165.27,165.7,154.94,160.54,179.65,163.07,147.45,105.84,128.58,140.95,137.38,135.44,141.55,125.77,123.2,153.13,164.53,157.2,194.52,208.22,218.03,225.42,234.02,224.98,218.98,226.61,253.04,248.58,265.47,278.37,275.76,269.76,262.88,280.93,253.75,263.82,266.74,236.04,253.8,281.17,276.23,295.27,255.67,259.28,264.89,217.74,232.3,240.97,224.38,211.59,199.69,196.26,208.83,192.47,205.13,220.97,219.34,195.6,183.19,178.02,172.33,175.94,148.11,158.39,155.18];
+const bhV=[100.0,108.94,110.4,113.15,111.74,110.55,106.47,100.48,98.03,105.21,106.44,102.13,100.27,101.05,107.56,114.31,110.7,111.32,111.69,112.9,117.04,112.5,112.61,110.96,114.57,113.15,114.84,113.67,117.4,118.82,123.55,123.51,130.71,135.28,145.88,150.73,160.18,155.02,165.17,171.26,172.01,170.95,167.99,165.65,174.58,156.51,159.07,141.13,152.34,163.95,170.72,175.64,160.04,182.02,178.68,181.91,182.6,170.86,178.27,193.34,179.18,165.57,133.04,151.63,168.5,162.1,166.23,182.51,174.77,174.82,200.09,216.55,196.24,238.74,246.75,263.63,262.23,272.16,277.38,279.09,257.53,281.65,284.07,312.11,283.45,274.44,259.85,252.61,257.29,242.41,255.9,248.3,215.67,218.68,246.72,248.48,270.53,235.63,238.95,241.85,190.61,203.37,201.93,185.94,173.58,162.18,159.56,171.52,157.4,169.52,180.98,178.12,157.33,146.05,141.77,137.27,139.65,117.33,125.92,121.95];
+
+new Chart(document.getElementById('real-chart'),{type:'line',
+  data:{labels:realLabels.filter((_,i)=>i%3===0),datasets:[
+    {label:'EL',data:elV.filter((_,i)=>i%3===0),borderColor:'rgba(146,64,14,0.85)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.2},
+    {label:'EOG',data:eogV.filter((_,i)=>i%3===0),borderColor:'rgba(44,95,138,0.85)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.2},
+    {label:'50:50 리밸런싱',data:portV.filter((_,i)=>i%3===0),borderColor:'rgba(91,140,90,0.9)',borderWidth:2.5,pointRadius:0,fill:false,tension:0.2},
+    {label:'50:50 매수보유',data:bhV.filter((_,i)=>i%3===0),borderColor:'rgba(168,162,158,0.7)',borderWidth:1.6,borderDash:[6,3],pointRadius:0,fill:false,tension:0.2}
+  ]},
+  options:{...base,plugins:{...base.plugins,
+    legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},boxWidth:18}}},
+    scales:{
+      x:{...base.scales.x,ticks:{...base.scales.x.ticks,maxTicksLimit:10}},
+      y:{...base.scales.y,title:{display:true,text:'누적가치 (2015.01 = 100)',color:TC,font:{family:FONT,size:11}}}}}
+});
+
+// ── 사이드: 상관계수 vs 프리미엄 ──
+new Chart(document.getElementById('corr-chart'),{type:'bar',
+  data:{labels:['ρ=−1.0','ρ=−0.5','ρ=0.0','ρ=+0.5','ρ=+1.0'],datasets:[{
+    data:[1.0,0.75,0.50,0.25,0.0],
+    backgroundColor:['rgba(91,140,90,0.85)','rgba(91,140,90,0.7)','rgba(138,107,44,0.6)','rgba(146,64,14,0.5)','rgba(168,162,158,0.4)'],
+    borderRadius:2,borderWidth:0
+  }]},
+  options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{label:c=>`≈ ${c.parsed.y.toFixed(2)}%/기간`}}},
+    scales:{
+      x:{...base.scales.x,title:{display:true,text:'상관계수 ρ',color:TC,font:{family:FONT,size:10}}},
+      y:{...base.scales.y,title:{display:true,text:'리밸런싱 프리미엄',color:TC,font:{family:FONT,size:10}},ticks:{...base.scales.y.ticks,callback:v=>`${v}%`}}}}
+});
+
+// ── 네비 ──
+const tagBtn=document.getElementById('tag-btn'),treeDrop=document.getElementById('tree-drop'),overlay=document.getElementById('overlay');
+tagBtn.addEventListener('click',e=>{e.stopPropagation();const o=treeDrop.classList.toggle('open');tagBtn.classList.toggle('open',o);overlay.classList.toggle('show',o);});
+overlay.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+document.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+
+// ── TOC ──
+const tocItems=document.querySelectorAll('.toc-item'),sections=document.querySelectorAll('h2[id],h3[id]');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});tocItems.forEach(t=>{const h=t.getAttribute('href')||'';t.classList.toggle('on',h==='#'+cur);});});
+
+// ── KaTeX ──
+renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
+</script>
+<script src="../footnotes.js"></script>
+</body>
+</html>
