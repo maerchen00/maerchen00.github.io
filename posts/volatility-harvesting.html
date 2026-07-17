@@ -348,7 +348,7 @@
 
 <p>변동성 수확은 상관관계가 낮은 자산을 리밸런싱할 때 발생하는 초과 성장분이다. 단일 자산의 복리 수익을 갉아먹는 분산 드래그가, 여러 자산을 리밸런싱하는 순간 \(\frac{1}{2}(\sum w_i\sigma_i^2 - \sigma_{p^*}^2)\)만큼의 변동성 수익으로 전환된다. 크기는 상관계수가 낮을수록, 개별 변동성이 클수록 커지지만, 확산 디스카운트가 이를 상쇄할 수 있어 자산들의 장기 성과가 비슷하고 상관계수가 낮을 때만 매수보유를 이긴다. Joy of Volatility(완전 반상관)와 닛케이+국채(\(\rho=-0.246\))는 이 조건이 각각 이론과 현실에서 성립한 사례다.</p>
 
-<p>그렇다면 비중은 얼마가 적절한가. 50:50이나 역변동성 비례가 최적이라는 보장은 없다. \(g(w)\)를 최대화하면 닫힌 형태의 \(w^*\)가 나오고, Joy of Volatility 사례에서는 61%였다. 다만 \(w^*\)는 \(\mu_1-\mu_2\)에 직접 의존해서, 실현된 \(\mu\)를 그대로 대입하면 닛케이+국채처럼 공매도·레버리지를 요구하는 해가 나온다. 역변동성 가중이나 균등가중이 이론적 최적에 못 미치면서도 실무에서 쓰이는 이유는 \(\mu\) 추정 오차에 노출되지 않기 때문이다. 비중 다음으로 남는 변수는 리밸런싱 주기인데, 무비용이면 빈도가 높을수록 유리하지만 한계효용은 월간 이후 빠르게 줄고 거래비용은 빈도에 거의 선형으로 늘어나 현실적인 비용 수준에서는 분기~월간이 최적점에 가깝다.</p>
+<p>그렇다면 비중은 얼마가 적절한가. 50:50이나 역변동성 비례가 최적이라는 보장은 없다. \(g(w)\)를 최대화하면 닫힌 형태의 \(w^*\)가 나오고, Joy of Volatility 사례에서는 61%였다. 다만 \(w^*\)는 \(\mu_1-\mu_2\)에 직접 의존해서, 실현된 \(\mu\)를 그대로 대입하면 닛케이+국채처럼 공매도·레버리지를 요구하는 해가 나온다. 역변동성 가중이나 균등가중이 이론적 최적에 못 미치면서도 실무에서 쓰이는 이유는 \(\mu\) 추정 오차에 노출되지 않기 때문이다. 비중 다음으로 남는 변수는 리밸런싱 주기다. 무비용이면 빈도가 높을수록 유리하지만, 한계효용은 월간 이후 빠르게 줄어든다. 반면 거래비용은 빈도에 거의 선형으로 늘어나므로, 현실적인 비용 수준에서는 분기~월간이 최적점에 가깝다.</p>
 
 <p>결국 변동성 수확은 무엇을 예측할지가 아니라 무엇을 몰라도 되는지에 관한 전략이다. 방향을 맞히지 못해도, 상관관계가 낮은 자산들을 방향성 없이 리밸런싱하는 것만으로 개별 자산의 손실을 포트폴리오 수준의 수익으로 바꿀 수 있다.</p>
 
@@ -356,12 +356,12 @@
   <p><sup>1</sup> Dempster, M. A. H., Evstigneev, I. V., & Schenk-Hoppé, K. R. (2008). Financial markets. The joy of volatility. <em>Quantitative Finance</em>, 8(1), 1–3.</p>
   <p><sup>2</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Resurrected. <em>GestaltU.</em> gestaltu.com/2011/11/rebalancing-resurrected.html</p>
   <p><sup>3</sup> Butler, A., Philbrick, M., & Gordillo, R. (2012). Volatility Harvesting and the Importance of Rebalancing. <em>GestaltU.</em> gestaltu.com/2012/02/volatility-harvesting-and-the-importance-of-rebalancing.html</p>
-  <p>4. Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Japan. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-japan.html</p>
-  <p>5. Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Canada. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-canada.html</p>
-  <p>6. 닛케이225 및 일본 국채 10년물 수익률: Investing.com 역사적 데이터. 채권 가격 환산: Duration ≈ 8.5년. 역변동성 비례 분기 리밸런싱. 거래비용 미반영.</p>
+  <p><sup>4</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Japan. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-japan.html</p>
+  <p><sup>5</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Canada. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-canada.html</p>
+  <p><sup>6</sup> 닛케이225 및 일본 국채 10년물 수익률: Investing.com 역사적 데이터. 채권 가격 환산: Duration ≈ 8.5년. 역변동성 비례 분기 리밸런싱. 거래비용 미반영.</p>
   <p><sup>7</sup> Kelly, J. L. (1956). A New Interpretation of Information Rate. <em>Bell System Technical Journal</em>, 35(4), 917–926.</p>
   <p><sup>8</sup> Fernholz, E. R. (2002). <em>Stochastic Portfolio Theory.</em> Springer.</p>
-  <p>9. 4.3절 리밸런싱 주기 결과는 GBM 기반 몬테카를로 시뮬레이션(자체 생성)이며, 4장(4.1·4.2)·6장 수치는 3·5장에서 쓴 파라미터를 재사용한 해석적 근사임. 실제 시장 데이터의 정밀 재현이 아님.</p>
+  <p><sup>9</sup> 4.3절 리밸런싱 주기 결과는 GBM 기반 몬테카를로 시뮬레이션(자체 생성)이며, 4장(4.1·4.2)·6장 수치는 3·5장에서 쓴 파라미터를 재사용한 해석적 근사임. 실제 시장 데이터의 정밀 재현이 아님.</p>
 </div>
 
     </article>
@@ -606,7 +606,6 @@ const portVals = runMaxRaw.map((rm, i) => rm * (1 + ddVals[i] / 100));
       .text(lbl);
   });
 })();
-
 
 // ── 사이드: 상관계수 vs 변동성 수익 ──
 new Chart(document.getElementById('corr-chart'),{type:'bar',
