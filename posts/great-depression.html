@@ -35,6 +35,7 @@
         <div class="td-divider"></div>
         <div class="td-item d1">Finance</div>
         <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2" href="volatility-harvesting.html">변동성 수확</a>
       </div>
     </span>
     <span class="nav-date">2025. 5</span>
@@ -182,15 +183,13 @@
 
       <p>1930년부터 은행 도산은 농촌에서 시작해 전국으로 번졌다. 연준은 본래 이런 위기를 관리하기 위해 만들어진 기관이었지만, 내부에서는 적극적 통화확장론과 청산주의가 충돌했고 결정적인 순간에 은행시스템을 방치했다. 같은 해 12월 뉴욕의 유나이티드 스테이츠 은행(Bank of United States) 도산을 계기로 뱅크런의 공포가 전국으로 확산되면서, 예금자들의 인출 행렬은 건전한 은행까지 무너뜨렸다. 신용 경색은 기업 투자를 더욱 위축시켰고, 1929~1933년 사이 전체 상업은행의 절반 가까이가 문을 닫거나 다른 은행에 합병되었다.</p>
 
-      <p>할부로 쌓인 가계부채, 신용이 부풀린 자산 가격, 경쟁적 신용 공급으로 취약해진 은행들. 붐이 쌓아올린 것들이 무너지는 순서대로 침체를 깊게 했다.</p>
-
       <div class="divider">· · ·</div>
 
       <h2 id="sec-end">마치며</h2>
 
         <p>대공황을 설명하는 오스트리아 학파의 핵심은 붕괴 그 자체가 아니라 '번영의 성격'을 묻는 데 있다. 주류 경제학이 1929년 10월 이후 자산 시장이 왜 무너졌고 이를 어떻게 수습할 것인가에 매달릴 때, 이들은 무너져 내린 그 호황이 애초에 어떻게 만들어졌는지에 주목했다. 중앙은행이 금리를 억눌러 공급한 신용은 잘못된 가격 신호를 보내고, 실제 저축이 뒷받침되지 않은 투자는 결국 청산된다. 오스트리아 학파에게 침체란 병이 아니라, 신용 팽창이라는 병이 시장을 통해 치유되는 고통스러운 회복기다.</p>
 
-        <p>물론 이 이론 하나로 대공황이라는 복합 위기를 완벽히 설명할 수는 없다. 연준의 방치를 지적하는 통화주의, 유효수요의 소멸을 짚는 케인즈 학파의 설명이 더해져야 온전한 그림이 된다. 다만 오스트리아 학파는 위기 이후의 수습이 아니라 위기의 출발점을 먼저 들여다봤다는 점에서 결이 다르다. 겉보기에 물가가 안정되고 지표가 견고해 보이더라도, 금리가 시장의 시간선호를 반영하지 못한다면 그 경제는 내부에서부터 뒤틀리기 마련이다. 피셔가 "영구적으로 높은 고원"을 선언하던 1929년 10월, 하이에크의 경고는 이미 여덟 달이 지나 있었다.</p>
+        <p>물론 이것이 대공황의 모든 것을 설명하는 것은 아니다. 통화주의는 1930년대 연준의 뒤늦은 긴축 실패를 더욱 결정적인 변수로 보고, 케인즈 학파는 총수요 붕괴와 재정정책의 부재를 지적한다. 대공황은 지금도 단일한 설명으로 수렴되지 않는 역사다. 다만 오스트리아 학파는 위기 이후의 수습이 아니라 위기의 출발점을 먼저 들여다봤다는 점에서 결이 다르다. 겉보기에 물가가 안정되고 지표가 견고해 보이더라도, 금리가 시장의 시간선호를 반영하지 못한다면 그 경제는 내부에서부터 뒤틀리기 마련이다. 피셔가 "영구적으로 높은 고원"을 선언하던 1929년 10월, 하이에크의 경고는 이미 여덟 달이 지나 있었다.</p>
 
       <div class="footnotes">
         <p><sup>1</sup> Rothbard, M.N. (1969). <em>Economic Depressions: Their Cause and Cure.</em> Ludwig von Mises Institute.; Ebeling, R.M. (2017). "America's Great Depression and Austrian Business Cycle Theory." <em>The Future of Freedom Foundation.</em></p>
@@ -269,7 +268,7 @@
       responsive: true,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y + unit } } },
       scales: {
-        x: { ticks: { color: '#78716c', font: { size: 10, family: 'Noto Sans KR' } }, grid: { color: '#e7e2d8' }, border: { color: '#e7e2d8' } },
+        x: { ticks: { color: '#78716c', font: { size: 10, family: 'Noto Sans KR' }, maxRotation: 0, minRotation: 0 }, grid: { color: '#e7e2d8' }, border: { color: '#e7e2d8' } },
         y: { ticks: { color: '#78716c', font: { size: 10, family: 'Noto Sans KR' } }, grid: { color: '#e7e2d8' }, border: { color: '#e7e2d8' } }
       }
     }
@@ -277,7 +276,7 @@
   new Chart(document.getElementById('gdp-chart'), lineOpts(['1929','1930','1931','1932','1933'],[100,91.1,83.5,72.2,72.0]));
   new Chart(document.getElementById('ip-chart'), lineOpts(['1929','1930','1931','1932','1933'],[100,83,75,58,69]));
   new Chart(document.getElementById('unemp-chart'), lineOpts(['1929','1930','1931','1932','1933'],[3.2,8.7,15.9,23.6,24.9],'%'));
-  new Chart(document.getElementById('dow-chart'), lineOpts(['1929.9','1930.3','1930.9','1931.3','1931.9','1932.3','1932.7','1933.3'],[381,273,215,180,100,73,41,66]));
+  new Chart(document.getElementById('dow-chart'), lineOpts(["'29.9","'30.3","'30.9","'31.3","'31.9","'32.3","'32.7","'33.3"],[381,273,215,180,100,73,41,66]));
   new Chart(document.getElementById('bank-chart'), {
     type: 'doughnut',
     data: { labels: ['파산·합병','존속'], datasets: [{ data: [10763,14207], backgroundColor: ['#92400e','#a8a29e'], borderWidth: 0, hoverOffset: 4 }] },
