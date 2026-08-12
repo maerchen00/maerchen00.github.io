@@ -29,6 +29,9 @@
         <div class="td-item d1">Finance</div>
         <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
         <a class="td-item d2 active" href="volatility-harvesting.html">변동성 수확</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Math</div>
+        <a class="td-item d2" href="gbm-verification.html">기하 브라운 운동 실증검증</a>
       </div>
     </span>
     <span class="nav-date">2025. 7</span>
@@ -68,7 +71,7 @@
 
 <p>직관은 "둘 다 잃는 자산이니 더 빨리 잃는다"고 답한다. 그런데 수학은 다르게 말한다. 두 자산이 서로 반대 방향으로 움직이고, 정기적으로 비중을 리셋해준다면 포트폴리오는 개별 자산보다 훨씬 나은 결과를 낸다. 조건이 충분히 갖춰지면 개별 자산이 모두 손실임에도 포트폴리오는 수익을 기록할 수 있다.</p>
 
-<p>이 현상을 <strong>변동성 수확(Volatility Harvesting)</strong>이라 한다. 단일 자산에서 변동성은 복리 수익을 갉아먹는 요인이지만, 서로 다르게 움직이는 자산들로 구성된 포트폴리오에서 리밸런싱은 그 변동성을 수익으로 전환한다. 이 글은 그 메커니즘을 수학적으로 분해하고, 이론상 가장 극단적인 시나리오와 실제 시장 사례로 확인한다.</p>
+<p>이 현상을 <strong>변동성 수확(Volatility Harvesting)</strong>이라 한다. 단일 자산에서 변동성은 복리 수익을 갉아먹는 요인이지만, 서로 다르게 움직이는 자산들로 구성된 포트폴리오에서 리밸런싱은 그 변동성을 수익으로 전환한다. 이에 본 글은 그 메커니즘을 수학적으로 분해하고, 이론상 가장 극단적인 시나리오와 실제 시장 사례로 확인하고자 한다.</p>
 
 <div class="divider">· · ·</div>
 
@@ -173,7 +176,7 @@
 
 <h3 id="sec-optimal-weight">4.2 최적 비중</h3>
 
-<p>방금 계산은 비중을 50:50으로 고정한 결과다. \(g(w)\)는 \(w\)에 대한 이차함수이므로, 미분해서 0으로 두면 각 상관계수에서의 진짜 최적 비중이 나온다.</p>
+<p>방금 계산은 비중을 50:50으로 고정한 결과다. \(g(w)\)는 \(w\)에 대한 이차함수이므로, 미분해서 0으로 두면 각 상관계수에서의 최적 비중이 나온다.</p>
 
 <div class="disp-eq">\[ w^{*} = \frac{(\mu_1-\mu_2) + \sigma_2^2 - \rho\sigma_1\sigma_2}{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2} \]</div>
 

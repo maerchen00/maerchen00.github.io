@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>기하 브라운 운동은 주가를 얼마나 잘 설명하는가</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../common.css"/>
+<link rel="stylesheet" href="../article.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<nav class="nav">
+  <div class="nav-logo">무제</div>
+  <div class="nav-right">
+    <a class="nav-back" href="../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Math ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <a class="td-item d2" href="great-depression.html">오스트리아 학파는 대공황을 어떻게 설명하는가</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2" href="volatility-harvesting.html">변동성 수확</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Math</div>
+        <a class="td-item d2 active" href="gbm-verification.html">기하 브라운 운동 실증검증</a>
+      </div>
+    </span>
+    <span class="nav-date">2026. 8</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- TOC -->
+  <div class="toc-panel">
+    <div class="toc-head">목차</div>
+    <a class="toc-item on" href="#sec-intro">1. 서론</a>
+    <a class="toc-item" href="#sec-gbm">2. 브라운 운동에서 기하 브라운 운동으로</a>
+    <a class="toc-item" href="#sec-implication">3. GBM의 함의</a>
+    <a class="toc-item" href="#sec-empirical">4. 실증 검증</a>
+    <a class="toc-item sub" href="#sec-normality">4.1 정규성</a>
+    <a class="toc-item sub" href="#sec-volconst">4.2 변동성의 시간 불변성</a>
+    <a class="toc-item sub" href="#sec-autocorr">4.3 자기상관</a>
+    <a class="toc-item" href="#sec-why">5. 왜 깨지는가</a>
+    <a class="toc-item" href="#sec-conc">6. 결론</a>
+  </div>
+
+  <!-- 본문 -->
+  <div class="post-wrap">
+    <div class="post-header">
+      <div class="post-cat">Math</div>
+      <h1>기하 브라운 운동은 주가를 얼마나 잘 설명하는가</h1>
+      <p class="post-sub">GBM의 세 가지 가정과 실제 주가 데이터의 괴리</p>
+      <div class="post-meta">2026. 8</div>
+    </div>
+
+    <div class="post-body">
+    <article>
+
+<h2 id="sec-intro">1. 서론</h2>
+
+<p>옵션 가격결정 이론은 기초자산의 가격이 특정한 확률 과정을 따른다는 가정 위에 서 있다. 가장 널리 쓰이는 가정이 기하 브라운 운동(Geometric Brownian Motion, GBM)이다. 이 글은 GBM이 정확히 어떤 주장을 하는 모델인지 정리하고, 실제 주가 데이터로 그 주장이 성립하는지 검증한다.</p>
+
+<h2 id="sec-gbm">2. 브라운 운동에서 기하 브라운 운동으로</h2>
+
+<p>짧은 시간 동안 주가가 움직이는 폭은 그 사이 도착하는 수많은 개별 주문과 뉴스가 결정한다. 주문 하나, 뉴스 하나가 가격에 주는 영향은 작고 방향도 제각각이다. 이런 작은 변화가 아주 많이 더해지면 개별 항목이 어떤 분포를 따르든 그 합은 정규분포에 가까워진다 — 중심극한정리다. 또 어제 가격만 보고 오늘 가격이 오를지 내릴지 알 수 있다면 그 정보로 손쉽게 돈을 벌 수 있을 것이므로, 시장이 어느 정도 효율적이라면 서로 다른 구간의 가격 변화는 독립적이어야 한다. 이 독립적인 증분과 정규분포, 그리고 가격이 순간적으로 튀지 않고 연속적으로 움직인다는 조건을 갖춘 확률과정이 표준 브라운 운동(위너 과정) \(W_t\)다.</p>
+
+<div style="background:var(--bg-card);border-left:3px solid var(--accent);border-radius:2px;padding:1.1rem 1.3rem;margin:1.4rem 0;font-family:var(--sans);font-size:0.85rem;color:var(--ink-muted);">
+  <div style="font-family:var(--sans);font-size:0.62rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;">표준 브라운 운동의 정의</div>
+  <div style="display:flex;flex-direction:column;gap:0.55rem;line-height:1.7;">
+    <div><strong style="color:var(--ink);">①</strong> \(W_0 = 0\)</div>
+    <div><strong style="color:var(--ink);">②</strong> 증분 \(W_t - W_s\)는 평균 0, 분산 \(t-s\)인 정규분포를 따른다</div>
+    <div><strong style="color:var(--ink);">③</strong> 겹치지 않는 구간의 증분은 서로 독립이다</div>
+  </div>
+</div>
+
+<p>이 논리를 직접 눈으로 확인해보자. \(S_0 = 100\)에서 시작해 1일, 20일(1달), 80일(1분기), 240일(1년) 단위로 스텝을 넓혀가며 경로 하나를 이어 그린다. 매 스텝 실제로 일어난 변화는 실선 한 줄로 남지만, 그 스텝에서 이론상 가능했던 로그정규분포 전체는 옅은 점선 곡선으로 함께 표시한다.</p>
+
+<div class="viz-wrap">
+  <div class="viz-title">확률의 갈래 — 스케일별 GBM 경로</div>
+  <div style="display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1rem;font-family:var(--sans);font-size:0.75rem;color:var(--ink-muted);">
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <span style="width:64px;flex-shrink:0;">연간 \(\mu\)</span>
+      <input type="number" id="branch-mu-input" value="0.10" step="0.01" style="width:58px;border:1px solid var(--rule);border-radius:2px;padding:0.15rem 0.3rem;font-family:var(--sans);font-size:0.75rem;background:var(--bg);color:var(--ink);">
+      <input type="range" id="branch-mu-slider" min="-0.3" max="0.5" step="0.01" value="0.10" style="flex:1;accent-color:#92400e;">
+    </div>
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <span style="width:64px;flex-shrink:0;">연간 \(\sigma\)</span>
+      <input type="number" id="branch-sigma-input" value="0.20" step="0.01" min="0.01" style="width:58px;border:1px solid var(--rule);border-radius:2px;padding:0.15rem 0.3rem;font-family:var(--sans);font-size:0.75rem;background:var(--bg);color:var(--ink);">
+      <input type="range" id="branch-sigma-slider" min="0.02" max="0.8" step="0.01" value="0.20" style="flex:1;accent-color:#92400e;">
+    </div>
+    <div style="display:flex;align-items:center;gap:0.9rem;flex-wrap:wrap;">
+      <span style="flex-shrink:0;">확대해볼 기간</span>
+      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="all" checked style="accent-color:#92400e;">전체기간</label>
+      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="1" style="accent-color:#92400e;">1일</label>
+      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="20" style="accent-color:#92400e;">20일(1달)</label>
+      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="80" style="accent-color:#92400e;">80일(1분기)</label>
+      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="240" style="accent-color:#92400e;">240일(1년)</label>
+    </div>
+    <div>
+      <button id="branch-replay-btn" style="font-family:var(--sans);font-size:0.7rem;color:var(--accent);background:var(--bg-card);border:1px solid var(--rule);border-radius:3px;padding:0.32rem 0.85rem;cursor:pointer;">Replay</button>
+    </div>
+  </div>
+  <svg id="gbm-branch-svg" viewBox="0 0 700 340" style="width:100%;height:auto;border-radius:2px;"></svg>
+  <p class="axis-cap">x축은 경과 거래일수, y축은 \(S_0=100\) 기준 가격이다. 실선은 실제로 실현된 경로, 점선은 각 스텝에서 이론상 가능했던 로그정규분포의 확률밀도 곡선이다.</p>
+</div>
+
+<p>하지만 이처럼 주가에 브라운 운동을 직접 적용하면 문제가 생긴다. 정규분포는 음수 값을 허용하므로, \(S_t = S_0 + \mu t + \sigma W_t\) 형태의 모형은 주가가 음수가 되는 경로를 배제하지 못한다. 이를 피하기 위해 주가 자체가 아니라 로그주가에 브라운 운동을 적용한다. 이렇게 만든 확률과정을 기하 브라운 운동(Geometric Brownian Motion, GBM)이라 부르며, 다음과 같은 확률미분방정식(SDE)으로 정의한다.<sup>1</sup></p>
+
+<div class="disp-eq">\[dS_t = \mu S_t \, dt + \sigma S_t \, dW_t\]</div>
+
+<p>여기서 \(\mu\)는 기대수익률(드리프트), \(\sigma\)는 변동성이다. \(dS_t\)가 \(S_t\)에 비례한다는 것, 즉 주가가 절대적인 금액이 아니라 비율(퍼센트)로 오르내린다는 것이 이 모형의 핵심이다.</p>
+
+<p>이 확률과정을 로그변환하면 어떻게 되는지 보자. \(f(S_t) = \ln S_t\)라 하면 \(f'(S) = 1/S\), \(f''(S) = -1/S^2\)이다. 일반적인 미적분이라면 \(d(\ln S_t) = \frac{1}{S_t}dS_t\)로 끝나겠지만, 확률과정에서는 \(dW_t\)가 \(\sqrt{dt}\) 오더이기 때문에 \((dW_t)^2 = dt\)가 되어 2차항이 사라지지 않는다. 테일러 전개를 2차항까지 쓰면</p>
+
+<div class="disp-eq">\[d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2S_t^2}(dS_t)^2\]</div>
+
+<p>여기에 \(dS_t = \mu S_t \, dt + \sigma S_t \, dW_t\)를 대입하고 \((dS_t)^2 = \sigma^2 S_t^2 \, dt\)(교차항과 \(dt^2\)항은 더 낮은 차수라 소거)를 쓰면</p>
+
+<div class="disp-eq">\[d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma \, dW_t\]</div>
+
+<p>이걸 적분하면</p>
+
+<div class="disp-eq">\[\ln S_t = \ln S_0 + \left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\]</div>
+
+<p>즉 \(\ln(S_t/S_0)\)는 정규분포를 따르고, \(S_t\) 자체는 로그정규분포를 따른다. 일반 미적분과 다른 결과가 나온 이유는 \(-\sigma^2/2\) 보정항 때문이다. 이 보정항은 이토 보정(Itô correction)이라 불리며, 브라운 운동의 경로가 미분 불가능할 정도로 거칠기 때문에 생기는 항이다.</p>
+
+<p>\(\mu\)와 \(\sigma\)가 경로 모양을 어떻게 바꾸는지 직접 조절해보자. \(S_0=100\), 1년을 252거래일로 나눠 매일 위 식대로 가격을 갱신한 경로를 15개 시뮬레이션한다.</p>
+
+<div class="viz-wrap">
+  <div class="viz-title">GBM 경로 시뮬레이터</div>
+  <svg id="gbm-sim-svg" viewBox="0 0 700 320" style="width:100%;height:auto;border-radius:2px;"></svg>
+  <div class="legend-row" style="margin-top:1rem;align-items:center;">
+    <label style="font-family:var(--sans);font-size:0.72rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.5rem;">
+      \(\mu\) = <span id="mu-val">0.10</span>
+      <input type="range" id="mu-slider" min="-0.3" max="0.5" step="0.01" value="0.10" style="width:120px;accent-color:#92400e;">
+    </label>
+    <label style="font-family:var(--sans);font-size:0.72rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.5rem;">
+      \(\sigma\) = <span id="sigma-val">0.20</span>
+      <input type="range" id="sigma-slider" min="0.02" max="0.8" step="0.01" value="0.20" style="width:120px;accent-color:#92400e;">
+    </label>
+    <button id="gbm-resim-btn" style="font-family:var(--sans);font-size:0.68rem;color:var(--accent);background:var(--bg-card);border:1px solid var(--rule);border-radius:3px;padding:0.3rem 0.7rem;cursor:pointer;">다시 시뮬레이션</button>
+    <label style="font-family:var(--sans);font-size:0.7rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.35rem;cursor:pointer;">
+      <input type="checkbox" id="single-path-toggle" style="accent-color:#92400e;">단일 경로만 보기
+    </label>
+  </div>
+  <p class="axis-cap">슬라이더로 \(\sigma\)를 키우면 경로가 얼마나 거칠어지는지, \(\mu\)를 바꾸면 전반적인 추세가 어떻게 기우는지 확인할 수 있다.</p>
+</div>
+
+<h2 id="sec-implication">3. GBM의 함의</h2>
+
+<p>GBM은 데이터로 직접 검증 가능한 세 가지를 주장한다.</p>
+
+<div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:3px;padding:1.3rem 1.5rem;margin:1.4rem 0;">
+  <div style="font-family:var(--sans);font-size:0.62rem;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">GBM이 주장하는 세 가지</div>
+  <div style="display:flex;flex-direction:column;gap:0.9rem;font-family:var(--sans);font-size:0.85rem;color:var(--ink-muted);line-height:1.75;">
+    <div><strong style="color:var(--ink);">① 정규성</strong> — 로그수익률 \(\ln(S_t/S_{t-1})\)이 정규분포를 따른다.</div>
+    <div><strong style="color:var(--ink);">② 변동성의 상수성</strong> — 변동성 \(\sigma\)가 시간에 걸쳐 상수다.</div>
+    <div><strong style="color:var(--ink);">③ 무자기상관</strong> — 서로 다른 기간의 로그수익률이 독립이다(자기상관이 없다).</div>
+  </div>
+</div>
+
+<h2 id="sec-empirical">4. 실증 검증</h2>
+
+<p>검증 대상은 변동성 수준이 다른 세 자산이다. 안정적인 배당주 코카콜라(KO), 변동성이 큰 성장주 엔비디아(NVDA), 그리고 분산투자 벤치마크인 S&amp;P500(^GSPC)이다. 야후 파이낸스에서 2021년 8월부터 2026년 8월까지 약 5년(1,259영업일)치 일간 종가를 받아 로그수익률을 계산한다.<sup>2</sup></p>
+
+<div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:3px;padding:1.1rem 1.4rem;margin:1.4rem 0;">
+  <table style="width:100%;border-collapse:collapse;font-family:var(--sans);font-size:0.8rem;">
+    <thead>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <th style="text-align:left;padding:0.4rem 0.3rem;color:var(--ink-muted);font-weight:500;">자산</th>
+        <th style="text-align:right;padding:0.4rem 0.3rem;color:var(--ink-muted);font-weight:500;">연변동성</th>
+        <th style="text-align:right;padding:0.4rem 0.3rem;color:var(--ink-muted);font-weight:500;">왜도</th>
+        <th style="text-align:right;padding:0.4rem 0.3rem;color:var(--ink-muted);font-weight:500;">첨도</th>
+        <th style="text-align:right;padding:0.4rem 0.3rem;color:var(--ink-muted);font-weight:500;">초과첨도</th>
+      </tr>
+    </thead>
+    <tbody style="color:var(--ink);">
+      <tr style="border-bottom:0.5px solid var(--rule);"><td style="padding:0.4rem 0.3rem;">KO</td><td style="text-align:right;padding:0.4rem 0.3rem;">16.7%</td><td style="text-align:right;padding:0.4rem 0.3rem;">-0.17</td><td style="text-align:right;padding:0.4rem 0.3rem;">6.77</td><td style="text-align:right;padding:0.4rem 0.3rem;">3.77</td></tr>
+      <tr style="border-bottom:0.5px solid var(--rule);"><td style="padding:0.4rem 0.3rem;">NVDA</td><td style="text-align:right;padding:0.4rem 0.3rem;">51.4%</td><td style="text-align:right;padding:0.4rem 0.3rem;">0.24</td><td style="text-align:right;padding:0.4rem 0.3rem;">6.61</td><td style="text-align:right;padding:0.4rem 0.3rem;">3.61</td></tr>
+      <tr><td style="padding:0.4rem 0.3rem;">S&amp;P500</td><td style="text-align:right;padding:0.4rem 0.3rem;">17.0%</td><td style="text-align:right;padding:0.4rem 0.3rem;">0.02</td><td style="text-align:right;padding:0.4rem 0.3rem;">9.33</td><td style="text-align:right;padding:0.4rem 0.3rem;">6.33</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 id="sec-normality">4.1 정규성</h3>
+
+<p>세 자산의 로그수익률 히스토그램과 정규분포 QQ plot을 그린다.</p>
+
+<div class="viz-wrap">
+  <div class="viz-title">Fig. 1 — 로그수익률 분포 (표준화, 정규분포 대비)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+    <div class="chart-box"><div class="chart-label">KO</div><canvas id="hist-ko"></canvas></div>
+    <div class="chart-box"><div class="chart-label">NVDA</div><canvas id="hist-nvda"></canvas></div>
+    <div class="chart-box"><div class="chart-label">S&amp;P500</div><canvas id="hist-gspc"></canvas></div>
+  </div>
+  <p class="axis-cap">회색 막대는 표준화된 실제 로그수익률 분포, 실선은 표준정규분포 밀도함수다.</p>
+</div>
+
+<div class="viz-wrap">
+  <div class="viz-title">Fig. 1b — QQ Plot (표준정규분포 대비)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+    <div class="chart-box"><div class="chart-label">KO</div><canvas id="qq-ko"></canvas></div>
+    <div class="chart-box"><div class="chart-label">NVDA</div><canvas id="qq-nvda"></canvas></div>
+    <div class="chart-box"><div class="chart-label">S&amp;P500</div><canvas id="qq-gspc"></canvas></div>
+  </div>
+  <p class="axis-cap">점이 대각선에서 양 끝으로 갈수록 벗어날수록 fat tail이 심하다는 뜻이다.</p>
+</div>
+
+<p>정규분포의 첨도는 3인데, 세 자산 모두 6~9대로 뚜렷하게 높다 — 자크-베라 검정도 세 경우 모두 p값이 사실상 0으로 정규성을 강하게 기각한다.<sup>3</sup> 다만 예상과 다른 지점이 하나 있다. 변동성이 가장 큰 NVDA(연 51%)의 첨도(6.61)가 오히려 변동성이 가장 낮은 KO(6.77)보다 살짝 낮고, 분산투자된 지수인 S&amp;P500의 첨도(9.33)가 셋 중 가장 높다. 개별종목 하나가 흔들리는 정도보다, 지수 전체가 한꺼번에 흔들리는 사건(2022년 금리 인상기 급락 등)이 정규분포 기준으로 더 극단적인 값을 만들어낸 것으로 해석된다. 분산투자가 개별 종목의 특이 리스크는 상쇄시켜도, 시장 전체를 관통하는 체계적 충격 앞에서는 fat tail을 줄여주지 못하는 듯 하다.</p>
+
+<h3 id="sec-volconst">4.2 변동성의 시간 불변성</h3>
+
+<p>20일 롤링 변동성을 그린다.</p>
+
+<div class="viz-wrap">
+  <div class="viz-title">Fig. 2 — 20일 롤링 변동성 (연환산, %)</div>
+  <canvas id="rolling-vol"></canvas>
+  <div class="legend-row">
+    <div class="legend-item"><span class="legend-dot" style="background:#78716c;"></span>KO</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#92400e;"></span>NVDA</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#c4907a;"></span>S&amp;P500</div>
+  </div>
+</div>
+
+<p>GBM은 \(\sigma\)가 상수라고 가정하지만, 실제로는 세 자산 모두 구간에 따라 변동성이 몇 배씩 뛴다. KO는 5.6%~35.9%(평균 15.8%), NVDA는 22.4%~90.8%(평균 48.8%), S&amp;P500은 5.4%~50.6%(평균 15.5%) 사이를 오간다. 변동성이 높았던 구간 뒤에 다시 높은 변동성이 이어지는 군집 패턴(vol clustering)이 세 자산 모두에서 나타난다.</p>
+
+<h3 id="sec-autocorr">4.3 자기상관</h3>
+
+<p>로그수익률과 그 제곱의 ACF를 계산한다. 표본 크기(n=1,259)에서 95% 유의성 기준선은 대략 ±0.055이다.</p>
+
+<div class="viz-wrap">
+  <div class="viz-title">Fig. 3 — 로그수익률 및 제곱수익률 ACF (lag 1~10)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+    <div class="chart-box"><div class="chart-label">KO</div><canvas id="acf-ko"></canvas></div>
+    <div class="chart-box"><div class="chart-label">NVDA</div><canvas id="acf-nvda"></canvas></div>
+    <div class="chart-box"><div class="chart-label">S&amp;P500</div><canvas id="acf-gspc"></canvas></div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-item"><span class="legend-dot" style="background:#a8a29e;"></span>수익률 ACF</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#92400e;"></span>제곱수익률 ACF</div>
+  </div>
+</div>
+
+<p>수익률 자체의 자기상관은 세 자산 모두 유의성 기준선 안팎에 머물러 뚜렷한 패턴을 보이지 않았다. 반면 제곱수익률의 ACF는 확연히 달랐는데, 개별 종목보다 지수 단위에서 변동성 군집 현상이 훨씬 강하게, 훨씬 오래 지속되었다. KO와 NVDA에서 일부 시차에서만 기준선을 넘는 정도였지만, S&amp;P500은 lag 1(0.175), lag 3(0.280), lag 4(0.220)에서 기준선의 서너 배에 달하는 값을 보였다.</p>
+
+<h2 id="sec-why">5. 왜 깨지는가</h2>
+
+<p>세 검증 결과는 일관되게 GBM의 가정과 어긋나고, 그 어긋나는 방식도 자산에 따라 다르다. Fat tail은 극단적인 가격 변화(실적 발표, 거시 충격 등)가 정규분포가 예측하는 것보다 훨씬 자주 발생함을 의미한다. Vol clustering은 변동성 자체가 확률 과정을 따르며 시간에 걸쳐 상수가 아님을 보여준다.<sup>4</sup> 흥미로운 점은 이 두 이탈이 반드시 개별 자산의 변동성 수준에 비례하지 않는다는 것이다 — S&amp;P500의 사례처럼, 여러 자산이 동시에 흔들리는 체계적 충격은 개별 종목의 특이 리스크보다 더 심한 형태로 정규성과 변동성 상수성을 깨뜨린다.</p>
+
+<h2 id="sec-conc">6. 결론</h2>
+
+<p>GBM은 로그수익률의 정규성, 변동성의 상수성, 무자기상관을 가정한다. KO, NVDA, S&amp;P500 세 자산 모두 이 세 가정에서 뚜렷하게 벗어났고, 벗어나는 정도는 단순히 개별 변동성이 높을수록 커지는 것이 아니라 자산의 성격(개별종목이냐 지수냐)에 따라서도 달라졌다. 그럼에도 GBM 기반 모형이 여전히 널리 쓰이는 이유는 분석적 단순성과 계산 편의성에 있다 — 현실을 정확히 기술하지 못해도 충분히 유용한 근사이기 때문이다.<sup>5</sup></p>
+
+<div class="footnotes">
+  <p><sup>1</sup> Black, F., & Scholes, M. (1973). The Pricing of Options and Corporate Liabilities. <em>Journal of Political Economy</em>, 81(3), 637–654.</p>
+  <p><sup>2</sup> KO, NVDA, ^GSPC 일간 수정종가: Yahoo Finance 역사적 데이터(2021-08-12~2026-08-12). 히스토그램·QQ plot·롤링 변동성·ACF는 Python(pandas/numpy/scipy)으로 직접 계산한 실측치이며 근사 재현이 아니다.</p>
+  <p><sup>3</sup> Jarque, C. M., & Bera, A. K. (1980). Efficient tests for normality, homoscedasticity and serial independence of regression residuals. <em>Economics Letters</em>, 6(3), 255–259.</p>
+  <p><sup>4</sup> Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. <em>Quantitative Finance</em>, 1(2), 223–236.</p>
+  <p><sup>5</sup> Merton, R. C. (1973). Theory of Rational Option Pricing. <em>The Bell Journal of Economics and Management Science</em>, 4(1), 141–183.</p>
+</div>
+
+    </article>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 차트 공통 옵션 ──
+const FONT = "'Noto Sans KR', sans-serif";
+const TC = 'rgba(120,113,108,0.9)';
+const GRID = 'rgba(231,226,216,1)';
+const base = {
+  responsive: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: GRID }, ticks: { color: TC, font: { family: FONT, size: 10 } } },
+    y: { grid: { color: GRID }, ticks: { color: TC, font: { family: FONT, size: 10 } } }
+  }
+};
+
+// ── 실증 검증 차트 (KO / NVDA / S&P500, 2021.08~2026.08 일간 로그수익률) ──
+const DATA = {
+  KO: {
+    histCenters: [-4.833,-4.5,-4.167,-3.833,-3.5,-3.167,-2.833,-2.5,-2.167,-1.833,-1.5,-1.167,-0.833,-0.5,-0.167,0.167,0.5,0.833,1.167,1.5,1.833,2.167,2.5,2.833,3.167,3.5,3.833,4.167,4.5,4.833],
+    histCounts: [0.0024,0.0024,0.0,0.0072,0.0024,0.0024,0.0072,0.0119,0.0286,0.0429,0.1192,0.1383,0.2933,0.3649,0.4626,0.5103,0.3983,0.2432,0.1335,0.0811,0.0692,0.0262,0.0191,0.0119,0.0095,0.0048,0.0024,0.0,0.0048,0.0],
+    normalPdf: [0.0,0.0,0.0001,0.0003,0.0009,0.0027,0.0072,0.0175,0.0382,0.0743,0.1295,0.202,0.2819,0.3521,0.3934,0.3934,0.3521,0.2819,0.202,0.1295,0.0743,0.0382,0.0175,0.0072,0.0027,0.0009,0.0003,0.0001,0.0,0.0],
+    qqTheo: [-3.355,-2.329,-2.049,-1.872,-1.749,-1.641,-1.548,-1.474,-1.401,-1.335,-1.274,-1.222,-1.169,-1.12,-1.076,-1.031,-0.988,-0.946,-0.91,-0.871,-0.834,-0.801,-0.765,-0.731,-0.7,-0.668,-0.636,-0.604,-0.576,-0.546,-0.516,-0.489,-0.46,-0.431,-0.403,-0.377,-0.349,-0.322,-0.297,-0.27,-0.243,-0.219,-0.192,-0.166,-0.14,-0.116,-0.09,-0.064,-0.04,-0.014,0.012,0.038,0.062,0.088,0.114,0.138,0.164,0.19,0.217,0.241,0.268,0.295,0.32,0.347,0.375,0.401,0.429,0.457,0.486,0.513,0.543,0.573,0.602,0.633,0.665,0.698,0.729,0.763,0.798,0.831,0.868,0.907,0.943,0.985,1.027,1.072,1.116,1.165,1.218,1.27,1.33,1.396,1.468,1.542,1.633,1.74,1.861,2.033,2.3,3.355],
+    qqSample: [-6.886,-2.509,-2.021,-1.712,-1.631,-1.533,-1.455,-1.36,-1.313,-1.222,-1.075,-1.039,-1.004,-0.96,-0.922,-0.888,-0.857,-0.818,-0.791,-0.749,-0.717,-0.682,-0.663,-0.623,-0.59,-0.567,-0.531,-0.497,-0.472,-0.459,-0.441,-0.419,-0.382,-0.353,-0.333,-0.306,-0.27,-0.249,-0.228,-0.215,-0.19,-0.178,-0.164,-0.131,-0.101,-0.08,-0.056,-0.032,-0.016,-0.0,0.016,0.045,0.066,0.089,0.109,0.124,0.136,0.161,0.188,0.202,0.22,0.241,0.254,0.28,0.305,0.317,0.336,0.354,0.372,0.391,0.414,0.453,0.486,0.518,0.539,0.556,0.578,0.607,0.64,0.666,0.674,0.702,0.741,0.806,0.86,0.882,0.933,0.974,1.078,1.154,1.218,1.315,1.382,1.474,1.624,1.734,1.864,2.157,2.67,4.599],
+    rollVol: [10.66,12.45,13.14,13.51,13.94,13.06,12.36,11.63,11.13,9.94,10.77,10.24,9.29,21.09,23.27,26.73,26.88,16.6,15.6,10.54,9.95,11.69,12.1,14.99,15.98,21.72,26.5,27.09,26.38,21.71,13.22,9.55,10.7,13.47,20.48,20.37,32.67,35.73,33.09,33.63,24.12,21.69,22.04,21.6,17.4,16.0,15.54,15.11,15.04,14.06,14.48,14.76,18.49,19.09,19.26,20.37,16.58,19.39,22.49,23.38,21.41,23.81,19.09,17.59,17.58,12.08,13.56,13.33,15.01,15.09,16.93,16.33,15.83,15.96,14.09,13.79,14.39,14.01,12.01,13.27,10.27,9.21,8.19,6.3,6.75,6.89,7.66,11.62,13.75,13.61,13.97,11.24,9.57,11.13,11.31,12.72,13.39,13.28,12.89,10.74,9.07,8.04,9.27,9.39,10.76,11.09,22.21,23.49,25.62,26.09,16.27,14.43,10.4,7.84,6.35,8.97,11.96,11.97,13.29,12.32,8.82,10.82,13.54,12.88,15.06,14.16,10.83,11.78,10.5,10.42,11.09,10.74,10.7,14.25,12.78,10.98,9.55,8.49,10.0,11.42,11.81,12.6,11.75,11.39,12.0,10.9,12.53,16.61,16.4,15.58,14.99,8.57,12.06,12.23,13.16,12.91,12.14,12.48,13.44,14.31,15.62,14.2,14.03,14.1,13.45,15.0,15.48,14.71,13.25,13.32,12.21,18.88,19.61,24.7,24.45,21.96,23.94,19.32,19.17,18.97,18.27,26.48,27.01,26.86,25.16,16.55,19.54,18.5,17.66,16.81,11.7,13.03,14.36,14.82,13.25,13.86,14.71,15.07,15.72,15.82,14.53,13.71,12.91,11.51,10.73,10.81,12.34,11.68,18.81,21.01,21.03,22.14,16.23,14.84,16.76,16.57,16.76,14.03,13.13,15.35,16.76,18.03,16.75,18.52,17.57,16.53,18.78,14.37,15.37,14.79,12.83,16.32,15.58,16.81,21.69,19.7,18.96,17.36,14.79,20.65,25.05,25.2,25.4,24.74,21.2,27.53,31.66,29.41],
+    acfRet: [-0.0117,0.0047,-0.0045,-0.0452,-0.0038,-0.0343,0.0129,0.008,-0.0025,0.0259],
+    acfSq: [0.0886,0.0293,0.0884,0.0312,-0.0066,0.0216,0.0873,0.0414,0.0037,0.0928],
+  },
+  NVDA: {
+    histCenters: [-4.833,-4.5,-4.167,-3.833,-3.5,-3.167,-2.833,-2.5,-2.167,-1.833,-1.5,-1.167,-0.833,-0.5,-0.167,0.167,0.5,0.833,1.167,1.5,1.833,2.167,2.5,2.833,3.167,3.5,3.833,4.167,4.5,4.833],
+    histCounts: [0.0,0.0,0.0,0.0,0.0,0.0119,0.0048,0.0215,0.043,0.0525,0.1003,0.1696,0.2412,0.3702,0.4514,0.4992,0.3893,0.2532,0.1863,0.0932,0.0454,0.0334,0.0143,0.0072,0.0,0.0048,0.0024,0.0024,0.0024,0.0],
+    normalPdf: [0.0,0.0,0.0001,0.0003,0.0009,0.0027,0.0072,0.0175,0.0382,0.0743,0.1295,0.202,0.2819,0.3521,0.3934,0.3934,0.3521,0.2819,0.202,0.1295,0.0743,0.0382,0.0175,0.0072,0.0027,0.0009,0.0003,0.0001,0.0,0.0],
+    qqTheo: [-3.355,-2.329,-2.049,-1.872,-1.749,-1.641,-1.548,-1.474,-1.401,-1.335,-1.274,-1.222,-1.169,-1.12,-1.076,-1.031,-0.988,-0.946,-0.91,-0.871,-0.834,-0.801,-0.765,-0.731,-0.7,-0.668,-0.636,-0.604,-0.576,-0.546,-0.516,-0.489,-0.46,-0.431,-0.403,-0.377,-0.349,-0.322,-0.297,-0.27,-0.243,-0.219,-0.192,-0.166,-0.14,-0.116,-0.09,-0.064,-0.04,-0.014,0.012,0.038,0.062,0.088,0.114,0.138,0.164,0.19,0.217,0.241,0.268,0.295,0.32,0.347,0.375,0.401,0.429,0.457,0.486,0.513,0.543,0.573,0.602,0.633,0.665,0.698,0.729,0.763,0.798,0.831,0.868,0.907,0.943,0.985,1.027,1.072,1.116,1.165,1.218,1.27,1.33,1.396,1.468,1.542,1.633,1.74,1.861,2.033,2.3,3.355],
+    qqSample: [-5.801,-2.481,-2.195,-1.935,-1.791,-1.589,-1.462,-1.387,-1.298,-1.218,-1.175,-1.113,-1.078,-1.021,-0.972,-0.939,-0.902,-0.835,-0.797,-0.733,-0.707,-0.675,-0.653,-0.622,-0.595,-0.559,-0.541,-0.51,-0.484,-0.466,-0.431,-0.403,-0.377,-0.354,-0.326,-0.305,-0.295,-0.271,-0.254,-0.23,-0.202,-0.171,-0.142,-0.12,-0.096,-0.085,-0.059,-0.036,-0.01,0.013,0.028,0.052,0.067,0.092,0.119,0.136,0.15,0.172,0.189,0.207,0.228,0.245,0.266,0.283,0.308,0.34,0.362,0.391,0.415,0.446,0.463,0.482,0.503,0.531,0.554,0.596,0.616,0.635,0.679,0.698,0.727,0.76,0.805,0.851,0.884,0.916,0.997,1.038,1.086,1.142,1.171,1.239,1.315,1.418,1.509,1.608,1.837,2.059,2.385,6.523],
+    rollVol: [37.28,36.22,34.27,25.87,30.13,36.97,37.47,36.3,37.08,29.11,49.86,52.74,57.73,66.19,62.72,75.25,68.52,64.05,59.3,44.63,43.83,55.73,54.1,62.82,73.3,70.3,73.03,74.84,68.19,70.5,68.44,66.9,60.85,49.74,66.5,76.12,86.68,85.8,83.62,69.23,67.55,67.66,59.07,64.18,49.11,51.86,48.44,50.38,57.29,57.67,61.99,62.2,63.79,62.14,53.33,54.49,49.25,59.18,59.07,57.12,48.79,62.3,67.52,70.77,70.73,53.36,51.72,55.72,58.81,56.76,66.02,55.14,56.06,60.68,56.09,67.91,64.11,63.42,57.61,37.27,34.7,29.91,25.37,29.19,32.79,33.54,35.39,81.05,84.61,85.54,86.01,46.3,38.45,35.09,35.41,34.68,30.96,37.04,43.41,50.84,54.56,52.46,41.86,32.27,26.15,29.65,31.49,36.9,40.94,42.29,43.74,36.07,30.85,28.86,30.0,29.27,30.82,27.45,32.97,32.85,31.17,31.96,31.22,32.82,39.99,65.69,62.83,71.93,68.22,48.01,45.52,33.2,36.38,56.44,62.61,62.64,60.19,48.37,48.23,48.43,49.04,54.36,51.81,50.29,52.77,52.66,58.11,78.32,86.16,83.28,75.96,68.86,66.43,62.57,62.7,45.88,35.94,39.53,39.05,34.99,39.46,35.02,37.24,41.91,36.28,38.52,33.44,33.83,38.71,42.97,47.29,88.45,88.14,86.66,84.15,53.35,62.34,67.6,69.78,63.23,56.03,86.91,88.07,90.49,85.77,46.7,41.65,35.42,37.7,37.31,28.14,27.54,27.42,27.09,27.0,28.89,23.63,27.43,24.62,25.33,23.73,22.36,28.19,29.94,33.8,31.99,29.05,36.28,32.2,38.76,43.65,43.61,48.04,41.97,38.69,31.32,32.13,30.97,29.84,26.95,27.52,25.89,31.63,42.84,39.01,43.56,43.7,36.2,35.3,35.04,36.7,35.17,35.9,30.95,34.83,39.08,44.24,43.28,41.66,46.16,43.51,46.85,42.3,35.87,38.32,35.35,40.44,44.06],
+    acfRet: [-0.0407,0.0243,-0.0617,-0.0182,0.0218,0.028,0.0106,0.0019,0.0267,-0.0212],
+    acfSq: [0.0474,0.0384,0.0245,0.087,0.0303,0.032,0.0367,0.0054,0.0175,0.027],
+  },
+  GSPC: {
+    histCenters: [-4.833,-4.5,-4.167,-3.833,-3.5,-3.167,-2.833,-2.5,-2.167,-1.833,-1.5,-1.167,-0.833,-0.5,-0.167,0.167,0.5,0.833,1.167,1.5,1.833,2.167,2.5,2.833,3.167,3.5,3.833,4.167,4.5,4.833],
+    histCounts: [0.0024,0.0,0.0024,0.0048,0.0048,0.0095,0.0167,0.0143,0.0263,0.0477,0.1122,0.148,0.2029,0.3174,0.5513,0.5251,0.3962,0.2697,0.1504,0.0859,0.0477,0.0358,0.0143,0.0119,0.0,0.0,0.0,0.0,0.0,0.0024],
+    normalPdf: [0.0,0.0,0.0001,0.0003,0.0009,0.0027,0.0072,0.0175,0.0382,0.0743,0.1295,0.202,0.2819,0.3521,0.3934,0.3934,0.3521,0.2819,0.202,0.1295,0.0743,0.0382,0.0175,0.0072,0.0027,0.0009,0.0003,0.0001,0.0,0.0],
+    qqTheo: [-3.355,-2.329,-2.049,-1.872,-1.749,-1.641,-1.548,-1.474,-1.401,-1.335,-1.274,-1.222,-1.169,-1.12,-1.076,-1.031,-0.988,-0.946,-0.91,-0.871,-0.834,-0.801,-0.765,-0.731,-0.7,-0.668,-0.636,-0.604,-0.576,-0.546,-0.516,-0.489,-0.46,-0.431,-0.403,-0.377,-0.349,-0.322,-0.297,-0.27,-0.243,-0.219,-0.192,-0.166,-0.14,-0.116,-0.09,-0.064,-0.04,-0.014,0.012,0.038,0.062,0.088,0.114,0.138,0.164,0.19,0.217,0.241,0.268,0.295,0.32,0.347,0.375,0.401,0.429,0.457,0.486,0.513,0.543,0.573,0.602,0.633,0.665,0.698,0.729,0.763,0.798,0.831,0.868,0.907,0.943,0.985,1.027,1.072,1.116,1.165,1.218,1.27,1.33,1.396,1.468,1.542,1.633,1.74,1.861,2.033,2.3,3.355],
+    qqSample: [-5.798,-2.841,-2.279,-1.933,-1.729,-1.593,-1.507,-1.424,-1.335,-1.222,-1.161,-1.103,-1.051,-0.994,-0.909,-0.837,-0.786,-0.755,-0.731,-0.696,-0.644,-0.612,-0.58,-0.541,-0.512,-0.473,-0.436,-0.411,-0.396,-0.362,-0.337,-0.312,-0.301,-0.28,-0.249,-0.234,-0.22,-0.191,-0.183,-0.163,-0.141,-0.12,-0.104,-0.082,-0.064,-0.049,-0.04,-0.026,-0.01,0.018,0.038,0.052,0.067,0.082,0.098,0.109,0.129,0.161,0.18,0.194,0.215,0.236,0.255,0.292,0.309,0.325,0.337,0.354,0.387,0.414,0.449,0.47,0.489,0.505,0.533,0.556,0.597,0.626,0.65,0.681,0.712,0.74,0.778,0.826,0.86,0.908,0.94,0.985,1.025,1.062,1.105,1.243,1.312,1.393,1.49,1.634,1.769,2.027,2.33,8.452],
+    rollVol: [8.23,7.98,8.95,10.29,12.59,15.26,15.11,14.83,12.05,8.6,8.58,6.82,6.55,14.61,17.08,18.92,21.1,16.59,15.92,14.74,14.77,18.71,20.08,22.02,22.21,22.54,23.82,25.31,25.27,22.85,19.98,17.77,16.48,19.34,27.17,31.22,35.11,33.87,31.04,27.4,29.44,32.18,29.66,28.76,20.02,18.15,19.14,18.92,18.29,19.36,20.49,20.15,25.04,24.54,22.0,29.14,24.09,29.17,29.58,25.42,25.02,28.72,27.35,28.21,27.26,18.03,20.49,18.37,19.59,19.05,17.88,16.17,15.75,17.15,16.66,16.09,15.49,16.45,17.42,18.02,17.53,13.97,11.31,11.49,12.41,14.32,14.37,13.84,12.87,11.02,11.02,11.07,9.79,10.38,9.69,8.54,8.19,9.86,9.88,10.21,13.13,11.92,11.19,12.01,10.8,12.15,13.29,13.51,13.41,14.27,15.28,16.2,13.09,11.12,10.33,7.04,9.65,9.65,10.86,10.05,9.14,9.38,10.78,12.19,11.97,13.81,12.15,11.83,11.77,9.94,10.24,10.2,10.94,12.22,13.79,13.95,11.94,10.89,9.24,8.56,7.96,7.85,6.23,5.44,7.19,10.33,14.11,20.04,22.31,22.4,20.75,16.1,15.29,14.15,14.38,11.76,10.0,10.62,9.76,9.01,13.78,13.28,14.0,14.2,7.87,8.63,12.85,14.41,15.46,16.19,14.53,14.55,13.84,12.5,10.49,11.67,15.89,18.32,20.71,21.04,25.7,48.25,48.33,50.56,46.81,19.95,19.19,15.43,16.32,16.03,12.76,11.97,9.97,10.16,8.73,6.87,6.52,9.77,10.53,10.57,12.0,9.65,9.01,8.64,7.58,6.04,5.98,13.13,13.51,14.7,15.71,13.19,14.07,15.06,13.84,12.18,10.93,8.85,9.48,8.52,10.83,10.72,10.78,13.56,11.92,13.16,13.44,12.67,12.96,14.27,18.75,19.55,19.03,16.4,11.85,10.72,11.09,10.66,10.07,13.19,15.91,17.32,17.77,14.88,11.41,9.33,10.48,14.46],
+    acfRet: [-0.0164,-0.0004,-0.0574,-0.0363,0.0061,-0.0076,-0.0111,-0.0054,0.0383,-0.0059],
+    acfSq: [0.1752,0.0485,0.2798,0.2199,0.1017,0.0548,0.0681,0.1046,0.0754,0.0752],
+  },
+};
+
+const TICKERS = ['ko','nvda','gspc'];
+const TICKER_KEY = { ko: 'KO', nvda: 'NVDA', gspc: 'GSPC' };
+
+TICKERS.forEach(t => {
+  const d = DATA[TICKER_KEY[t]];
+
+  new Chart(document.getElementById('hist-' + t), {
+    type: 'bar',
+    data: {
+      labels: d.histCenters.map(v => v.toFixed(1)),
+      datasets: [
+        { type: 'bar', data: d.histCounts, backgroundColor: 'rgba(168,162,158,0.6)', barPercentage: 1, categoryPercentage: 1 },
+        { type: 'line', data: d.normalPdf, borderColor: 'rgba(146,64,14,0.9)', borderWidth: 1.6, pointRadius: 0, fill: false, tension: 0.3 }
+      ]
+    },
+    options: { ...base, scales: { x: { ...base.scales.x, ticks: { display: false } }, y: base.scales.y } }
+  });
+
+  new Chart(document.getElementById('qq-' + t), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { data: d.qqTheo.map((x, i) => ({ x, y: d.qqSample[i] })), backgroundColor: 'rgba(146,64,14,0.6)', pointRadius: 2 },
+        { type: 'line', data: [{ x: -4, y: -4 }, { x: 4, y: 4 }], borderColor: 'rgba(120,113,108,0.5)', borderWidth: 1, borderDash: [3, 3], pointRadius: 0 }
+      ]
+    },
+    options: { ...base, plugins: { legend: { display: false } } }
+  });
+
+  new Chart(document.getElementById('acf-' + t), {
+    type: 'bar',
+    data: {
+      labels: Array.from({ length: 10 }, (_, i) => i + 1),
+      datasets: [
+        { label: '수익률', data: d.acfRet, backgroundColor: 'rgba(168,162,158,0.75)' },
+        { label: '제곱수익률', data: d.acfSq, backgroundColor: 'rgba(146,64,14,0.75)' }
+      ]
+    },
+    options: { ...base, plugins: { legend: { display: false } } }
+  });
+});
+
+new Chart(document.getElementById('rolling-vol'), {
+  type: 'line',
+  data: {
+    labels: Array.from({ length: DATA.KO.rollVol.length }, (_, i) => i),
+    datasets: [
+      { label: 'KO', data: DATA.KO.rollVol, borderColor: '#78716c', borderWidth: 1.4, pointRadius: 0, fill: false, tension: 0.15 },
+      { label: 'NVDA', data: DATA.NVDA.rollVol, borderColor: '#92400e', borderWidth: 1.6, pointRadius: 0, fill: false, tension: 0.15 },
+      { label: 'S&P500', data: DATA.GSPC.rollVol, borderColor: '#c4907a', borderWidth: 1.4, pointRadius: 0, fill: false, tension: 0.15 }
+    ]
+  },
+  options: {
+    ...base,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ...base.scales.x, ticks: { display: false } },
+      y: { ...base.scales.y, title: { display: true, text: '연환산 변동성 (%)', color: TC, font: { family: FONT, size: 10 } } }
+    }
+  }
+});
+
+// ── GBM 경로 시뮬레이터 (SVG) ──
+(function () {
+  const svg = document.getElementById('gbm-sim-svg');
+  const muSlider = document.getElementById('mu-slider');
+  const sigmaSlider = document.getElementById('sigma-slider');
+  const muVal = document.getElementById('mu-val');
+  const sigmaVal = document.getElementById('sigma-val');
+  const resimBtn = document.getElementById('gbm-resim-btn');
+  const singleToggle = document.getElementById('single-path-toggle');
+
+  const W = 700, H = 320, S0 = 100, STEPS = 252, N_PATHS = 15;
+  const PAD_L = 42, PAD_B = 24, PAD_T = 10, PAD_R = 10;
+
+  function randn() {
+    let u = 1 - Math.random(), v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  function simulate(mu, sigma, n) {
+    const dt = 1 / STEPS;
+    const paths = [];
+    for (let p = 0; p < n; p++) {
+      const path = [S0];
+      let S = S0;
+      for (let t = 0; t < STEPS; t++) {
+        const z = randn();
+        S *= Math.exp((mu - 0.5 * sigma * sigma) * dt + sigma * Math.sqrt(dt) * z);
+        path.push(S);
+      }
+      paths.push(path);
+    }
+    return paths;
+  }
+
+  function render(paths) {
+    let min = Infinity, max = -Infinity;
+    paths.forEach(path => path.forEach(v => { if (v < min) min = v; if (v > max) max = v; }));
+    const range = max - min || 1;
+    const plotW = W - PAD_L - PAD_R, plotH = H - PAD_T - PAD_B;
+    const xOf = i => PAD_L + (i / STEPS) * plotW;
+    const yOf = v => PAD_T + plotH - ((v - min) / range) * plotH;
+
+    let s = '';
+    for (let g = 0; g <= 4; g++) {
+      const v = min + (range * g) / 4;
+      const y = yOf(v);
+      s += `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#e7e2d8" stroke-width="1"/>`;
+      s += `<text x="4" y="${y + 3}" font-size="10" font-family="'Noto Sans KR',sans-serif" fill="#78716c">${v.toFixed(0)}</text>`;
+    }
+    s += `<line x1="${PAD_L}" y1="${yOf(S0)}" x2="${W - PAD_R}" y2="${yOf(S0)}" stroke="rgba(120,113,108,0.4)" stroke-width="1"/>`;
+
+    const isSingle = paths.length === 1;
+    paths.forEach((path, idx) => {
+      const color = idx === 0 ? 'rgba(146,64,14,0.9)' : 'rgba(146,64,14,0.22)';
+      const width = idx === 0 ? (isSingle ? 2 : 1.6) : 1;
+      let d = '';
+      path.forEach((v, i) => { const x = xOf(i), y = yOf(v); d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' '; });
+      s += `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}"/>`;
+      if (isSingle && idx === 0) {
+        const x = xOf(path.length - 1), y = yOf(path[path.length - 1]);
+        s += `<circle cx="${x}" cy="${y}" r="3" fill="#92400e"/>`;
+      }
+    });
+
+    svg.innerHTML = s;
+  }
+
+  function rerun() {
+    const mu = parseFloat(muSlider.value);
+    const sigma = parseFloat(sigmaSlider.value);
+    muVal.textContent = mu.toFixed(2);
+    sigmaVal.textContent = sigma.toFixed(2);
+    render(simulate(mu, sigma, singleToggle.checked ? 1 : N_PATHS));
+  }
+
+  muSlider.addEventListener('input', rerun);
+  sigmaSlider.addEventListener('input', rerun);
+  resimBtn.addEventListener('click', rerun);
+  singleToggle.addEventListener('change', rerun);
+  rerun();
+})();
+
+// ── 확률의 갈래 (SVG, S0=100 기준) ──
+(function () {
+  const svg = document.getElementById('gbm-branch-svg');
+  const muInput = document.getElementById('branch-mu-input');
+  const sigmaInput = document.getElementById('branch-sigma-input');
+  const muSlider = document.getElementById('branch-mu-slider');
+  const sigmaSlider = document.getElementById('branch-sigma-slider');
+  const zoomRadios = document.querySelectorAll('input[name="branch-zoom-period"]');
+  const replayBtn = document.getElementById('branch-replay-btn');
+
+  const W = 700, H = 340, S0 = 100;
+  const DURDAYS = [1, 20, 80, 240];
+  const NITER = 3;
+  const TRADING_DAYS = 240;
+  const PAD_L = 44, PAD_R = 16, PAD_T = 14, PAD_B = 34;
+
+  function randn() {
+    let u = 1 - Math.random(), v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  function normalPdf(x, mean, sd) {
+    return Math.exp(-0.5 * Math.pow((x - mean) / sd, 2)) / (sd * Math.sqrt(2 * Math.PI));
+  }
+
+  function build(mu, sigma) {
+    let series = [], dots = [], pdfs = [], extY = [];
+    for (let d = 0; d < DURDAYS.length; d++) {
+      const dt = DURDAYS[d];
+      const amu = (mu / TRADING_DAYS) * dt;
+      const asigma = (sigma / Math.sqrt(TRADING_DAYS)) * Math.sqrt(dt);
+      const xn = Array.from({ length: NITER }, () => amu + asigma * randn());
+      const stepMult = xn.map(v => Math.exp(v) - (asigma * asigma) / 2);
+      const px = Array.from({ length: 31 }, (_, i) => amu - 2 * asigma + (i * 4 * asigma) / 30);
+      const py = px.map(v => (dt * Math.sqrt(dt) * normalPdf(v, amu, asigma)) / 100);
+
+      let pathpts = [{
+        x: series.length > 0 ? series[series.length - 1][NITER].x : 0,
+        y: series.length > 0 ? series[series.length - 1][NITER].y : S0
+      }];
+      for (let j = 0; j < stepMult.length; j++) {
+        pdfs.push(px.map((v, i) => ({
+          x: pathpts[j].x + dt - py[i],
+          y: pathpts[j].y * (Math.exp(v) - (asigma * asigma) / 2)
+        })));
+        pathpts.push({ x: pathpts[j].x + dt, y: pathpts[j].y * stepMult[j] });
+        dots.push(pathpts[pathpts.length - 1]);
+      }
+      let yMin = Infinity, yMax = -Infinity;
+      pdfs.slice(-NITER).forEach(curve => curve.forEach(p => { if (p.y < yMin) yMin = p.y; if (p.y > yMax) yMax = p.y; }));
+      extY.push([yMin, yMax]);
+      series.push(pathpts);
+    }
+    const exFull = [0, Math.max(...series.map(s => Math.max(...s.map(p => p.x))))];
+    let yMinAll = Infinity, yMaxAll = -Infinity;
+    dots.forEach(p => { if (p.y < yMinAll) yMinAll = p.y; if (p.y > yMaxAll) yMaxAll = p.y; });
+    pdfs.forEach(curve => curve.forEach(p => { if (p.y > 0 && p.y < yMinAll) yMinAll = p.y; if (p.y > yMaxAll) yMaxAll = p.y; }));
+    return { series, dots, pdfs, extY, exFull, eyFull: [yMinAll, yMaxAll] };
+  }
+
+  function getZoomIndex() {
+    let v = 'all';
+    zoomRadios.forEach(r => { if (r.checked) v = r.value; });
+    const mapIdx = { '1': 0, '20': 1, '80': 2, '240': 3 };
+    return v === 'all' ? null : mapIdx[v];
+  }
+
+  let cached = null;
+
+  function draw() {
+    const { series, dots, pdfs, extY, exFull, eyFull } = cached;
+    const zi = getZoomIndex();
+
+    let ex, ey;
+    if (zi === null) { ex = exFull; ey = eyFull; }
+    else { const seg = series[zi]; ex = [seg[0].x, seg[NITER].x]; ey = extY[zi]; }
+    if (!(ey[1] > ey[0])) ey = [ey[0] * 0.98, ey[0] * 1.02 || 1];
+
+    const useLog = zi === null;
+    const tx = v => useLog ? Math.log1p(v) : v;
+    const exT = [tx(ex[0]), tx(ex[1])];
+    const logMin = Math.log(Math.max(ey[0], 1e-6)), logMax = Math.log(ey[1]);
+    const plotW = W - PAD_L - PAD_R, plotH = H - PAD_T - PAD_B;
+    const xOf = v => PAD_L + ((tx(v) - exT[0]) / (exT[1] - exT[0])) * plotW;
+    const yOf = v => PAD_T + plotH - ((Math.log(Math.max(v, 1e-6)) - logMin) / (logMax - logMin)) * plotH;
+
+    let s = '';
+    for (let g = 0; g <= 5; g++) {
+      const v = Math.exp(logMin + ((logMax - logMin) * g) / 5);
+      const y = yOf(v);
+      s += `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#e7e2d8" stroke-width="1"/>`;
+      s += `<text x="2" y="${y + 3}" font-size="10" font-family="'Noto Sans KR',sans-serif" fill="#78716c">${v.toFixed(1)}</text>`;
+    }
+
+    pdfs.forEach((curve, di) => {
+      if (dots[di].x < ex[0] - 1e-6 || dots[di].x > ex[1] + 1e-6) return;
+      let d = '';
+      curve.forEach((p, i) => { const x = xOf(p.x), y = yOf(p.y); d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' '; });
+      s += `<path d="${d}" fill="none" stroke="rgba(120,113,108,0.55)" stroke-width="1" stroke-dasharray="2,2"/>`;
+    });
+
+    const pathSegs = zi === null ? series : [series[zi]];
+    pathSegs.forEach(seg => {
+      let d = '';
+      seg.forEach((p, i) => { const x = xOf(p.x), y = yOf(p.y); d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' '; });
+      s += `<path d="${d}" fill="none" stroke="rgba(146,64,14,0.9)" stroke-width="1.8"/>`;
+    });
+
+    dots.forEach((p, di) => {
+      if (p.x < ex[0] - 1e-6 || p.x > ex[1] + 1e-6) return;
+      const x = xOf(p.x), y = yOf(p.y);
+      s += `<circle cx="${x}" cy="${y}" r="2.4" fill="#92400e"/>`;
+      const label = p.y.toFixed(1);
+      let ly = di % 2 === 0 ? y - 6 : y + 13;
+      if (ly < PAD_T + 8) ly = y + 13;
+      const lx = Math.min(Math.max(x - 12, PAD_L), W - PAD_R - 28);
+      s += `<text x="${lx}" y="${ly}" font-size="10" font-family="'Noto Sans KR',sans-serif" fill="rgba(87,79,73,0.9)">${label}</text>`;
+    });
+
+    s += `<text x="${PAD_L + plotW / 2}" y="${H - 6}" font-size="10" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" fill="rgba(120,113,108,0.85)">경과 거래일수</text>`;
+
+    svg.innerHTML = s;
+  }
+
+  function resimulate() {
+    cached = build(parseFloat(muInput.value), parseFloat(sigmaInput.value));
+    draw();
+  }
+  function syncFromSlider() { muInput.value = muSlider.value; sigmaInput.value = sigmaSlider.value; resimulate(); }
+  function syncFromInput() { muSlider.value = muInput.value; sigmaSlider.value = sigmaInput.value; resimulate(); }
+
+  muSlider.addEventListener('input', syncFromSlider);
+  sigmaSlider.addEventListener('input', syncFromSlider);
+  muInput.addEventListener('change', syncFromInput);
+  sigmaInput.addEventListener('change', syncFromInput);
+  zoomRadios.forEach(r => r.addEventListener('change', draw));
+  replayBtn.addEventListener('click', resimulate);
+  resimulate();
+})();
+
+
+// ── 드롭다운 ──
+const tagBtn = document.getElementById('tag-btn');
+const treeDrop = document.getElementById('tree-drop');
+const overlay = document.getElementById('overlay');
+tagBtn.addEventListener('click', e => { e.stopPropagation(); const open = treeDrop.classList.toggle('open'); tagBtn.classList.toggle('open', open); overlay.classList.toggle('show', open); });
+overlay.addEventListener('click', () => { treeDrop.classList.remove('open'); tagBtn.classList.remove('open'); overlay.classList.remove('show'); });
+document.addEventListener('click', () => { treeDrop.classList.remove('open'); tagBtn.classList.remove('open'); overlay.classList.remove('show'); });
+
+// ── TOC 활성화 ──
+const tocItems = document.querySelectorAll('.toc-item');
+const sections = document.querySelectorAll('h2[id], h3[id]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  tocItems.forEach(item => { const href = item.getAttribute('href') || ''; item.classList.toggle('on', href === '#' + cur); });
+});
+
+// ── KaTeX ──
+renderMathInElement(document.body, {
+  delimiters: [
+    { left: '\\(', right: '\\)', display: false },
+    { left: '\\[', right: '\\]', display: true }
+  ]
+});
+</script>
+<script src="../footnotes.js"></script>
+</body>
+</html>
