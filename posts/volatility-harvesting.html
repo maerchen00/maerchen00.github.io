@@ -492,14 +492,14 @@ const portVals = runMaxRaw.map((rm, i) => rm * (1 + ddVals[i] / 100));
 
 // ── D3.js Fig.7 ──
 (function() {
-  const data = portLabels.map((l,i) => ({label:l, val:portVals[i], dd:ddVals[i]}));
+  const data = portLabels.map((l,i) => ({label:l, val:portVals[i]}));
   const container = document.getElementById('nk-d3-chart');
   const W = container.offsetWidth || 680;
 
   // 레이아웃
-  const marginL=38, marginR=10, marginTop=8, marginMid=1, marginBot=22;
-  const H_top = 190, H_bot = 70;
-  const H_total = marginTop + H_top + marginMid + H_bot + marginBot;
+  const marginL=38, marginR=10, marginTop=8, marginBot=22;
+  const H_top = 190;
+  const H_total = marginTop + H_top + marginBot;
   const innerW = W - marginL - marginR;
 
   const svg = d3.select(container).append('svg')
@@ -509,9 +509,8 @@ const portVals = runMaxRaw.map((rm, i) => rm * (1 + ddVals[i] / 100));
   // 색상
   const gridC = '#e7e2d8', textC = '#78716c';
   const blueArea = 'rgba(44,95,138,0.22)', blueLine = 'rgba(44,95,138,0.9)';
-  const redBar = 'rgba(150,60,20,0.65)';
 
-  // X 스케일 (공유)
+  // X 스케일
   const xScale = d3.scalePoint()
     .domain(data.map(d=>d.label))
     .range([0, innerW]);
@@ -519,7 +518,7 @@ const portVals = runMaxRaw.map((rm, i) => rm * (1 + ddVals[i] / 100));
   // 연도별 첫 번째 인덱스만 tick으로
   const xTicks = data.filter(d => d.label.endsWith('-01') && parseInt(d.label) % 2 === 0).map(d=>d.label);
 
-  // ── 상단 차트 ──
+  // ── 차트 ──
   const gTop = svg.append('g').attr('transform', `translate(${marginL},${marginTop})`);
   const yTop = d3.scaleLinear().domain([97, 245]).range([H_top, 0]);
 
@@ -551,50 +550,8 @@ const portVals = runMaxRaw.map((rm, i) => rm * (1 + ddVals[i] / 100));
   gTop.append('path').datum(data).attr('d',lineTop)
     .attr('fill','none').attr('stroke',blueLine).attr('stroke-width',1.5);
 
-  // 하단 경계선 (구분선)
-  gTop.append('line')
-    .attr('x1',0).attr('x2',innerW)
-    .attr('y1',H_top).attr('y2',H_top)
-    .attr('stroke','#1a1208').attr('stroke-width',2);
-
-  // ── 하단 차트 ──
-  const gBot = svg.append('g').attr('transform', `translate(${marginL},${marginTop+H_top+marginMid})`);
-  const yBot = d3.scaleLinear().domain([-15, 0]).range([H_bot, 0]);
-  const barW = Math.max(1, innerW / data.length - 0.3);
-
-  // 그리드
-  [-5,-10,-15].forEach(v => {
-    gBot.append('line')
-      .attr('x1',0).attr('x2',innerW)
-      .attr('y1',yBot(v)).attr('y2',yBot(v))
-      .attr('stroke',gridC).attr('stroke-width',1);
-    gBot.append('text')
-      .attr('x',-4).attr('y',yBot(v)+3)
-      .attr('text-anchor','end').attr('fill',textC)
-      .attr('font-size',9).text(v+'%');
-  });
-
-  // y=0 기준선
-  gBot.append('line')
-    .attr('x1',0).attr('x2',innerW)
-    .attr('y1',yBot(0)).attr('y2',yBot(0))
-    .attr('stroke',gridC).attr('stroke-width',1);
-
-  // 막대
-  data.forEach(d => {
-    if (d.dd < -0.05) {
-      const ddClamped = Math.max(d.dd, -15);
-      gBot.append('rect')
-        .attr('x', xScale(d.label) - barW/2)
-        .attr('y', yBot(0))
-        .attr('width', barW)
-        .attr('height', yBot(ddClamped) - yBot(0))
-        .attr('fill', redBar);
-    }
-  });
-
-  // X축 (하단)
-  const xAxisG = gBot.append('g').attr('transform', `translate(0,${H_bot})`);
+  // X축
+  const xAxisG = gTop.append('g').attr('transform', `translate(0,${H_top})`);
   xAxisG.append('line').attr('x1',0).attr('x2',innerW).attr('stroke',gridC);
   xTicks.forEach(lbl => {
     xAxisG.append('text')
