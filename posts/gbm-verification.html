@@ -72,7 +72,7 @@
 
 <h2 id="sec-intro">1. 서론</h2>
 
-<p>옵션 가격결정 이론은 기초자산의 가격이 특정한 확률 과정을 따른다는 가정 위에 서 있다. 가장 널리 쓰이는 가정이 기하 브라운 운동(Geometric Brownian Motion, GBM)이다. 이 글은 GBM이 정확히 어떤 주장을 하는 모델인지 정리하고, 실제 주가 데이터로 그 주장이 성립하는지 검증한다.</p>
+<p>옵션 가격결정 공식은 기초자산의 가격이 특정한 확률 과정을 따른다고 전제한다. 가장 널리 쓰이는 전제로는 기하 브라운 운동(GBM)이 있으며, 블랙-숄즈 공식을 비롯해 위험중립측도 하에서의 파생상품 가격결정 대부분이 이 가정 위에 성립한다. GBM은 다음 세 가지를 주장한다. 로그수익률이 정규분포를 따르고, 변동성이 시간에 걸쳐 상수이며, 서로 다른 시점의 수익률이 독립이라는 것이다. 첫 번째는 극단적인 가격 변동이 일어날 확률을 계산 가능하게 하고, 두 번째는 만기까지 변동성 하나로 옵션 가격을 매길 수 있게 하며, 세 번째는 과거 수익률로 미래 방향을 예측할 수 없게 만든다. 관건은 이 세 주장이 실제 데이터에서도 성립하는가다. 이에 본 글은 GBM이 정확히 어떤 주장을 하는 모델인지 정리하고, 실제 주가 데이터로 그 주장이 성립하는지 검증하고자 한다.</p>
 
 <h2 id="sec-gbm">2. 브라운 운동에서 기하 브라운 운동으로</h2>
 
@@ -87,10 +87,10 @@
   </div>
 </div>
 
-<p>이 논리를 직접 눈으로 확인해보자. \(S_0 = 100\)에서 시작해 1일, 20일(1달), 80일(1분기), 240일(1년) 단위로 스텝을 넓혀가며 경로 하나를 이어 그린다. 매 스텝 실제로 일어난 변화는 실선 한 줄로, 그 스텝에서 이론상 가능했던 로그정규분포 전체는 옅은 점선 곡선으로 함께 표시한다.</p>
+<p>이 논리를 직접 눈으로 확인해보자. \(S_0 = 100\)에서 시작해 하루 단위 스텝에서 1년(240거래일) 단위 스텝까지 스텝 폭을 점점 넓혀가며 경로 하나를 이어 그린다. 매 스텝 실제로 일어난 변화는 실선 한 줄로, 그 스텝에서 이론상 가능했던 로그정규분포 전체는 옅은 점선 곡선으로 함께 표시한다.</p>
 
 <div class="viz-wrap">
-  <div class="viz-title">확률의 갈래 — 스케일별 GBM 경로</div>
+  <div class="viz-title">확률의 갈래 — 스케일별 가격 경로</div>
   <div style="display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1rem;font-family:var(--sans);font-size:0.75rem;color:var(--ink-muted);">
     <div style="display:flex;align-items:center;gap:0.6rem;">
       <span style="width:64px;flex-shrink:0;">연간 \(\mu\)</span>
@@ -102,20 +102,12 @@
       <input type="number" id="branch-sigma-input" value="0.20" step="0.01" min="0.01" style="width:58px;border:1px solid var(--rule);border-radius:2px;padding:0.15rem 0.3rem;font-family:var(--sans);font-size:0.75rem;background:var(--bg);color:var(--ink);">
       <input type="range" id="branch-sigma-slider" min="0.02" max="0.8" step="0.01" value="0.20" style="flex:1;accent-color:#92400e;">
     </div>
-    <div style="display:flex;align-items:center;gap:0.9rem;flex-wrap:wrap;">
-      <span style="flex-shrink:0;">확대해볼 기간</span>
-      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="all" checked style="accent-color:#92400e;">전체기간</label>
-      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="1" style="accent-color:#92400e;">1일</label>
-      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="20" style="accent-color:#92400e;">20일(1달)</label>
-      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="80" style="accent-color:#92400e;">80일(1분기)</label>
-      <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="branch-zoom-period" value="240" style="accent-color:#92400e;">240일(1년)</label>
-    </div>
     <div>
       <button id="branch-replay-btn" style="font-family:var(--sans);font-size:0.7rem;color:var(--accent);background:var(--bg-card);border:1px solid var(--rule);border-radius:3px;padding:0.32rem 0.85rem;cursor:pointer;">Replay</button>
     </div>
   </div>
   <svg id="gbm-branch-svg" viewBox="0 0 700 340" style="width:100%;height:auto;border-radius:2px;"></svg>
-  <p class="axis-cap">x축은 경과 거래일수, y축은 \(S_0=100\) 기준 가격이다. 실선은 실제로 실현된 경로, 점선은 각 스텝에서 이론상 가능했던 로그정규분포의 확률밀도 곡선이다.</p>
+  <p class="axis-cap">실선은 실제로 실현된 경로, 점선은 각 스텝에서 이론상 가능했던 로그정규분포의 확률밀도다 — 점에 가까울수록 그럴듯한 값, 멀수록 극단값이다.</p>
 </div>
 
 <p>하지만 이처럼 주가에 브라운 운동을 직접 적용하면 문제가 생긴다. 정규분포는 음수 값을 허용하므로, \(S_t = S_0 + \mu t + \sigma W_t\) 형태의 모형은 주가가 음수가 되는 경로를 배제하지 못한다. 이를 피하기 위해 주가 자체가 아니라 로그주가에 브라운 운동을 적용한다. 이렇게 만든 확률과정을 기하 브라운 운동(Geometric Brownian Motion, GBM)이라 부르며, 다음과 같은 확률미분방정식(SDE)으로 정의한다.<sup>1</sup></p>
@@ -220,7 +212,7 @@
   <p class="axis-cap">점이 대각선에서 양 끝으로 갈수록 벗어날수록 fat tail이 심하다는 뜻이다.</p>
 </div>
 
-<p>정규분포의 첨도는 3인데, 세 자산 모두 6~9대로 뚜렷하게 높다 — 자크-베라 검정도 세 경우 모두 p값이 사실상 0으로 정규성을 강하게 기각한다.<sup>3</sup> 다만 예상과 다른 지점이 하나 있다. 변동성이 가장 큰 NVDA(연 51%)의 첨도(6.61)가 오히려 변동성이 가장 낮은 KO(6.77)보다 살짝 낮고, 분산투자된 지수인 S&amp;P500의 첨도(9.33)가 셋 중 가장 높다. 개별종목 하나가 흔들리는 정도보다, 지수 전체가 한꺼번에 흔들리는 사건(2022년 금리 인상기 급락 등)이 정규분포 기준으로 더 극단적인 값을 만들어낸 것으로 해석된다. 분산투자가 개별 종목의 특이 리스크는 상쇄시켜도, 시장 전체를 관통하는 체계적 충격 앞에서는 fat tail을 줄여주지 못하는 듯 하다.</p>
+<p>정규분포의 첨도는 3인데, 세 자산 모두 6~9대로 뚜렷하게 높다 — 자크-베라 검정도 세 경우 모두 p값이 사실상 0으로 정규성을 강하게 기각한다.<sup>3</sup> 예상과는 다른 지점으로, 변동성이 가장 큰 NVDA(연 51%)의 첨도(6.61)가 오히려 변동성이 가장 낮은 KO(6.77)보다 살짝 낮고, 분산투자된 지수인 S&amp;P500의 첨도(9.33)가 셋 중 가장 높았다. 개별종목 하나가 흔들리는 정도보다, 지수 전체가 한꺼번에 흔들리는 사건(2022년 금리 인상기 급락 등)이 정규분포 기준으로 더 극단적인 값을 만들어낸 것으로 해석된다. 분산투자가 개별 종목의 특이 리스크는 상쇄시켜도, 시장 전체를 관통하는 체계적 충격 앞에서는 fat tail을 줄여주지 못하는 듯 하다.</p>
 
 <h3 id="sec-volconst">4.2 변동성의 시간 불변성</h3>
 
@@ -263,17 +255,56 @@
 
 <h2 id="sec-conc">6. 결론</h2>
 
-<p>GBM은 로그수익률의 정규성, 변동성의 상수성, 무자기상관을 가정한다. KO, NVDA, S&amp;P500 세 자산 모두 이 세 가정에서 뚜렷하게 벗어났고, 벗어나는 정도는 단순히 개별 변동성이 높을수록 커지는 것이 아니라 자산의 성격(개별종목이냐 지수냐)에 따라서도 달라졌다. 그럼에도 GBM 기반 모형이 여전히 널리 쓰이는 이유는 분석적 단순성과 계산 편의성에 있다 — 현실을 정확히 기술하지 못해도 충분히 유용한 근사이기 때문이다.<sup>5</sup></p>
+<p>GBM은 로그수익률의 정규성, 변동성의 상수성, 무자기상관을 가정한다. KO, NVDA, S&amp;P500 모두 이 세 가정에서 뚜렷하게 벗어났다. 자크-베라 검정은 세 자산 모두에서 정규성을 강하게 기각했고(JB 742.9~2100.6), 20일 롤링 변동성은 최소 4배에서 최대 9배까지 벌어져 상수라는 가정과는 거리가 멀었다. 흥미로운 점은 이 이탈이 개별 변동성 수준에 비례하지 않는다는 것이다 — 변동성이 가장 낮은 KO의 첨도가 가장 큰 NVDA보다 높았고, 분산투자된 S&amp;P500이 세 검정 모두에서 개별 종목보다 크게 벗어났다. 개별 종목의 특이 리스크는 분산으로 상쇄되어도, 시장 전체를 흔드는 체계적 충격 앞에서는 그렇지 못 했다.</p>
+
+<p>그럼에도 GBM 기반 모형이 여전히 널리 쓰이는 이유는 분석적 단순성과 계산 편의성에 있다. 파라미터가 \(\mu\), \(\sigma\) 두 개뿐이라 추정이 간단하고, SDE가 닫힌 형태로 풀려 블랙-숄즈 같은 해석적 공식을 곧바로 얻을 수 있다 — 현실을 정확히 기술하지 못해도 충분히 유용한 근사이기 때문이다.<sup>5</sup></p>
 
 <div class="footnotes">
   <p><sup>1</sup> Black, F., & Scholes, M. (1973). The Pricing of Options and Corporate Liabilities. <em>Journal of Political Economy</em>, 81(3), 637–654.</p>
-  <p><sup>2</sup> KO, NVDA, ^GSPC 일간 수정종가: Yahoo Finance 역사적 데이터(2021-08-12~2026-08-12). 히스토그램·QQ plot·롤링 변동성·ACF는 Python(pandas/numpy/scipy)으로 직접 계산한 실측치이며 근사 재현이 아니다.</p>
+  <p><sup>2</sup> KO, NVDA, ^GSPC 일간 수정종가: Yahoo Finance 역사적 데이터(2021-08-12~2026-08-12).</p>
   <p><sup>3</sup> Jarque, C. M., & Bera, A. K. (1980). Efficient tests for normality, homoscedasticity and serial independence of regression residuals. <em>Economics Letters</em>, 6(3), 255–259.</p>
   <p><sup>4</sup> Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. <em>Quantitative Finance</em>, 1(2), 223–236.</p>
   <p><sup>5</sup> Merton, R. C. (1973). Theory of Rational Option Pricing. <em>The Bell Journal of Economics and Management Science</em>, 4(1), 141–183.</p>
 </div>
 
     </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <div class="viz-title">세 가정의 위반 정도 — 자산별 요약</div>
+        <div class="side-table-wrap">
+          <table class="side-table">
+            <colgroup><col style="width:26%"><col style="width:24%"><col style="width:26%"><col style="width:24%"></colgroup>
+            <thead><tr><th>자산</th><th>JB 통계량</th><th>변동성 배율</th><th>제곱ACF(1)</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;">KO</td><td>752.0</td><td>6.1×</td><td>0.092</td></tr>
+              <tr><td style="font-weight:600;">NVDA</td><td>742.9</td><td>4.1×</td><td>0.045</td></tr>
+              <tr><td style="color:#92400e;font-weight:600;">S&amp;P500</td><td class="sig">2100.6</td><td class="sig">9.3×</td><td class="sig">0.175</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-source">JB: 자크-베라 통계량(df=2, 임계값 5.99) / 변동성 배율: 20일 롤링 변동성 최대÷최소 / 제곱ACF(1): 제곱수익률 lag-1 자기상관</p>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">극단값(|z|&gt;3) 발생 빈도 — 실측 대 정규분포 이론</div>
+        <canvas id="fattail-chart" height="150"></canvas>
+        <p class="table-source">정규분포라면 0.27%여야 할 빈도가 세 자산 모두 4~5배 높다</p>
+      </div>
+
+      <div class="kpi-grid" style="grid-template-columns:repeat(2,1fr);margin:1rem 0 0;">
+        <div class="kpi">
+          <div class="kpi-label">최다 위반</div>
+          <div class="kpi-val">S&amp;P500</div>
+          <div class="kpi-sub">세 검정 모두 최고 이탈</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">JB 임계값</div>
+          <div class="kpi-val">5.99</div>
+          <div class="kpi-sub">df=2, α=0.05</div>
+        </div>
+      </div>
+    </aside>
 
     </div>
   </div>
@@ -368,6 +399,7 @@ TICKERS.forEach(t => {
     options: {
       ...base,
       indexAxis: 'y',
+      aspectRatio: 0.75,
       plugins: { legend: { display: false } },
       scales: {
         x: base.scales.x,
@@ -392,7 +424,7 @@ new Chart(document.getElementById('rolling-vol'), {
     plugins: { legend: { display: false } },
     scales: {
       x: { ...base.scales.x, ticks: { display: false } },
-      y: { ...base.scales.y, title: { display: true, text: '연환산 변동성 (%)', color: TC, font: { family: FONT, size: 10 } } }
+      y: { ...base.scales.y, beginAtZero: true, ticks: { color: TC, font: { family: FONT, size: 10 }, count: 6 }, title: { display: true, text: '연환산 변동성 (%)', color: TC, font: { family: FONT, size: 10 } } }
     }
   }
 });
@@ -486,14 +518,13 @@ new Chart(document.getElementById('rolling-vol'), {
   const sigmaInput = document.getElementById('branch-sigma-input');
   const muSlider = document.getElementById('branch-mu-slider');
   const sigmaSlider = document.getElementById('branch-sigma-slider');
-  const zoomRadios = document.querySelectorAll('input[name="branch-zoom-period"]');
   const replayBtn = document.getElementById('branch-replay-btn');
 
   const W = 700, H = 340, S0 = 100;
-  const DURDAYS = [1, 20, 80, 240];
-  const NITER = 3;
-  const TRADING_DAYS = 240;
-  const PAD_L = 44, PAD_R = 16, PAD_T = 14, PAD_B = 34;
+  const N_STEPS = 12;
+  const DURSEQ = Array.from({ length: N_STEPS }, (_, k) => Math.pow(240, k / (N_STEPS - 1))); // 1일→240일까지 로그 간격으로 점점 넓어지는 dt 12개
+  const TRADING_DAYS = 252;
+  const PAD_L = 10, PAD_R = 10, PAD_T = 10, PAD_B = 10;
 
   function randn() {
     let u = 1 - Math.random(), v = Math.random();
@@ -503,65 +534,45 @@ new Chart(document.getElementById('rolling-vol'), {
     return Math.exp(-0.5 * Math.pow((x - mean) / sd, 2)) / (sd * Math.sqrt(2 * Math.PI));
   }
 
+  // 각 점마다 dt가 점점 커지고(1→5→20→60→120→240), 시각적 간격도 sqrt(dt)로
+  // 함께 점점 넓어진다. 버킷 단위로 묶지 않아서 계단식으로 확 뛰지 않고 매끄럽게 벌어진다.
   function build(mu, sigma) {
-    let series = [], dots = [], pdfs = [], extY = [];
-    for (let d = 0; d < DURDAYS.length; d++) {
-      const dt = DURDAYS[d];
+    let pathpts = [{ ix: 0, y: S0 }];
+    let hops = [];
+    let idx = 0;
+    for (let k = 0; k < DURSEQ.length; k++) {
+      const dt = DURSEQ[k];
+      const stepW = Math.sqrt(dt);
       const amu = (mu / TRADING_DAYS) * dt;
       const asigma = (sigma / Math.sqrt(TRADING_DAYS)) * Math.sqrt(dt);
-      const xn = Array.from({ length: NITER }, () => amu + asigma * randn());
-      const stepMult = xn.map(v => Math.exp(v) - (asigma * asigma) / 2);
+      const z = randn();
+      const stepMult = Math.exp(amu + asigma * z) - (asigma * asigma) / 2;
+
       const px = Array.from({ length: 31 }, (_, i) => amu - 2 * asigma + (i * 4 * asigma) / 30);
-      const py = px.map(v => (dt * Math.sqrt(dt) * normalPdf(v, amu, asigma)) / 100);
+      const density = px.map(v => normalPdf(v, amu, asigma));
+      const peakDensity = Math.max(...density);
 
-      let pathpts = [{
-        x: series.length > 0 ? series[series.length - 1][NITER].x : 0,
-        y: series.length > 0 ? series[series.length - 1][NITER].y : S0
-      }];
-      for (let j = 0; j < stepMult.length; j++) {
-        pdfs.push(px.map((v, i) => ({
-          x: pathpts[j].x + dt - py[i],
-          y: pathpts[j].y * (Math.exp(v) - (asigma * asigma) / 2)
-        })));
-        pathpts.push({ x: pathpts[j].x + dt, y: pathpts[j].y * stepMult[j] });
-        dots.push(pathpts[pathpts.length - 1]);
-      }
-      let yMin = Infinity, yMax = -Infinity;
-      pdfs.slice(-NITER).forEach(curve => curve.forEach(p => { if (p.y < yMin) yMin = p.y; if (p.y > yMax) yMax = p.y; }));
-      extY.push([yMin, yMax]);
-      series.push(pathpts);
+      const start = pathpts[pathpts.length - 1];
+      idx += stepW;
+      const priceAtPx = px.map(v => start.y * (Math.exp(v) - (asigma * asigma) / 2));
+      hops.push({ arrivalIx: idx, priceAtPx, density: density.map(v => v / peakDensity) });
+      pathpts.push({ ix: idx, y: start.y * stepMult });
     }
-    const exFull = [0, Math.max(...series.map(s => Math.max(...s.map(p => p.x))))];
-    let yMinAll = Infinity, yMaxAll = -Infinity;
-    dots.forEach(p => { if (p.y < yMinAll) yMinAll = p.y; if (p.y > yMaxAll) yMaxAll = p.y; });
-    pdfs.forEach(curve => curve.forEach(p => { if (p.y > 0 && p.y < yMinAll) yMinAll = p.y; if (p.y > yMaxAll) yMaxAll = p.y; }));
-    return { series, dots, pdfs, extY, exFull, eyFull: [yMinAll, yMaxAll] };
-  }
-
-  function getZoomIndex() {
-    let v = 'all';
-    zoomRadios.forEach(r => { if (r.checked) v = r.value; });
-    const mapIdx = { '1': 0, '20': 1, '80': 2, '240': 3 };
-    return v === 'all' ? null : mapIdx[v];
+    let yMin = Infinity, yMax = -Infinity;
+    pathpts.forEach(p => { if (p.y < yMin) yMin = p.y; if (p.y > yMax) yMax = p.y; });
+    hops.forEach(h => h.priceAtPx.forEach(v => { if (v > 0 && v < yMin) yMin = v; if (v > yMax) yMax = v; }));
+    return { series: [pathpts], hops, ixMax: idx, ey: [yMin, yMax] };
   }
 
   let cached = null;
+  const FAN_PX = 18; // PDF 곡선이 점 왼쪽으로 퍼지는 고정 픽셀 폭
 
   function draw() {
-    const { series, dots, pdfs, extY, exFull, eyFull } = cached;
-    const zi = getZoomIndex();
+    const { series, hops, ixMax, ey } = cached;
 
-    let ex, ey;
-    if (zi === null) { ex = exFull; ey = eyFull; }
-    else { const seg = series[zi]; ex = [seg[0].x, seg[NITER].x]; ey = extY[zi]; }
-    if (!(ey[1] > ey[0])) ey = [ey[0] * 0.98, ey[0] * 1.02 || 1];
-
-    const useLog = zi === null;
-    const tx = v => useLog ? Math.log1p(v) : v;
-    const exT = [tx(ex[0]), tx(ex[1])];
     const logMin = Math.log(Math.max(ey[0], 1e-6)), logMax = Math.log(ey[1]);
     const plotW = W - PAD_L - PAD_R, plotH = H - PAD_T - PAD_B;
-    const xOf = v => PAD_L + ((tx(v) - exT[0]) / (exT[1] - exT[0])) * plotW;
+    const xOf = ix => PAD_L + (ix / ixMax) * plotW;
     const yOf = v => PAD_T + plotH - ((Math.log(Math.max(v, 1e-6)) - logMin) / (logMax - logMin)) * plotH;
 
     let s = '';
@@ -569,35 +580,34 @@ new Chart(document.getElementById('rolling-vol'), {
       const v = Math.exp(logMin + ((logMax - logMin) * g) / 5);
       const y = yOf(v);
       s += `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#e7e2d8" stroke-width="1"/>`;
-      s += `<text x="2" y="${y + 3}" font-size="10" font-family="'Noto Sans KR',sans-serif" fill="#78716c">${v.toFixed(1)}</text>`;
     }
 
-    pdfs.forEach((curve, di) => {
-      if (dots[di].x < ex[0] - 1e-6 || dots[di].x > ex[1] + 1e-6) return;
+    // PDF 곡선: 도착점 기준 고정 픽셀 폭(FAN_PX) 안에서만 왼쪽으로 부채꼴을 그린다.
+    hops.forEach(h => {
+      const arrivalPx = xOf(h.arrivalIx);
       let d = '';
-      curve.forEach((p, i) => { const x = xOf(p.x), y = yOf(p.y); d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' '; });
-      s += `<path d="${d}" fill="none" stroke="rgba(120,113,108,0.55)" stroke-width="1" stroke-dasharray="2,2"/>`;
+      h.priceAtPx.forEach((price, i) => {
+        const x = arrivalPx - (1 - h.density[i]) * FAN_PX;
+        const y = yOf(price);
+        d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
+      });
+      s += `<path d="${d}" fill="none" stroke="rgba(120,113,108,0.6)" stroke-width="1" stroke-dasharray="2,2"/>`;
     });
 
-    const pathSegs = zi === null ? series : [series[zi]];
-    pathSegs.forEach(seg => {
-      let d = '';
-      seg.forEach((p, i) => { const x = xOf(p.x), y = yOf(p.y); d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' '; });
-      s += `<path d="${d}" fill="none" stroke="rgba(146,64,14,0.9)" stroke-width="1.8"/>`;
+    // 경로: 구간 경계에서 끊기지 않도록 전체를 하나의 연속된 path로 그린다.
+    let d = '';
+    series.forEach(seg => {
+      seg.forEach(p => {
+        const x = xOf(p.ix), y = yOf(p.y);
+        d += (d === '' ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
+      });
     });
+    s += `<path d="${d}" fill="none" stroke="rgba(146,64,14,0.9)" stroke-width="1.8"/>`;
 
-    dots.forEach((p, di) => {
-      if (p.x < ex[0] - 1e-6 || p.x > ex[1] + 1e-6) return;
-      const x = xOf(p.x), y = yOf(p.y);
+    series.forEach(seg => seg.slice(1).forEach(p => {
+      const x = xOf(p.ix), y = yOf(p.y);
       s += `<circle cx="${x}" cy="${y}" r="2.4" fill="#92400e"/>`;
-      const label = p.y.toFixed(1);
-      let ly = di % 2 === 0 ? y - 6 : y + 13;
-      if (ly < PAD_T + 8) ly = y + 13;
-      const lx = Math.min(Math.max(x - 12, PAD_L), W - PAD_R - 28);
-      s += `<text x="${lx}" y="${ly}" font-size="10" font-family="'Noto Sans KR',sans-serif" fill="rgba(87,79,73,0.9)">${label}</text>`;
-    });
-
-    s += `<text x="${PAD_L + plotW / 2}" y="${H - 6}" font-size="10" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" fill="rgba(120,113,108,0.85)">경과 거래일수</text>`;
+    }));
 
     svg.innerHTML = s;
   }
@@ -613,11 +623,31 @@ new Chart(document.getElementById('rolling-vol'), {
   sigmaSlider.addEventListener('input', syncFromSlider);
   muInput.addEventListener('change', syncFromInput);
   sigmaInput.addEventListener('change', syncFromInput);
-  zoomRadios.forEach(r => r.addEventListener('change', draw));
   replayBtn.addEventListener('click', resimulate);
   resimulate();
 })();
 
+
+new Chart(document.getElementById('fattail-chart'), {
+  type: 'bar',
+  data: {
+    labels: ['이론(정규분포)', 'KO', 'NVDA', 'S&P500'],
+    datasets: [{
+      data: [0.27, 1.35, 1.03, 1.03],
+      backgroundColor: ['rgba(120,113,108,0.35)', '#a8a29e', '#c4907a', '#92400e'],
+      borderRadius: 2
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: GRID }, ticks: { color: TC, font: { family: FONT, size: 10 }, callback: v => v + '%' } },
+      y: { grid: { display: false }, ticks: { color: TC, font: { family: FONT, size: 10 } } }
+    }
+  }
+});
 
 // ── 드롭다운 ──
 const tagBtn = document.getElementById('tag-btn');
