@@ -29,6 +29,7 @@
         <div class="td-item d1">Finance</div>
         <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
         <a class="td-item d2 active" href="volatility-harvesting.html">변동성 수확</a>
+        <a class="td-item d2" href="leverage-rebalancing.html">레버리지 리밸런싱 설계</a>
         <div class="td-divider"></div>
         <div class="td-item d1">Math</div>
         <a class="td-item d2" href="gbm-verification.html">기하 브라운 운동 실증검증</a>
@@ -115,7 +116,7 @@
 
 <h2 id="sec-joy">3. Joy of Volatility — 잃는 두 자산, 이기는 포트폴리오</h2>
 
-<p>Dempster, Evstigneev, Schenk-Hoppé가 2008년 <em>Quantitative Finance</em>에 발표한 논문 "The Joy of Volatility"는 변동성 수확의 논리를 극단까지 밀어붙인다.<sup>1</sup> 두 자산이 <em>완전 반상관</em>으로 움직이는 사고 실험을 통해, 개별로는 필연적으로 손실을 내는 자산들이 리밸런싱을 통해 포트폴리오 수준에서 이익을 낼 수 있음을 보였다. 매 기간 동전을 던지되 한 자산의 결과가 다른 자산의 결과를 결정한다.</p>
+<p>Dempster, Evstigneev, Schenk-Hoppé가 2008년 <em>Quantitative Finance</em>에 발표한 논문 "The Joy of Volatility"는 변동성 수확의 논리를 극단까지 밀어붙인 사고실험이다.<sup>1</sup> 매 기간 동전을 던져 한 자산의 결과가 다른 자산의 결과를 정반대로 결정하는, <em>완전 반상관</em> 관계의 두 자산을 상정하면 — 개별로는 필연적으로 손실을 내는 자산들도 리밸런싱을 통해 포트폴리오 수준에서는 이익을 낼 수 있다.</p>
 
 <div class="compare-grid">
   <div class="compare-card">
@@ -180,7 +181,7 @@
 
 <div class="disp-eq">\[ w^{*} = \frac{(\mu_1-\mu_2) + \sigma_2^2 - \rho\sigma_1\sigma_2}{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2} \]</div>
 
-<p>분모는 최소분산포트폴리오 비중을 만드는 구조와 같고, 분자의 \(\mu_1-\mu_2\) 항이 기대수익률이 높은 자산 쪽으로 저울을 기울인다. 이는 연속 리밸런싱 하 성장 최적 포트폴리오 문제의 2자산 특수해이며, 켈리 기준(Kelly criterion)을 연속시간·다자산으로 확장한 확률적 포트폴리오 이론(Stochastic Portfolio Theory)의 핵심 결과와 같은 구조다.<sup>7,8</sup></p>
+<p>분모는 최소분산포트폴리오 비중을 만드는 구조와 같고, 분자의 \(\mu_1-\mu_2\) 항이 기대수익률이 높은 자산 쪽으로 저울을 기울인다. 이는 연속 리밸런싱 하 성장 최적 포트폴리오 문제의 2자산 특수해이며, 켈리 기준(Kelly criterion)을 연속시간·다자산으로 확장한 확률적 포트폴리오 이론(Stochastic Portfolio Theory)의 핵심 결과와 같은 구조다.</p>
 
 <p>\(\rho=-1\)인 Joy of Volatility 사례에 대입하면 \(w^*\approx60.5\%\)가 나온다. 이산 확률을 직접 미분해 구한 정확해는 61.1%로, 1%p도 차이 나지 않는다. 두 자산의 변동성이 극단적이고 결과가 단 두 가지뿐인 사례에서도 근사식이 잘 들어맞는다는 뜻이다.</p>
 
@@ -293,7 +294,7 @@
 <div class="viz-wrap">
   <p class="viz-title">Fig. 7 — 닛케이225 + 일본 국채: Dynamic Volatility Weighting 분기 리밸런싱 (1994–2011)</p>
   <div id="nk-d3-chart" style="width:100%;"></div>
-  <p class="table-source" style="margin-top:.5rem;">Source: Butler, Philbrick &amp; Gordillo (2012), GestaltU.<sup>3</sup> Data from Bloomberg. 차트는 원본 수치 기반 근사 재현.</p>
+  <p class="table-source" style="margin-top:.5rem;">Source: Butler, Philbrick &amp; Gordillo (2012), GestaltU.<sup>2</sup> Data from Bloomberg. 차트는 원본 수치 기반 근사 재현.</p>
 </div>
 
 <div class="table-wrap table-center-first" style="margin-top:1.2rem;">
@@ -310,7 +311,7 @@
   </table>
 </div>
 
-<p>닛케이 급락 시 채권 비중이 포트폴리오를 방어하고, 반등 시 리밸런싱이 닛케이를 다시 매수한다. Butler·Philbrick·Gordillo(2012)에 따르면 Bloomberg 실데이터 기준 CAGR +4.71%, 총수익 +138%, MDD −13.97%를 달성했다. 닛케이가 −58.2%를 기록한 기간에 포트폴리오는 두 배 이상 성장한 것이다. 단순 동일가중 분기 리밸런싱만 써도 +41%(MDD −33%)까지는 개선되지만, 변동성 비례 가중을 쓰면 한 번 더 벌어진다.<sup>3</sup></p>
+<p>닛케이 급락 시 채권 비중이 포트폴리오를 방어하고, 반등 시 리밸런싱이 닛케이를 다시 매수한다. Butler·Philbrick·Gordillo(2012)에 따르면 Bloomberg 실데이터 기준 CAGR +4.71%, 총수익 +138%, MDD −13.97%를 달성했다. 닛케이가 −58.2%를 기록한 기간에 포트폴리오는 두 배 이상 성장한 것이다. 단순 동일가중 분기 리밸런싱만 써도 +41%(MDD −33%)까지는 개선되지만, 변동성 비례 가중을 쓰면 한 번 더 벌어진다.<sup>2</sup></p>
 
 <p>이 결과는 특정 자산이 앞으로 오를지 내릴지 맞출 필요가 없다는 것을 보여준다. 필요한 건 자산들이 변동성을 가질 것, 서로의 상관관계가 낮을 것, 그리고 그 변동성을 수확하도록 설계된 적극적인 리밸런싱을 실행할 것, 이 세 가지뿐이다.</p>
 
@@ -322,11 +323,11 @@
 
 <p>\(w^*\) 공식의 분자에는 \(\mu_1-\mu_2\)가 그대로 들어간다. 문제는 실전에서 미래의 \(\mu\)를 알 수 없다는 것이다. 변동성 수확이 매력적인 이유는 애초에 어느 자산이 오를지 맞힐 필요가 없다는 데 있었는데, 성장 최적 비중 공식은 정확히 그 반대를 요구한다.</p>
 
-<p>더 현실적인 주식·채권 조합(\(\mu_s=7\%,\sigma_s=18\%\) / \(\mu_b=3\%,\sigma_b=6\%\))에 공식을 적용하면, 상관계수가 −0.6인 구간에서도 \(w^*\)는 이미 102%를 넘는다. 두 자산의 기대수익률 차이(4%p)가 분산 감소 효과를 압도하기 때문이다. 상관계수가 양수로 올라가면 \(w^*\)는 200%를 넘기기도 한다 — 이론상 정답은 주식 레버리지가 된다.</p>
+<p>현실적인 주식·채권 조합(\(\mu_s=7\%,\sigma_s=18\%\) / \(\mu_b=3\%,\sigma_b=6\%\))에 공식을 적용하면, 상관계수가 −0.6인 구간에서도 \(w^*\)는 이미 102%를 넘는다. 두 자산의 기대수익률 차이(4%p)가 분산 감소 효과를 압도하기 때문이다. 상관계수가 양수로 올라가면 \(w^*\)는 200%를 넘기기도 한다 — 이론상 정답은 주식 레버리지가 된다.</p>
 
 <p>더 극단적인 예는 5장의 닛케이+일본 국채 사례 그 자체다. 실현된 월간 통계(닛케이 CAGR −4.75%, \(\sigma\) 5.72%/월; 국채 CAGR +2.93%, \(\sigma\) 1.57%/월; \(\rho=-0.246\))를 그대로 공식에 넣으면 \(w^*\)(닛케이 비중)는 <strong>약 −150%</strong>가 나온다. 닛케이를 공매도하고 그 대금으로 채권을 레버리지하라는 결론이다.</p>
 
-<p>이것이 왜 함정인가. 이 \(\mu\)는 <em>사후적으로 관찰된</em> 값이다. 1994년 시점에서 닛케이가 향후 18년간 −58%를 기록할 것을 안다면 애초에 공매도가 정답이겠지만, 그런 정보는 존재하지 않았다. 5장의 역변동성 가중(닛케이 비중 약 21.5%, 채권 약 78.5%)은 애초에 \(\mu\)를 요구하지 않아 이 문제를 피해가는 대신, \(\sigma\)와 방향성 없는 리밸런싱만으로 변동성 수확을 얻고 이론적 최적 성장률에는 못 미치는 것을 감수한다.<sup>3</sup></p>
+<p>이것이 왜 함정인가. 이 \(\mu\)는 <em>사후적으로 관찰된</em> 값이다. 1994년 시점에서 닛케이가 향후 18년간 −58%를 기록할 것을 안다면 애초에 공매도가 정답이겠지만, 그런 정보는 존재하지 않았다. 5장의 역변동성 가중(닛케이 비중 약 21.5%, 채권 약 78.5%)은 애초에 \(\mu\)를 요구하지 않아 이 문제를 피해가는 대신, \(\sigma\)와 방향성 없는 리밸런싱만으로 변동성 수확을 얻고 이론적 최적 성장률에는 못 미치는 것을 감수한다.<sup>2</sup></p>
 
 <div class="compare-grid">
   <div class="compare-card">
@@ -351,14 +352,14 @@
 
 <p>변동성 수확은 상관관계가 낮은 자산을 리밸런싱할 때 발생하는 초과 성장분이다. 단일 자산의 복리 수익을 갉아먹는 분산 드래그가, 여러 자산을 리밸런싱하는 순간 \(\frac{1}{2}(\sum w_i\sigma_i^2 - \sigma_{p^*}^2)\)만큼의 변동성 수익으로 전환된다. 크기는 상관계수가 낮을수록, 개별 변동성이 클수록 커지지만, 확산 디스카운트가 이를 상쇄할 수 있어 자산들의 장기 성과가 비슷하고 상관계수가 낮을 때만 매수보유를 이긴다. Joy of Volatility(완전 반상관)와 닛케이+국채(\(\rho=-0.246\))는 이 조건이 각각 이론과 현실에서 성립한 사례다.</p>
 
-<p>그렇다면 비중은 얼마가 적절한가. 50:50이나 역변동성 비례가 최적이라는 보장은 없다. \(g(w)\)를 최대화하면 닫힌 형태의 \(w^*\)가 나오고, Joy of Volatility 사례에서는 61%였다. 다만 \(w^*\)는 \(\mu_1-\mu_2\)에 직접 의존해서, 실현된 \(\mu\)를 그대로 대입하면 닛케이+국채처럼 공매도·레버리지를 요구하는 해가 나온다. 역변동성 가중이나 균등가중이 이론적 최적에 못 미치면서도 실무에서 쓰이는 이유는 \(\mu\) 추정 오차에 노출되지 않기 때문이다. 비중 다음으로 남는 변수는 리밸런싱 주기다. 무비용이면 빈도가 높을수록 유리하지만, 한계효용은 월간 이후 빠르게 줄어든다. 반면 거래비용은 빈도에 거의 선형으로 늘어나므로, 현실적인 비용 수준에서는 분기~월간이 최적점에 가깝다.</p>
+<p>그렇다면 비중은 얼마가 적절한가. 50:50이나 역변동성 비례가 최적이라는 보장은 없다. \(g(w)\)를 최대화하면 닫힌 형태의 \(w^*\)가 나오고, Joy of Volatility 사례에서는 61%였다. 다만 \(w^*\)는 \(\mu_1-\mu_2\)에 직접 의존해서, 실현된 \(\mu\)를 그대로 대입하면 닛케이+국채처럼 공매도·레버리지를 요구하는 해가 나온다. 역변동성 가중이나 균등가중이 이론적 최적에 못 미치면서도 실무에서 쓰이는 이유는 \(\mu\) 추정 오차에 노출되지 않기 때문이다. 비중 다음으로 남는 변수는 리밸런싱 주기다. 무비용이면 빈도가 높을수록 유리하지만, 빈도를 늘려서 얻는 추가 개선분은 월간 이후 빠르게 줄어든다. 반면 거래비용은 빈도에 거의 선형으로 늘어나므로, 현실적인 비용 수준에서는 분기~월간이 최적점에 가깝다.</p>
 
 <p>결국 변동성 수확은 무엇을 예측할지가 아니라 무엇을 몰라도 되는지에 관한 전략이다. 방향을 맞히지 못해도, 상관관계가 낮은 자산들을 방향성 없이 리밸런싱하는 것만으로 개별 자산의 손실을 포트폴리오 수준의 수익으로 바꿀 수 있다.</p>
 
 <div class="footnotes">
   <p><sup>1</sup> Dempster, M. A. H., Evstigneev, I. V., & Schenk-Hoppé, K. R. (2008). Financial markets. The joy of volatility. <em>Quantitative Finance</em>, 8(1), 1–3.</p>
-  <p><sup>2</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Resurrected. <em>GestaltU.</em> gestaltu.com/2011/11/rebalancing-resurrected.html</p>
-  <p><sup>3</sup> Butler, A., Philbrick, M., & Gordillo, R. (2012). Volatility Harvesting and the Importance of Rebalancing. <em>GestaltU.</em> gestaltu.com/2012/02/volatility-harvesting-and-the-importance-of-rebalancing.html</p>
+  <p><sup>2</sup> Butler, A., Philbrick, M., & Gordillo, R. (2012). Volatility Harvesting and the Importance of Rebalancing. <em>GestaltU.</em> gestaltu.com/2012/02/volatility-harvesting-and-the-importance-of-rebalancing.html</p>
+  <p><sup>3</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Resurrected. <em>GestaltU.</em> gestaltu.com/2011/11/rebalancing-resurrected.html</p>
   <p><sup>4</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Japan. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-japan.html</p>
   <p><sup>5</sup> Butler, A., Philbrick, M., & Gordillo, R. (2011). Rebalancing Canada. <em>GestaltU.</em> gestaltu.com/2011/12/rebalancing-canada.html</p>
   <p><sup>6</sup> 닛케이225 및 일본 국채 10년물 수익률: Investing.com 역사적 데이터. 채권 가격 환산: Duration ≈ 8.5년. 역변동성 비례 분기 리밸런싱. 거래비용 미반영.</p>
