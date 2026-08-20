@@ -44,14 +44,56 @@ header {
 /* ── 사이드바 ── */
 aside {
   border-right: 1px solid var(--rule);
-  padding: 1.8rem 0 4rem;
+  padding: 1.8rem 0 1.4rem;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ink-dim) transparent;
+  display: flex;
+  flex-direction: column;
 }
+
+/* 트리 바로 아래 — 뷰포트 맨 아래로 밀어버리면(margin-top:auto) 글 목록이
+   짧을 때 트리와 멀리 떨어져 보여서, 고정 여백만 두고 자연스럽게 붙인다 */
+.aside-contact {
+  margin-top: 2.4rem;
+  padding: 1.1rem 1.2rem 0;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* ── 연락처 링크 (사이드바·모바일 footer 공용) ── */
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  overflow-wrap: break-word;
+  transition: color 0.15s;
+}
+.footer-link:hover { color: var(--accent); text-decoration: none; }
+.footer-link svg { width: 14px; height: 14px; stroke: currentColor; flex-shrink: 0; }
+
+.copy-hint {
+  font-size: 0.62rem;
+  color: var(--ink-dim);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.footer-link.email:hover .copy-hint,
+.footer-link.email:focus-visible .copy-hint { opacity: 1; }
+
+/* 데스크톱에서는 사이드바가 연락처를 보여주므로 숨겨두고,
+   aside가 사라지는 모바일 폭에서만 대체 수단으로 노출한다. */
+.site-footer { display: none; }
 
 /* ── 트리 ── */
 .tree-wrap { position: relative; }
@@ -186,4 +228,13 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   header { flex-direction: column; gap: 0.3rem; padding: 2rem 1.2rem 1.2rem; }
   main { padding: 1.8rem 1.2rem 5rem; }
   .post-item::before { left: -1.2rem; right: -1.2rem; }
+
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--rule);
+  }
 }

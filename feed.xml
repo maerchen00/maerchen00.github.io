@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>무제</title>
+  <link>https://maerchen00.github.io/</link>
+  <description>경제학·금융·수학·컴퓨터과학 에세이</description>
+  <language>ko</language>
+  <atom:link href="https://maerchen00.github.io/feed.xml" rel="self" type="application/rss+xml" />
+  <lastBuildDate>Sat, 01 Aug 2026 09:00:00 +0900</lastBuildDate>
+
+  <item>
+    <title>레버리지 ETF, 리밸런싱 규칙을 다시 설계하면</title>
+    <link>https://maerchen00.github.io/posts/leverage-rebalancing.html</link>
+    <guid>https://maerchen00.github.io/posts/leverage-rebalancing.html</guid>
+    <pubDate>Sat, 01 Aug 2026 09:00:00 +0900</pubDate>
+    <category>Finance</category>
+    <description>나스닥100 기반 7개 리밸런싱 규칙을 2010–2025년 데이터로 백테스트하여 변동성 끌림을 완화하는 설계가 실제로 유효한지 검증한다.</description>
+  </item>
+
+  <item>
+    <title>기하 브라운 운동은 주가를 얼마나 잘 설명하는가</title>
+    <link>https://maerchen00.github.io/posts/gbm-verification.html</link>
+    <guid>https://maerchen00.github.io/posts/gbm-verification.html</guid>
+    <pubDate>Sat, 01 Aug 2026 08:00:00 +0900</pubDate>
+    <category>Math</category>
+    <description>GBM이 가정하는 로그수익률의 정규성·변동성 상수성·무자기상관을 KO, NVDA, S&amp;P500의 5년치 데이터로 실증검증한다.</description>
+  </item>
+
+  <item>
+    <title>변동성 수확 — 잃는 자산으로 돈을 버는 수학</title>
+    <link>https://maerchen00.github.io/posts/volatility-harvesting.html</link>
+    <guid>https://maerchen00.github.io/posts/volatility-harvesting.html</guid>
+    <pubDate>Tue, 01 Jul 2025 09:00:00 +0900</pubDate>
+    <category>Finance</category>
+    <description>상관관계가 낮은 두 손실 자산도 리밸런싱하면 포트폴리오 수준에서 이익을 낼 수 있음을 분산 드래그와 최적 비중 공식, 닛케이+국채 실증 사례로 확인한다.</description>
+  </item>
+
+  <item>
+    <title>CAPM SML의 Out-of-Sample 설명력 실증검정</title>
+    <link>https://maerchen00.github.io/posts/capm-report.html</link>
+    <guid>https://maerchen00.github.io/posts/capm-report.html</guid>
+    <pubDate>Sun, 01 Jun 2025 09:00:00 +0900</pubDate>
+    <category>Finance</category>
+    <description>S&amp;P500 60종목을 대상으로 추정 구간(2018–2022)에서 도출한 CAPM SML이 검증 구간(2023–2025)의 실제 수익률을 유의하게 설명하는지 실증한다.</description>
+  </item>
+
+  <item>
+    <title>오스트리아 학파는 대공황을 어떻게 설명하는가</title>
+    <link>https://maerchen00.github.io/posts/great-depression.html</link>
+    <guid>https://maerchen00.github.io/posts/great-depression.html</guid>
+    <pubDate>Thu, 01 May 2025 09:00:00 +0900</pubDate>
+    <category>Economics</category>
+    <description>오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</description>
+  </item>
+
+</channel>
+</rss>
