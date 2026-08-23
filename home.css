@@ -152,6 +152,55 @@ aside {
 /* ── 글 목록 ── */
 main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 
+.main-body { display: flex; gap: 2.5rem; align-items: flex-start; }
+.main-body .post-list { flex: 1 1 480px; min-width: 0; }
+
+/* ── 우측 포트폴리오 위젯 ── */
+.portfolio-widget {
+  flex: 0 0 260px;
+  width: 260px;
+  position: sticky;
+  top: 2rem;
+  border-left: 1px solid var(--rule);
+  padding-left: 1.6rem;
+  display: flex;
+  flex-direction: column;
+}
+.pw-eyebrow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
+.pw-eyebrow .post-tag { cursor: default; pointer-events: none; }
+.pw-updated { font-family: var(--sans); font-size: 0.65rem; color: var(--ink-dim); }
+.pw-title {
+  font-family: var(--serif); font-size: 1rem; font-weight: 600;
+  color: var(--ink); letter-spacing: -0.01em; margin-bottom: 0.3rem;
+}
+.pw-title:hover { color: var(--accent); text-decoration: none; }
+.pw-total {
+  font-family: var(--serif); font-size: 1.7rem; font-weight: 600;
+  color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15;
+}
+.pw-return {
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 500;
+  margin: 0.2rem 0 0.9rem;
+}
+.pw-list {
+  list-style: none; display: flex; flex-direction: column; gap: 0.4rem;
+  border-top: 0.5px solid var(--rule); padding-top: 0.7rem;
+}
+.pw-row {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.6rem;
+  font-family: var(--sans); font-size: 0.72rem;
+}
+.pw-row.pw-loading { color: var(--ink-dim); grid-template-columns: 1fr; }
+.pw-ticker { font-weight: 600; color: var(--ink); }
+.pw-val { color: var(--ink-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.pw-pct { text-align: right; font-variant-numeric: tabular-nums; min-width: 3.6em; }
+.pw-more {
+  display: block; margin-top: 1rem; padding-top: 0.8rem;
+  border-top: 0.5px solid var(--rule);
+  font-family: var(--sans); font-size: 0.68rem; color: var(--accent);
+}
+.pw-more:hover { text-decoration: none; color: var(--ink); }
+
 /* min-height는 JS가 "모두 보기" 기준 전체 높이로 채워준다 — 필터링으로
    리스트가 줄어들 때 페이지 전체 높이가 출렁이며 스크롤바가 깜빡이는
    현상을 막기 위함. */
@@ -222,6 +271,16 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
 
 /* ── 반응형 ── */
+@media (max-width: 1000px) {
+  .main-body { flex-wrap: wrap; }
+  .portfolio-widget {
+    position: static; flex-basis: 100%; width: auto;
+    border-left: none; border-top: 1px solid var(--rule);
+    padding-left: 0; padding-top: 1.6rem; margin-top: 0.5rem;
+  }
+  .pw-list { max-width: 420px; }
+}
+
 @media (max-width: 640px) {
   .layout { grid-template-columns: 1fr; }
   aside { display: none; }

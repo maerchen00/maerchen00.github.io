@@ -69,6 +69,7 @@
   </aside>
 
   <main>
+    <div class="main-body">
     <div class="post-list" id="post-list">
 
       <div class="post-item" id="post-leverage-rebalancing" data-tags="Finance">
@@ -125,6 +126,22 @@
           <div class="post-desc">오스트리아 학파 경기변동이론(ABCT)을 통해 1920년대 신용팽창이 어떻게 대공황의 구조적 원인이 되었는지를 검토한다.</div>
         </a>
       </div>
+
+    </div>
+
+    <aside class="portfolio-widget" id="portfolio-widget">
+      <div class="pw-eyebrow">
+        <span class="post-tag">Finance</span>
+        <span class="pw-updated" id="pw-updated">불러오는 중…</span>
+      </div>
+      <a class="pw-title" href="posts/portfolio.html">포트폴리오 공개 →</a>
+      <div class="pw-total" id="pw-total">—</div>
+      <div class="pw-return" id="pw-return">—</div>
+      <ul class="pw-list" id="pw-list">
+        <li class="pw-row pw-loading">불러오는 중…</li>
+      </ul>
+      <a class="pw-more" href="posts/portfolio.html">전체 보유 종목·수익률 보기 →</a>
+    </aside>
 
     </div>
 
@@ -284,6 +301,46 @@
         }
       });
     });
+  })();
+
+  // 우측 포트폴리오 위젯 — data/portfolio.json을 읽어 요약·종목 리스트를 그린다.
+  // 실제 시세 반영 로직은 posts/portfolio.html과 동일, 여기선 압축된 요약만 보여준다.
+  (function () {
+    const fmtKRW = n => n === null || n === undefined ? '—' : '₩' + Math.round(n).toLocaleString('ko-KR');
+    const fmtPct = n => {
+      if (n === null || n === undefined) return '—';
+      return (n > 0 ? '+' : '') + n.toFixed(2) + '%';
+    };
+    const pctColor = n => n === null || n === undefined ? '' : (n > 0 ? '#2e7d4f' : (n < 0 ? '#c0392b' : ''));
+
+    fetch('data/portfolio.json')
+      .then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(data => {
+        const asOf = new Date(data.as_of);
+        document.getElementById('pw-updated').textContent =
+          asOf.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) + ' 갱신';
+
+        document.getElementById('pw-total').textContent = fmtKRW(data.totals.value_krw);
+
+        // 환차익 미포함(가격 변동만) 기준이 기본값 — posts/portfolio.html의 토글 기본값과 동일.
+        // 환차익 포함 수익률까지 보려면 상세 페이지로.
+        const retEl = document.getElementById('pw-return');
+        retEl.textContent = '총수익률 ' + fmtPct(data.totals.return_price_pct) + ' (환차익 미포함)';
+        retEl.style.color = pctColor(data.totals.return_price_pct);
+
+        const sorted = [...data.positions].sort((a, b) => b.value_krw - a.value_krw);
+        document.getElementById('pw-list').innerHTML = sorted.map(p => `
+          <li class="pw-row">
+            <span class="pw-ticker">${p.ticker}</span>
+            <span class="pw-val">${fmtKRW(p.value_krw)}</span>
+            <span class="pw-pct" style="color:${pctColor(p.return_price_pct)}">${fmtPct(p.return_price_pct)}</span>
+          </li>
+        `).join('');
+      })
+      .catch(() => {
+        document.getElementById('pw-updated').textContent = '';
+        document.getElementById('pw-list').innerHTML = '<li class="pw-row pw-loading">데이터를 불러오지 못했습니다</li>';
+      });
   })();
 </script>
 
