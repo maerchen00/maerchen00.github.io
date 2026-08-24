@@ -12,7 +12,11 @@
     { "ticker": "TLTW",    "name": "iShares 20+ Year Treasury Bond Buywrite Strategy ETF", "currency": "USD", "qty": 80, "buy_price": 22.9025, "buy_fx": 1469.46 },
     { "ticker": "USD",     "name": "ProShares Ultra Semiconductors",                  "currency": "USD", "qty": 80,  "buy_price": 34.7681, "buy_fx": 1358.01 },
     { "ticker": "VNQ",     "name": "Vanguard Real Estate Index Fund ETF",             "currency": "USD", "qty": 10,  "buy_price": 91.77,   "buy_fx": 1387.6 },
-    { "ticker": "1306.T",  "name": "NEXT FUNDS TOPIX Exchange Traded Fund",           "currency": "JPY", "qty": 480, "buy_price": 425.9625, "buy_fx": 9.2634 },
-    { "ticker": "1615.T",  "name": "NEXT FUNDS TOPIX Banks Exchange Traded Fund",     "currency": "JPY", "qty": 60,  "buy_price": 755.6,    "buy_fx": 8.8784 }
+    { "ticker": "1306.T",  "name": "NEXT FUNDS TOPIX Exchange Traded Fund",           "label": "NOMURA TOPIX",    "currency": "JPY", "qty": 480, "buy_price": 425.9625, "buy_fx": 9.2634 },
+    { "ticker": "1615.T",  "name": "NEXT FUNDS TOPIX Banks Exchange Traded Fund",     "label": "NOMURA TSE BANK", "currency": "JPY", "qty": 60,  "buy_price": 755.6,    "buy_fx": 8.8784 },
+
+    { "ticker": "USD-RP30", "name": "USD 일반 RP(30일)",  "type": "cash", "currency": "USD", "qty": 360,   "buy_price": 1, "buy_fx": null },
+    { "ticker": "USD-CASH", "name": "USD 예수금",         "type": "cash", "currency": "USD", "qty": 29.44, "buy_price": 1, "buy_fx": null },
+    { "ticker": "JPY-CASH", "name": "JPY 예수금",         "type": "cash", "currency": "JPY", "qty": 6812,  "buy_price": 1, "buy_fx": null }
   ]
 }

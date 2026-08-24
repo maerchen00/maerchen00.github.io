@@ -7,29 +7,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../common.css"/>
 <link rel="stylesheet" href="../article.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   .table-wrap td.pos { color: #2e7d4f; }
   .table-wrap td.neg { color: #c0392b; }
   .table-wrap td.muted { color: var(--ink-dim); }
+  /* 종목명 칸만 넓게 잡고(colgroup) table-layout:fixed로 그 비율을 강제 —
+     안 그러면 브라우저가 내용 길이 기준으로 칸을 다시 배분해 종목명이 계속 줄바꿈된다 */
+  /* min-width로 칸이 실제 내용보다 좁아지지 않게 막는다 — 폭이 부족하면
+     .table-wrap의 overflow-x:auto로 옆으로 스크롤되고, 칸이 우그러들지 않는다 */
+  #holdings-table { table-layout: fixed; min-width: 720px; }
+  #holdings-table th {
+    vertical-align: middle; padding: 0.55rem 0.3rem;
+    font-size: 0.72rem; white-space: nowrap; line-height: 1.5;
+  }
+  #holdings-table td { padding: 0.4rem 0.5rem; }
+  #holdings-table td:nth-child(2) { text-align: left; white-space: normal; word-break: keep-all; line-height: 1.4; }
+
+  .side-rail .viz-wrap:first-child { margin-top: 0; }
+  .side-rail .viz-wrap + .viz-wrap { margin-top: 1rem; }
   #portfolio-status { font-family: var(--sans); font-size: 0.78rem; color: var(--ink-muted); }
 
+  /* ── 환차익 포함/미포함 세그먼트 스위치 — 상태가 한눈에 보이도록 pill 두 개 중 하나가 채워진다 ── */
   .fx-toggle-row {
-    display: flex; align-items: center; justify-content: flex-end; gap: 0.55rem;
-    margin: 0 0 0.7rem; font-family: var(--sans); font-size: 0.74rem; color: var(--ink-muted);
+    display: inline-flex; margin: 0 0 0.9rem;
+    border: 1px solid var(--rule); border-radius: 999px; overflow: hidden;
   }
-  .fx-toggle {
-    position: relative; width: 34px; height: 18px; flex-shrink: 0;
-    border: none; border-radius: 999px; background: var(--rule);
-    cursor: pointer; padding: 0; transition: background 0.15s;
+  .fx-seg {
+    font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+    padding: 0.4rem 1rem; border: none; background: var(--bg); color: var(--ink-muted);
+    cursor: pointer; transition: background 0.15s, color 0.15s;
   }
-  .fx-toggle[aria-checked="true"] { background: var(--accent); }
-  .fx-toggle-thumb {
-    position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
-    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: left 0.15s;
+  .fx-seg[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .fx-seg:not(:last-child) { border-right: 1px solid var(--rule); }
+
+  .kpi-amount { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-top: 0.2rem; }
+
+  /* 카드 높이를 압축하고, 토글로 sub 텍스트 길이가 바뀌어도(1줄↔2줄) 카드 높이가
+     같이 출렁이지 않도록 sub 영역 높이를 고정해둔다 */
+  #kpi-grid.kpi-grid { margin: 1rem 0; }
+  /* 라벨(총수익률 등)은 카드 맨 위에 고정, 그 아래 값·부가정보만 남는
+     공간에서 세로 중앙에 오도록 별도 wrapper(.kpi-body)로 감싼다 */
+  #kpi-grid .kpi { padding: 0.6rem 0.7rem; display: flex; flex-direction: column; }
+  #kpi-grid .kpi-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  #kpi-grid .kpi-sub { min-height: 2.1em; line-height: 1.35; }
+
+  .chart-fixed-h { position: relative; width: 100%; }
+  .chart-fixed-h canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+
+  .period-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.7rem; margin: 1.2rem 0; }
+  .period-chip { border: 1px solid var(--rule); padding: 0.6rem 0.5rem; background: var(--bg); text-align: center; }
+  .period-chip-label { font-family: var(--sans); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 0.3rem; }
+  .period-chip-val { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .period-chip-bench { font-family: var(--sans); font-size: 0.6rem; color: var(--ink-dim); margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 768px) {
+    .period-grid { grid-template-columns: repeat(3,1fr); }
   }
-  .fx-toggle[aria-checked="true"] .fx-toggle-thumb { left: 18px; }
-  .fx-toggle-label { font-weight: 500; }
-  .fx-toggle-label.on { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -40,7 +74,7 @@
   <div class="nav-logo">무제</div>
   <div class="nav-right">
     <a class="nav-back" href="../index.html">← 목록으로</a>
-    <span class="nav-tag" id="tag-btn">Finance ▾
+    <span class="nav-tag" id="tag-btn">Portfolio ▾
       <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
         <div class="td-item d1">Economics</div>
         <a class="td-item d2" href="great-depression.html">오스트리아 학파는 대공황을 어떻게 설명하는가</a>
@@ -49,10 +83,12 @@
         <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
         <a class="td-item d2" href="volatility-harvesting.html">변동성 수확</a>
         <a class="td-item d2" href="leverage-rebalancing.html">레버리지 리밸런싱 설계</a>
-        <a class="td-item d2 active" href="portfolio.html">포트폴리오 공개</a>
         <div class="td-divider"></div>
         <div class="td-item d1">Math</div>
         <a class="td-item d2" href="gbm-verification.html">기하 브라운 운동 실증검증</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Portfolio</div>
+        <a class="td-item d2 active" href="portfolio.html">포트폴리오 공개</a>
       </div>
     </span>
     <span class="nav-date">2026. 8</span>
@@ -67,11 +103,12 @@
     <a class="toc-item"     href="#sec-summary">2. 요약</a>
     <a class="toc-item"     href="#sec-holdings">3. 보유 종목</a>
     <a class="toc-item"     href="#sec-note">4. 갱신 방식·유의사항</a>
+    <a class="toc-item"     href="#sec-trades">5. 매매 기록</a>
   </div>
 
   <div class="post-wrap">
     <div class="post-header">
-      <div class="post-cat">Finance</div>
+      <div class="post-cat">Portfolio</div>
       <h1>포트폴리오 공개</h1>
       <p class="post-sub">실제 보유 종목 스냅샷 — 야후 파이낸스 시세로 평일 매일 자동 갱신</p>
       <div class="post-meta" id="portfolio-meta">최종 갱신 — 불러오는 중…</div>
@@ -82,7 +119,7 @@
 
 <h2 id="sec-intro">1. 개요</h2>
 
-<p>아래는 현재 실제로 보유 중인 종목을 그대로 옮긴 스냅샷이다. 매수 시점별 전체 거래 내역을 복원하지 못해, 매입가·매입환율은 <strong>현재 보유 수량 기준 평균 취득 정보</strong>로 기록했다. 시세와 원/달러·원/엔 환율은 야후 파이낸스(Yahoo Finance) 기준이며, GitHub Actions가 평일 하루 한 번 자동으로 가져와 이 페이지가 읽는 <code>data/portfolio.json</code>을 갱신한다. 브라우저가 야후 파이낸스를 직접 호출하지 않으므로, 방문 시점의 값은 최근 자동 갱신 시점 기준이며 장중 실시간은 아니다.</p>
+<p>매수 시점별 전체 거래 내역을 복원하지 못해, 매입가·매입환율은 <strong>현재 보유 수량 기준 평균 취득 정보</strong>로 기록했다. 시세·환율은 야후 파이낸스 기준, 평일 하루 한 번 자동 갱신되며 장중 실시간은 아니다.</p>
 
 <p style="font-size:0.85rem;color:var(--ink-muted);">※ 투자 조언이 아닌 개인 기록의 공개이며, 실제 매매 판단의 근거로 삼지 말 것.</p>
 
@@ -93,18 +130,24 @@
 <div id="portfolio-status">불러오는 중…</div>
 
 <div class="fx-toggle-row" id="fx-toggle-row" style="display:none;">
-  <span class="fx-toggle-label" id="fx-label-off">환차익 미포함</span>
-  <button type="button" class="fx-toggle" id="fx-toggle" role="switch" aria-checked="false" aria-label="환차익 포함 여부">
-    <span class="fx-toggle-thumb"></span>
-  </button>
-  <span class="fx-toggle-label" id="fx-label-on">환차익 포함</span>
+  <button type="button" class="fx-seg" id="fx-seg-off" aria-pressed="true">환차익 미포함</button>
+  <button type="button" class="fx-seg" id="fx-seg-on" aria-pressed="false">환차익 포함</button>
 </div>
 
 <div class="kpi-grid" id="kpi-grid" style="display:none;">
-  <div class="kpi"><div class="kpi-label">총 평가금액</div><div class="kpi-val" id="kpi-value">—</div><div class="kpi-sub">원화 환산</div></div>
-  <div class="kpi"><div class="kpi-label">총 매입원가</div><div class="kpi-val" id="kpi-cost">—</div><div class="kpi-sub" id="kpi-cost-sub">원화 환산</div></div>
-  <div class="kpi"><div class="kpi-label">총수익률</div><div class="kpi-val" id="kpi-return">—</div><div class="kpi-sub" id="kpi-return-sub">환차익 미포함</div></div>
-  <div class="kpi"><div class="kpi-label">환율</div><div class="kpi-val" id="kpi-fx" style="font-size:0.95rem;">—</div><div class="kpi-sub">USD·JPY / KRW</div></div>
+  <div class="kpi"><div class="kpi-label">총 평가금액</div><div class="kpi-body"><div class="kpi-val" id="kpi-value">—</div><div class="kpi-sub">원화 환산</div></div></div>
+  <div class="kpi"><div class="kpi-label">총 매입원가</div><div class="kpi-body"><div class="kpi-val" id="kpi-cost">—</div><div class="kpi-sub" id="kpi-cost-sub">원화 환산</div></div></div>
+  <div class="kpi"><div class="kpi-label">총수익률</div><div class="kpi-body"><div class="kpi-val" id="kpi-return">—</div><div class="kpi-amount" id="kpi-profit">—</div><div class="kpi-sub" id="kpi-return-sub">환차익 미포함</div></div></div>
+  <div class="kpi"><div class="kpi-label">환율</div><div class="kpi-body"><div class="kpi-val" id="kpi-fx" style="font-size:0.95rem;line-height:1.5;">—</div><div class="kpi-sub">USD·JPY / KRW</div></div></div>
+</div>
+
+<h3 style="margin-top:0.5rem;">구간별 수익률<span style="font-weight:400;font-size:0.72rem;color:var(--ink-dim);" id="period-caption"> — 하단 작은 숫자는 S&amp;P500</span></h3>
+<div class="period-grid" id="period-grid">
+  <div class="period-chip"><div class="period-chip-label">일간</div><div class="period-chip-val" id="period-d1">—</div><div class="period-chip-bench" id="period-bench-d1">—</div></div>
+  <div class="period-chip"><div class="period-chip-label">주간</div><div class="period-chip-val" id="period-w1">—</div><div class="period-chip-bench" id="period-bench-w1">—</div></div>
+  <div class="period-chip"><div class="period-chip-label">월간</div><div class="period-chip-val" id="period-m1">—</div><div class="period-chip-bench" id="period-bench-m1">—</div></div>
+  <div class="period-chip"><div class="period-chip-label">연간</div><div class="period-chip-val" id="period-y1">—</div><div class="period-chip-bench" id="period-bench-y1">—</div></div>
+  <div class="period-chip"><div class="period-chip-label">YTD</div><div class="period-chip-val" id="period-ytd">—</div><div class="period-chip-bench" id="period-bench-ytd">—</div></div>
 </div>
 
 <div class="divider">· · ·</div>
@@ -113,13 +156,19 @@
 
 <div class="table-wrap">
   <p class="table-caption">보유 종목 상세 (매입가·현재가는 원화가 아닌 현지 통화 기준)</p>
-  <table>
+  <table id="holdings-table">
+    <colgroup>
+      <col style="width:12%"><col style="width:19%"><col style="width:7%">
+      <col style="width:10%"><col style="width:10%">
+      <col style="width:10%">
+      <col style="width:11%"><col style="width:7%"><col style="width:14%">
+    </colgroup>
     <thead>
       <tr>
         <th>티커</th><th>종목명</th><th>수량</th>
         <th>매입가</th><th>매입환율</th>
-        <th>현재가</th><th>현재환율</th>
-        <th>평가금액(KRW)</th><th id="th-return">수익률<br><span style="font-weight:400;color:var(--ink-dim);">(환차익 미포함)</span></th>
+        <th>현재가</th>
+        <th>평가금액(KRW)</th><th>비중</th><th>수익률</th>
       </tr>
     </thead>
     <tbody id="holdings-body">
@@ -133,13 +182,28 @@
 
 <h2 id="sec-note">4. 갱신 방식·유의사항</h2>
 
-<p>시세·환율은 <a href="https://finance.yahoo.com" target="_blank" rel="noopener">Yahoo Finance</a>에서 가져온다. GitHub Actions 스케줄러가 평일 한국시간 06:30경(미국 정규장 마감 후) 실행되어 <code>data/holdings.json</code>에 기록된 보유 정보와 그날의 시세·환율을 합산한 뒤 <code>data/portfolio.json</code>을 새로 커밋한다. 매매(추가매수·매도)가 발생하면 <code>data/holdings.json</code>을 직접 수정한다 — 자동화 대상은 시세뿐이고 보유 정보 자체는 수동으로 관리한다.</p>
+<p style="font-size:0.85rem;color:var(--ink-muted);">시세·환율: <a href="https://finance.yahoo.com" target="_blank" rel="noopener">Yahoo Finance</a> · 평일 한국시간 06:30경(미국 정규장 마감 후) GitHub Actions가 <code>data/holdings.json</code>(보유 정보, 수동 관리)과 그날 시세를 합쳐 자동 갱신 · 조회 실패 시 갱신을 건너뛰어 마지막 성공분이 그대로 남는다.</p>
 
-<p><strong>환차익 미포함</strong>은 매입 시점 대비 현재가의 현지 통화 기준 가격 변동만 반영한 수익률이고(원/달러·원/엔 환율은 매입 시점 그대로 고정), <strong>환차익 포함</strong>은 여기에 매입 시점 이후 환율 변동분까지 더한 원화 환산 실수익률이다. 상단 토글로 전환할 수 있으며 기본값은 환차익 미포함이다.</p>
+<div class="divider">· · ·</div>
 
-<p style="font-size:0.8rem;color:var(--ink-dim);">시세 조회가 실패하면 워크플로가 커밋을 건너뛰므로, 이 경우 위 데이터는 마지막으로 성공한 날짜의 값 그대로 남는다.</p>
+<h2 id="sec-trades">5. 매매 기록</h2>
+
+<p style="font-size:0.85rem;color:var(--ink-muted);">개별 매수·매도 내역은 아직 기록하지 않는다 — 지금은 <code>data/holdings.json</code>에 보유 수량·평균 매입가만 남아 있다. 나중에 거래가 발생할 때마다 날짜·종목·수량·가격을 남기는 매매 로그를 여기에 추가할 계획이다.</p>
 
     </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <p class="viz-title">평가금액 추이</p>
+        <div class="chart-fixed-h" style="height:200px;"><canvas id="trend-chart"></canvas></div>
+        <p class="table-source" id="trend-source" style="text-align:left;margin-top:0.6rem;">매일 자동 갱신 시점의 값이 하루 한 점씩 쌓인다 — 시장 등락뿐 아니라 실제 매매·입출금으로도 값이 바뀌므로 순수 수익률 추이는 아니다. 이제 막 기록을 시작해 아직 짧다.</p>
+      </div>
+      <div class="viz-wrap">
+        <p class="viz-title">보유 비중 (평가금액 기준)</p>
+        <div class="chart-fixed-h" style="height:280px;"><canvas id="alloc-chart"></canvas></div>
+      </div>
+    </aside>
+
     </div>
   </div>
 
@@ -153,6 +217,13 @@
       document.getElementById('portfolio-status').textContent = '데이터를 불러오지 못했습니다 (' + err.message + ')';
       document.getElementById('holdings-body').innerHTML =
         '<tr><td colspan="9" style="text-align:center;color:var(--ink-dim);">데이터를 불러오지 못했습니다</td></tr>';
+    });
+
+  fetch('../data/portfolio_history.json')
+    .then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+    .then(drawTrendChart)
+    .catch(() => {
+      document.getElementById('trend-source').textContent = '추이 데이터를 불러오지 못했습니다';
     });
 
   function fmtKRW(n) {
@@ -173,9 +244,25 @@
     const sign = n > 0 ? '+' : '';
     return sign + n.toFixed(2) + '%';
   }
+  function fmtWeight(n) {
+    if (n === null || n === undefined) return '—';
+    return n.toFixed(1) + '%';
+  }
+  function fmtKRWSigned(n) {
+    if (n === null || n === undefined) return '—';
+    const sign = n > 0 ? '+' : (n < 0 ? '−' : '');
+    return sign + '₩' + Math.round(Math.abs(n)).toLocaleString('ko-KR');
+  }
   function pctClass(n) {
     if (n === null || n === undefined) return 'muted';
     return n > 0 ? 'pos' : (n < 0 ? 'neg' : '');
+  }
+  function pctColor(n) {
+    if (n === null || n === undefined) return '';
+    return n > 0 ? '#2e7d4f' : (n < 0 ? '#c0392b' : '');
+  }
+  function displayTicker(t) {
+    return t.replace(/\.T$/, '');
   }
 
   let portfolioData = null;
@@ -195,47 +282,146 @@
     const excluded = data.totals.excluded_from_return || [];
     document.getElementById('kpi-cost-sub').textContent =
       excluded.length ? excluded.join(', ') + ' 제외' : '원화 환산';
-    document.getElementById('kpi-fx').textContent =
-      '$1 = ' + fmtFx(data.fx.USD) + ' / ¥1 = ' + fmtFx(data.fx.JPY);
+    document.getElementById('kpi-fx').innerHTML =
+      '$1 = ' + fmtFx(data.fx.USD) + '<br>¥1 = ' + fmtFx(data.fx.JPY);
 
     const rows = data.positions.map(p => {
       const buyFx = p.buy_fx === null ? '<span class="muted">미입력</span>' : fmtFx(p.buy_fx);
       return '<tr data-ticker="' + p.ticker + '">' +
-        '<td>' + p.ticker + '</td>' +
+        '<td>' + displayTicker(p.ticker) + '</td>' +
         '<td style="text-align:left;">' + p.name + '</td>' +
         '<td>' + p.qty.toLocaleString('ko-KR') + '</td>' +
         '<td>' + fmtPrice(p.buy_price, p.currency) + '</td>' +
         '<td>' + buyFx + '</td>' +
         '<td>' + fmtPrice(p.price, p.currency) + '</td>' +
-        '<td>' + fmtFx(p.fx) + '</td>' +
         '<td>' + fmtKRW(p.value_krw) + '</td>' +
+        '<td class="muted">' + fmtWeight(p.weight_pct) + '</td>' +
         '<td class="ret-cell"></td>' +
         '</tr>';
     }).join('');
     document.getElementById('holdings-body').innerHTML = rows;
 
-    document.getElementById('table-source').textContent =
-      '데이터: Yahoo Finance';
-
+    drawAllocationChart(data);
     applyFxMode();
+  }
+
+  let allocChart = null;
+  function drawAllocationChart(data) {
+    const palette = ['#92400e', '#b5651d', '#c4907a', '#8a6b2c', '#a8763e', '#c4a35a',
+                      '#7a4b8c', '#5f7a8c', '#4b6b5a', '#a85a5a', '#6b5b95', '#8c7a4b'];
+    const sorted = [...data.positions].sort((a, b) => b.value_krw - a.value_krw);
+    const ctx = document.getElementById('alloc-chart').getContext('2d');
+    if (allocChart) allocChart.destroy();
+    allocChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: sorted.map(p => p.label || p.ticker),
+        datasets: [{
+          data: sorted.map(p => p.value_krw),
+          backgroundColor: sorted.map((_, i) => palette[i % palette.length]),
+          borderColor: '#f3f0eb',
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: { family: "'Noto Sans KR', sans-serif", size: 10 },
+              color: '#78716c',
+              boxWidth: 9,
+              padding: 6,
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ' ' + ctx.label + ': ' + fmtKRW(ctx.parsed) +
+                ' (' + (ctx.parsed / data.totals.value_krw * 100).toFixed(1) + '%)',
+            },
+          },
+        },
+      },
+    });
+  }
+
+  function drawTrendChart(history) {
+    if (!history.length) return;
+    if (history.length > 1) {
+      document.getElementById('trend-source').textContent =
+        '데이터: 매일 자동 갱신 시점의 평가금액(환차익 포함) · ' + history.length + '일 누적 · 매매·입출금이 있으면 시장 등락과 무관하게도 값이 바뀐다';
+    }
+    const ctx = document.getElementById('trend-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: history.map(h => h.date.slice(5)),
+        datasets: [{
+          data: history.map(h => h.value_krw),
+          borderColor: '#92400e',
+          backgroundColor: 'rgba(146,64,14,0.07)',
+          fill: true,
+          tension: 0.15,
+          pointRadius: history.length > 1 ? 2 : 4,
+          pointBackgroundColor: '#92400e',
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ' ' + fmtKRW(ctx.parsed.y) },
+          },
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { family: "'Noto Sans KR', sans-serif", size: 10 }, color: '#78716c' } },
+          y: {
+            grid: { color: '#e7e2d8' },
+            ticks: {
+              font: { family: "'Noto Sans KR', sans-serif", size: 10 }, color: '#78716c',
+              callback: v => (v / 10000).toLocaleString('ko-KR') + '만',
+            },
+          },
+        },
+      },
+    });
   }
 
   function applyFxMode() {
     if (!portfolioData) return;
     const totals = portfolioData.totals;
-    const excluded = totals.excluded_from_return || [];
     const totalPct = includeFx ? totals.return_pct : totals.return_price_pct;
+    const profit = includeFx ? totals.profit_krw : totals.profit_price_krw;
 
     const retEl = document.getElementById('kpi-return');
     retEl.textContent = fmtPct(totalPct);
     retEl.style.color = totalPct > 0 ? '#2e7d4f' : (totalPct < 0 ? '#c0392b' : '');
+    const profitEl = document.getElementById('kpi-profit');
+    profitEl.textContent = fmtKRWSigned(profit);
+    profitEl.style.color = pctColor(profit);
     document.getElementById('kpi-return-sub').textContent = includeFx
-      ? (excluded.length ? excluded.join(', ') + ' 제외 · 환차익 포함' : '환차익 포함')
+      ? '환차익 포함'
       : '환차익 미포함 (가격 변동만)';
 
-    document.getElementById('th-return').innerHTML =
-      '수익률<br><span style="font-weight:400;color:var(--ink-dim);">' +
-      (includeFx ? '(환차익 포함)' : '(환차익 미포함)') + '</span>';
+    document.getElementById('table-source').textContent =
+      '데이터: Yahoo Finance · 수익률 컬럼은 ' + (includeFx ? '환차익 포함' : '환차익 미포함') + ' 기준';
+
+    document.getElementById('period-caption').textContent =
+      ' — ' + (includeFx ? '환차익 포함' : '가격 변동만(환차익 미포함)') + ', 하단 작은 숫자는 S&P500(' +
+      (includeFx ? '원화 환산' : '지수 그대로') + ')';
+    const periods = (includeFx ? totals.periods_fx : totals.periods) || {};
+    const benchTotals = (portfolioData.totals.benchmark) || {};
+    const bench = (includeFx ? benchTotals.periods_fx : benchTotals.periods) || {};
+    ['d1', 'w1', 'm1', 'y1', 'ytd'].forEach(k => {
+      const el = document.getElementById('period-' + k);
+      el.textContent = fmtPct(periods[k]);
+      el.style.color = pctColor(periods[k]);
+      document.getElementById('period-bench-' + k).textContent = 'S&P500 ' + fmtPct(bench[k]);
+    });
 
     document.querySelectorAll('#holdings-body tr[data-ticker]').forEach(tr => {
       const p = portfolioData.positions.find(x => x.ticker === tr.dataset.ticker);
@@ -245,16 +431,12 @@
       cell.textContent = fmtPct(pct);
     });
 
-    const toggle = document.getElementById('fx-toggle');
-    toggle.setAttribute('aria-checked', String(includeFx));
-    document.getElementById('fx-label-off').classList.toggle('on', !includeFx);
-    document.getElementById('fx-label-on').classList.toggle('on', includeFx);
+    document.getElementById('fx-seg-off').setAttribute('aria-pressed', String(!includeFx));
+    document.getElementById('fx-seg-on').setAttribute('aria-pressed', String(includeFx));
   }
 
-  document.getElementById('fx-toggle').addEventListener('click', () => {
-    includeFx = !includeFx;
-    applyFxMode();
-  });
+  document.getElementById('fx-seg-off').addEventListener('click', () => { includeFx = false; applyFxMode(); });
+  document.getElementById('fx-seg-on').addEventListener('click', () => { includeFx = true; applyFxMode(); });
 
   const tagBtn = document.getElementById('tag-btn'), treeDrop = document.getElementById('tree-drop'), overlay = document.getElementById('overlay');
   tagBtn.addEventListener('click', e => { e.stopPropagation(); const o = treeDrop.classList.toggle('open'); tagBtn.classList.toggle('open', o); overlay.classList.toggle('show', o); });

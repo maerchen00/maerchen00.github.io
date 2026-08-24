@@ -157,43 +157,84 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 
 /* ── 우측 포트폴리오 위젯 ── */
 .portfolio-widget {
-  flex: 0 0 260px;
-  width: 260px;
+  flex: 0 0 340px;
+  width: 340px;
   position: sticky;
   top: 2rem;
   border-left: 1px solid var(--rule);
-  padding-left: 1.6rem;
+  /* 왼쪽만 여백을 주면 왼쪽 테두리+패딩으로 숨 쉴 틈이 있는 반면 오른쪽은
+     내용이 위젯 경계에 바로 붙어서 전체가 오른쪽으로 쏠려 보인다 —
+     오른쪽에도 같은 여백을 줘서 좌우가 대칭이 되게 한다. */
+  padding: 0 1.2rem 0 1.8rem;
   display: flex;
   flex-direction: column;
+  /* <aside> 기본 규칙(height:100vh; overflow-y:auto — 좌측 nav용)을 상쇄.
+     안 지우면 위젯 안에 내부 스크롤바가 생기며 아래쪽 종목이 잘려 보인다. */
+  height: auto;
+  max-height: none;
+  overflow-y: visible;
 }
-.pw-eyebrow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
-.pw-eyebrow .post-tag { cursor: default; pointer-events: none; }
-.pw-updated { font-family: var(--sans); font-size: 0.65rem; color: var(--ink-dim); }
+.pw-eyebrow { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.9rem; }
+.pw-updated { font-family: var(--sans); font-size: 0.65rem; color: var(--ink-dim); flex-shrink: 0; }
 .pw-title {
   font-family: var(--serif); font-size: 1rem; font-weight: 600;
-  color: var(--ink); letter-spacing: -0.01em; margin-bottom: 0.3rem;
+  color: var(--ink); letter-spacing: -0.01em;
 }
 .pw-title:hover { color: var(--accent); text-decoration: none; }
 .pw-total {
   font-family: var(--serif); font-size: 1.7rem; font-weight: 600;
   color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15;
 }
-.pw-return {
-  font-family: var(--sans); font-size: 0.8rem; font-weight: 500;
-  margin: 0.2rem 0 0.9rem;
+.pw-return-row { margin: 0.3rem 0 0.9rem; }
+.pw-return { font-family: var(--sans); font-size: 0.85rem; font-weight: 500; }
+.pw-profit { font-family: var(--sans); font-size: 0.9rem; font-weight: 700; margin-top: 0.2rem; }
+
+/* fx 세그먼트 스위치 — posts/portfolio.html과 동일한 형태. 위젯 전체(수익률·구간별
+   수익률·종목 리스트)에 영향을 주는 모드라 맨 위에 둬서 먼저 읽히게 한다. */
+.pw-fx-toggle-row {
+  display: inline-flex; flex-shrink: 0; margin-bottom: 1rem;
+  border: 1px solid var(--rule); border-radius: 999px; overflow: hidden;
+  /* .portfolio-widget가 flex-direction:column이라 기본 align-items:stretch로
+     자식을 폭 끝까지 늘려버린다 — inline-flex라도 이 늘어남은 못 막아서,
+     버튼 두 개만큼만 차지하도록 align-self로 직접 끊어줘야 한다. */
+  align-self: flex-start;
 }
+.pw-fx-seg {
+  font-family: var(--sans); font-size: 0.66rem; font-weight: 500;
+  padding: 0.3rem 0.65rem; border: none; background: var(--bg); color: var(--ink-muted);
+  cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.pw-fx-seg[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.pw-fx-seg:first-child { border-right: 1px solid var(--rule); }
+
+/* 구간별 수익률 — 상세 페이지 period-chip과 같은 개념, 위젯 폭에 맞춘 축소판 */
+.pw-period-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.4rem; margin: 0.9rem 0; }
+.pw-period-chip { text-align: center; }
+.pw-period-label { font-family: var(--sans); font-size: 0.55rem; letter-spacing: 0.06em; color: var(--ink-dim); margin-bottom: 0.2rem; }
+.pw-period-val { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pw-period-bench { font-family: var(--sans); font-size: 0.56rem; color: var(--ink-dim); margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+.pw-bench-caption { font-family: var(--sans); font-size: 0.6rem; color: var(--ink-dim); text-align: right; margin-top: -0.3rem; }
+
+.pw-chart-wrap { margin: 1.1rem 0 1.3rem; display: flex; justify-content: center; }
+
 .pw-list {
-  list-style: none; display: flex; flex-direction: column; gap: 0.4rem;
-  border-top: 0.5px solid var(--rule); padding-top: 0.7rem;
+  list-style: none; display: flex; flex-direction: column; gap: 0.7rem;
+  border-top: 0.5px solid var(--rule); padding-top: 1.1rem;
 }
-.pw-row {
-  display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.6rem;
-  font-family: var(--sans); font-size: 0.72rem;
+/* 토스증권 스타일 — 왼쪽 종목명+비중, 오른쪽 평가금액(위)/수익금·수익률(아래).
+   왼쪽 칸을 1fr로 늘려버리면 짧은 티커(QLD 등)에서 가운데가 텅 비어 보여서,
+   두 칸 다 내용에 맞춘 고정폭으로 잡고 남는 폭은 justify-content로 가운데 몰아둔다. */
+.pw-row { display: grid; grid-template-columns: 132px 122px; justify-content: center; align-items: center; gap: 0.5rem; }
+.pw-row.pw-loading { color: var(--ink-dim); font-family: var(--sans); font-size: 0.72rem; }
+.pw-row-left { min-width: 0; }
+.pw-ticker {
+  display: block; font-family: var(--sans); font-weight: 600; font-size: 0.78rem; color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.pw-row.pw-loading { color: var(--ink-dim); grid-template-columns: 1fr; }
-.pw-ticker { font-weight: 600; color: var(--ink); }
-.pw-val { color: var(--ink-muted); text-align: right; font-variant-numeric: tabular-nums; }
-.pw-pct { text-align: right; font-variant-numeric: tabular-nums; min-width: 3.6em; }
+.pw-weight { display: block; font-family: var(--sans); font-size: 0.64rem; color: var(--ink-dim); margin-top: 0.1rem; }
+.pw-row-right { text-align: right; }
+.pw-val { display: block; font-family: var(--sans); font-size: 0.78rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pw-pct { display: block; font-family: var(--sans); font-size: 0.68rem; font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
 .pw-more {
   display: block; margin-top: 1rem; padding-top: 0.8rem;
   border-top: 0.5px solid var(--rule);
@@ -271,14 +312,13 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
 
 /* ── 반응형 ── */
-@media (max-width: 1000px) {
+@media (max-width: 1120px) {
   .main-body { flex-wrap: wrap; }
   .portfolio-widget {
     position: static; flex-basis: 100%; width: auto;
     border-left: none; border-top: 1px solid var(--rule);
-    padding-left: 0; padding-top: 1.6rem; margin-top: 0.5rem;
+    padding: 1.6rem 0 0; margin-top: 0.5rem;
   }
-  .pw-list { max-width: 420px; }
 }
 
 @media (max-width: 640px) {

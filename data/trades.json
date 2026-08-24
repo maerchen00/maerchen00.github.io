@@ -1,0 +1,5 @@
+{
+  "_comment": "매매 기록용 예약 파일. 아직 아무 페이지도 이 파일을 읽지 않는다 — 매매가 발생하면 여기에 한 건씩 추가하고, 그때 posts/portfolio.html '5. 매매 기록' 섹션에서 렌더링을 붙일 예정.",
+  "_schema": { "date": "YYYY-MM-DD", "ticker": "string", "side": "buy | sell", "qty": "number", "price": "number (해당 통화 기준)", "fx": "number (그날 환율, 통화 1단위당 원)" },
+  "trades": []
+}

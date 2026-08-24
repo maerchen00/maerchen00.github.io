@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="common.css" />
   <link rel="stylesheet" href="home.css" />
   <link rel="alternate" type="application/rss+xml" title="무제" href="feed.xml" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 <div class="layout">
@@ -131,16 +132,38 @@
 
     <aside class="portfolio-widget" id="portfolio-widget">
       <div class="pw-eyebrow">
-        <span class="post-tag">Finance</span>
+        <a class="pw-title" href="posts/portfolio.html">포트폴리오 공개 →</a>
         <span class="pw-updated" id="pw-updated">불러오는 중…</span>
       </div>
-      <a class="pw-title" href="posts/portfolio.html">포트폴리오 공개 →</a>
+
+      <div class="pw-fx-toggle-row" id="pw-fx-toggle-row">
+        <button type="button" class="pw-fx-seg" id="pw-fx-seg-off" aria-pressed="true">환차익 미포함</button>
+        <button type="button" class="pw-fx-seg" id="pw-fx-seg-on" aria-pressed="false">환차익 포함</button>
+      </div>
+
       <div class="pw-total" id="pw-total">—</div>
-      <div class="pw-return" id="pw-return">—</div>
+      <div class="pw-return-row">
+        <div class="pw-return" id="pw-return">—</div>
+        <div class="pw-profit" id="pw-profit">—</div>
+      </div>
+
+      <div class="pw-period-grid" id="pw-period-grid">
+        <div class="pw-period-chip"><div class="pw-period-label">일간</div><div class="pw-period-val" id="pw-period-d1">—</div><div class="pw-period-bench" id="pw-bench-d1">—</div></div>
+        <div class="pw-period-chip"><div class="pw-period-label">주간</div><div class="pw-period-val" id="pw-period-w1">—</div><div class="pw-period-bench" id="pw-bench-w1">—</div></div>
+        <div class="pw-period-chip"><div class="pw-period-label">월간</div><div class="pw-period-val" id="pw-period-m1">—</div><div class="pw-period-bench" id="pw-bench-m1">—</div></div>
+        <div class="pw-period-chip"><div class="pw-period-label">연간</div><div class="pw-period-val" id="pw-period-y1">—</div><div class="pw-period-bench" id="pw-bench-y1">—</div></div>
+        <div class="pw-period-chip"><div class="pw-period-label">YTD</div><div class="pw-period-val" id="pw-period-ytd">—</div><div class="pw-period-bench" id="pw-bench-ytd">—</div></div>
+      </div>
+      <p class="pw-bench-caption">작은 숫자 = S&amp;P500</p>
+
+      <div class="pw-chart-wrap">
+        <canvas id="pw-alloc-chart" width="270" height="190"></canvas>
+      </div>
+
       <ul class="pw-list" id="pw-list">
         <li class="pw-row pw-loading">불러오는 중…</li>
       </ul>
-      <a class="pw-more" href="posts/portfolio.html">전체 보유 종목·수익률 보기 →</a>
+      <a class="pw-more" href="posts/portfolio.html#sec-holdings">전체 보유 종목·수익률 보기 →</a>
     </aside>
 
     </div>
@@ -306,41 +329,119 @@
   // 우측 포트폴리오 위젯 — data/portfolio.json을 읽어 요약·종목 리스트를 그린다.
   // 실제 시세 반영 로직은 posts/portfolio.html과 동일, 여기선 압축된 요약만 보여준다.
   (function () {
+    const PALETTE = ['#92400e', '#b5651d', '#c4907a', '#8a6b2c', '#a8763e', '#c4a35a',
+                      '#7a4b8c', '#5f7a8c', '#4b6b5a', '#a85a5a', '#6b5b95', '#8c7a4b'];
+
     const fmtKRW = n => n === null || n === undefined ? '—' : '₩' + Math.round(n).toLocaleString('ko-KR');
+    const fmtKRWSigned = n => {
+      if (n === null || n === undefined) return '—';
+      const sign = n > 0 ? '+' : (n < 0 ? '−' : '');
+      return sign + '₩' + Math.round(Math.abs(n)).toLocaleString('ko-KR');
+    };
     const fmtPct = n => {
       if (n === null || n === undefined) return '—';
       return (n > 0 ? '+' : '') + n.toFixed(2) + '%';
     };
+    const fmtWeight = n => n === null || n === undefined ? '—' : n.toFixed(1) + '%';
     const pctColor = n => n === null || n === undefined ? '' : (n > 0 ? '#2e7d4f' : (n < 0 ? '#c0392b' : ''));
+
+    let portfolioData = null;
+    let includeFx = false; // 기본값 OFF = 환차익 미포함 (posts/portfolio.html과 동일)
 
     fetch('data/portfolio.json')
       .then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
       .then(data => {
+        portfolioData = data;
         const asOf = new Date(data.as_of);
         document.getElementById('pw-updated').textContent =
           asOf.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) + ' 갱신';
-
         document.getElementById('pw-total').textContent = fmtKRW(data.totals.value_krw);
 
-        // 환차익 미포함(가격 변동만) 기준이 기본값 — posts/portfolio.html의 토글 기본값과 동일.
-        // 환차익 포함 수익률까지 보려면 상세 페이지로.
-        const retEl = document.getElementById('pw-return');
-        retEl.textContent = '총수익률 ' + fmtPct(data.totals.return_price_pct) + ' (환차익 미포함)';
-        retEl.style.color = pctColor(data.totals.return_price_pct);
-
-        const sorted = [...data.positions].sort((a, b) => b.value_krw - a.value_krw);
-        document.getElementById('pw-list').innerHTML = sorted.map(p => `
-          <li class="pw-row">
-            <span class="pw-ticker">${p.ticker}</span>
-            <span class="pw-val">${fmtKRW(p.value_krw)}</span>
-            <span class="pw-pct" style="color:${pctColor(p.return_price_pct)}">${fmtPct(p.return_price_pct)}</span>
-          </li>
-        `).join('');
+        drawMiniChart(data);
+        applyFxMode();
       })
       .catch(() => {
         document.getElementById('pw-updated').textContent = '';
         document.getElementById('pw-list').innerHTML = '<li class="pw-row pw-loading">데이터를 불러오지 못했습니다</li>';
       });
+
+    function drawMiniChart(data) {
+      const sorted = [...data.positions].sort((a, b) => b.value_krw - a.value_krw);
+      const ctx = document.getElementById('pw-alloc-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: sorted.map(p => p.label || p.ticker),
+          datasets: [{
+            data: sorted.map(p => p.value_krw),
+            backgroundColor: sorted.map((_, i) => PALETTE[i % PALETTE.length]),
+            borderColor: '#faf8f5',
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: c => ' ' + c.label + ': ' + fmtKRW(c.parsed) +
+                  ' (' + (c.parsed / data.totals.value_krw * 100).toFixed(1) + '%)',
+              },
+            },
+          },
+        },
+      });
+    }
+
+    function applyFxMode() {
+      if (!portfolioData) return;
+      const data = portfolioData;
+      const pct = includeFx ? data.totals.return_pct : data.totals.return_price_pct;
+      const profit = includeFx ? data.totals.profit_krw : data.totals.profit_price_krw;
+
+      const retEl = document.getElementById('pw-return');
+      retEl.textContent = '총수익률 ' + fmtPct(pct);
+      retEl.style.color = pctColor(pct);
+      const profitEl = document.getElementById('pw-profit');
+      profitEl.textContent = fmtKRWSigned(profit);
+      profitEl.style.color = pctColor(profit);
+
+      const periods = (includeFx ? data.totals.periods_fx : data.totals.periods) || {};
+      const benchTotals = data.totals.benchmark || {};
+      const bench = (includeFx ? benchTotals.periods_fx : benchTotals.periods) || {};
+      ['d1', 'w1', 'm1', 'y1', 'ytd'].forEach(k => {
+        const el = document.getElementById('pw-period-' + k);
+        el.textContent = fmtPct(periods[k]);
+        el.style.color = pctColor(periods[k]);
+        document.getElementById('pw-bench-' + k).textContent = fmtPct(bench[k]);
+      });
+
+      const sorted = [...data.positions].sort((a, b) => b.value_krw - a.value_krw);
+      document.getElementById('pw-list').innerHTML = sorted.map((p, i) => {
+        const rowPct = includeFx ? p.return_pct : p.return_price_pct;
+        const rowProfit = includeFx ? p.profit_krw : p.profit_price_krw;
+        const color = pctColor(rowPct);
+        return `
+          <li class="pw-row">
+            <div class="pw-row-left">
+              <span class="pw-ticker"><span style="display:inline-block;width:7px;height:7px;border-radius:1px;background:${PALETTE[i % PALETTE.length]};margin-right:0.35rem;"></span>${p.label || p.ticker}</span>
+              <span class="pw-weight">비중 ${fmtWeight(p.weight_pct)}</span>
+            </div>
+            <div class="pw-row-right">
+              <span class="pw-val">${fmtKRW(p.value_krw)}</span>
+              <span class="pw-pct" style="color:${color}">${fmtKRWSigned(rowProfit)} (${fmtPct(rowPct)})</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      document.getElementById('pw-fx-seg-off').setAttribute('aria-pressed', String(!includeFx));
+      document.getElementById('pw-fx-seg-on').setAttribute('aria-pressed', String(includeFx));
+    }
+
+    document.getElementById('pw-fx-seg-off').addEventListener('click', () => { includeFx = false; applyFxMode(); });
+    document.getElementById('pw-fx-seg-on').addEventListener('click', () => { includeFx = true; applyFxMode(); });
   })();
 </script>
 
