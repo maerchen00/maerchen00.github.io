@@ -149,6 +149,31 @@ aside {
 
 .t-divider { height: 1px; background: var(--rule); margin: 0.6rem 1.2rem; }
 
+/* 태그 트리와 로드맵 구획을 시각적으로 확실히 분리 — 위쪽(트리와의 간격)은
+   기존 0.6rem 그대로 두고, 아래쪽(로드맵과의 간격)만 넓혀 분리감을 준다 */
+.t-divider.roadmap-sep { margin: 0.6rem 1.2rem 1.1rem; }
+
+/* ── 로드맵 (병행 트랙) ── */
+.roadmap-heading { padding: 0.32rem 1.2rem; font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 0.2rem; }
+.roadmap-track { margin: 0 1.2rem 1.1rem; }
+.roadmap-track-label {
+  font-family: var(--sans); font-size: 0.64rem; font-weight: 600; color: var(--ink-muted);
+  margin-bottom: 0.45rem; padding-bottom: 0.3rem; border-bottom: 1px dashed var(--rule);
+}
+.roadmap-list { list-style: none; position: relative; padding-left: 0.9rem; margin: 0; }
+.roadmap-list::before { content: ''; position: absolute; left: 3px; top: 7px; bottom: 7px; width: 1px; background: var(--rule); }
+.roadmap-item { position: relative; padding: 0.3rem 0; font-family: var(--sans); font-size: 0.71rem; color: var(--ink-dim); }
+.roadmap-item::before { content: ''; position: absolute; left: -0.9rem; top: 0.5rem; width: 6px; height: 6px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--ink-dim); }
+.roadmap-item.current { color: var(--accent); font-weight: 500; }
+.roadmap-item.current::before { border-color: var(--accent); background: var(--accent); }
+/* 완료 항목은 취소선 색만으로는 눈에 잘 안 띄어서, 점을 체크 표시로
+   바꾸고 취소선도 더 진한 색으로 대비를 높인다 */
+.roadmap-item.done { color: var(--ink-muted); text-decoration: line-through; text-decoration-color: var(--ink-dim); text-decoration-thickness: 1px; }
+.roadmap-item.done::before {
+  content: '✓'; width: auto; height: auto; border: none; background: none; border-radius: 0;
+  left: -0.95rem; top: 0.28rem; font-size: 0.62rem; font-weight: 700; line-height: 1; color: var(--ink-muted);
+}
+
 /* ── 글 목록 ── */
 main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 
@@ -186,8 +211,7 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
   color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15;
 }
 .pw-return-row { margin: 0.3rem 0 0.9rem; }
-.pw-return { font-family: var(--sans); font-size: 0.85rem; font-weight: 500; }
-.pw-profit { font-family: var(--sans); font-size: 0.9rem; font-weight: 700; margin-top: 0.2rem; }
+.pw-return { font-family: var(--sans); font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
 
 /* fx 세그먼트 스위치 — posts/portfolio.html과 동일한 형태. 위젯 전체(수익률·구간별
    수익률·종목 리스트)에 영향을 주는 모드라 맨 위에 둬서 먼저 읽히게 한다. */

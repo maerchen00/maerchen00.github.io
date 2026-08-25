@@ -11,6 +11,12 @@ GitHub Actions 워크플로에서는 이 스크립트가 실패하면 커밋을 
 (periods_fx) 둘 다 계산한다 — 과거 환율도 fetch_period_base_prices로 똑같이
 구할 수 있어서(KRW=X·JPYKRW=X 자체가 야후 파이낸스의 티커다) 총수익률처럼
 두 버전을 다 낼 수 있었다.
+
+포트폴리오 합계(totals.periods/periods_fx)는 구간 시작 시점에 실제로 들고
+있던 수량(data/trades.json 기반 qty_as_of)으로 now·base 양쪽을 통일해서
+가중한다 — 오늘 수량을 과거 시점에도 그대로 곱하면, 구간 중간에 추가매수한
+몫까지 그 구간 내내 들고 있었던 것처럼 계산돼 수익률이 왜곡되기 때문이다.
+종목별 periods/periods_fx는 가격 비율만 쓰므로 수량과 무관해 영향 없다.
 """
 import json
 from datetime import datetime, timedelta, timezone
@@ -21,6 +27,7 @@ import yfinance as yf
 
 ROOT = Path(__file__).resolve().parent.parent
 HOLDINGS_PATH = ROOT / "data" / "holdings.json"
+TRADES_PATH = ROOT / "data" / "trades.json"
 OUTPUT_PATH = ROOT / "data" / "portfolio.json"
 HISTORY_PATH = ROOT / "data" / "portfolio_history.json"
 
@@ -37,8 +44,9 @@ def fetch_last_price(ticker: str) -> float:
     return float(price)
 
 
-def fetch_period_base_prices(ticker: str, current_price: float) -> dict:
-    """일간·주간·월간·연간·YTD 기준 '과거 종가'를 반환한다 (현재가는 별도로 넘겨받음)."""
+def fetch_period_base(ticker: str) -> dict:
+    """일간·주간·월간·연간·YTD 기준 '과거 종가'와 그 실제 날짜를 함께 반환한다.
+    날짜가 있어야 qty_as_of()로 그 시점의 실제 보유수량을 역산할 수 있다."""
     hist = yf.Ticker(ticker).history(period="1y", interval="1d")
     closes = hist["Close"].dropna()
     if closes.empty:
@@ -48,21 +56,63 @@ def fetch_period_base_prices(ticker: str, current_price: float) -> dict:
 
     def base_at_or_before(target):
         past = closes[closes.index <= target]
-        return float(past.iloc[-1]) if not past.empty else float(closes.iloc[0])
+        if past.empty:
+            return closes.index[0], float(closes.iloc[0])
+        return past.index[-1], float(past.iloc[-1])
 
     ytd_start = pd.Timestamp(year=now.year, month=1, day=1, tz=now.tz)
 
+    targets = {
+        "d1": now - pd.Timedelta(days=1),
+        "w1": now - pd.Timedelta(days=7),
+        "m1": now - pd.Timedelta(days=30),
+        "y1": now - pd.Timedelta(days=365),
+        "ytd": ytd_start,
+    }
+    result = {}
+    for k, target in targets.items():
+        date, price = base_at_or_before(target)
+        result[k] = {"date": date.date().isoformat(), "price": price}
+    return result
+
+
+def load_trades() -> list:
+    if not TRADES_PATH.exists():
+        return []
+    trades = json.loads(TRADES_PATH.read_text(encoding="utf-8"))["trades"]
+    for t in trades:
+        t["qty_delta"] = t["qty"] if t["side"] == "buy" else -t["qty"]
+    return trades
+
+
+def qty_as_of(ticker: str, as_of_date: str, current_qty: float, trades: list) -> float:
+    """as_of_date 시점에 실제로 들고 있던 수량을 역산한다 — 그 날짜'보다 뒤'에
+    일어난 이 종목 거래들의 수량 변화분을 현재 수량에서 빼는 방식.
+    trades.json이 비어 있으면(매매 기록이 아직 없으면) current_qty를 그대로
+    돌려주므로, 매매를 기록하기 전까지는 항상 지금과 동일하게 동작한다."""
+    delta_since = sum(
+        t["qty_delta"] for t in trades
+        if t["ticker"] == ticker and t["date"] > as_of_date
+    )
+    return current_qty - delta_since
+
+
+def generic_period_dates(today) -> dict:
+    """현금성 자산은 가격이 항상 1이라 fetch_period_base로 조회할 시세가 없다.
+    qty_as_of에 넘길 날짜만 있으면 되므로, 달력 기준으로 직접 계산한다."""
     return {
-        "d1": base_at_or_before(now - pd.Timedelta(days=1)),
-        "w1": base_at_or_before(now - pd.Timedelta(days=7)),
-        "m1": base_at_or_before(now - pd.Timedelta(days=30)),
-        "y1": base_at_or_before(now - pd.Timedelta(days=365)),
-        "ytd": base_at_or_before(ytd_start),
+        "d1": (today - timedelta(days=1)).isoformat(),
+        "w1": (today - timedelta(days=7)).isoformat(),
+        "m1": (today - timedelta(days=30)).isoformat(),
+        "y1": (today - timedelta(days=365)).isoformat(),
+        "ytd": today.replace(month=1, day=1).isoformat(),
     }
 
 
 def main() -> None:
     holdings = json.loads(HOLDINGS_PATH.read_text(encoding="utf-8"))
+    today = datetime.now(KST).date()
+    cash_period_dates = generic_period_dates(today)
 
     fx = {
         "USD": fetch_last_price("KRW=X"),      # USD/KRW
@@ -70,10 +120,12 @@ def main() -> None:
     }
     # 기간 수익률의 환차익 포함 버전에 쓸 과거 환율 — KRW=X·JPYKRW=X 자체가
     # 야후 파이낸스 티커라 주가와 똑같은 함수로 과거값을 구할 수 있다.
+    # 환율에는 수량 개념이 없어 날짜는 버리고 가격만 쓴다.
     fx_base = {
-        "USD": fetch_period_base_prices("KRW=X", fx["USD"]),
-        "JPY": fetch_period_base_prices("JPYKRW=X", fx["JPY"]),
+        "USD": {k: v["price"] for k, v in fetch_period_base("KRW=X").items()},
+        "JPY": {k: v["price"] for k, v in fetch_period_base("JPYKRW=X").items()},
     }
+    trades = load_trades()
 
     positions = []
     total_value = 0.0
@@ -113,20 +165,30 @@ def main() -> None:
             total_value_known += value_krw
             total_value_ex_fx_known += value_ex_fx_krw
 
-        # 현금은 가격이 항상 1이라 base_prices도 전부 1 — periods_price는
-        # 자동으로 0%가 되고, periods_fx만 환율 변동을 그대로 반영한다.
-        base_prices = {k: 1.0 for k in PERIOD_KEYS} if is_cash else fetch_period_base_prices(h["ticker"], price)
+        # 현금은 가격이 항상 1이라 base도 전부 1 — periods_price는 자동으로
+        # 0%가 되고, periods_fx만 환율 변동을 그대로 반영한다. 날짜만 달력으로
+        # 직접 계산해서 qty_as_of에 넘긴다.
+        if is_cash:
+            base = {k: {"date": cash_period_dates[k], "price": 1.0} for k in PERIOD_KEYS}
+        else:
+            base = fetch_period_base(h["ticker"])
         cur_fx_base = fx_base[h["currency"]]
 
-        periods_price = {k: round((price / base_prices[k] - 1) * 100, 2) for k in PERIOD_KEYS}
+        periods_price = {k: round((price / base[k]["price"] - 1) * 100, 2) for k in PERIOD_KEYS}
         periods_fx = {
-            k: round((price * cur_fx / (base_prices[k] * cur_fx_base[k]) - 1) * 100, 2)
+            k: round((price * cur_fx / (base[k]["price"] * cur_fx_base[k]) - 1) * 100, 2)
             for k in PERIOD_KEYS
         }
+        # 합계는 구간 시작 시점에 실제로 들고 있던 수량으로 now·base 양쪽을
+        # 통일해서 가중한다 — 오늘 수량을 과거에도 그대로 곱하면 구간 중간에
+        # 추가매수한 몫까지 그 구간 내내 보유했던 것처럼 왜곡되기 때문이다.
+        # (trades.json이 비어 있으면 qty_as_of가 항상 오늘 수량을 돌려줘서
+        # 지금까지와 동일하게 동작한다.)
         for k in PERIOD_KEYS:
-            period_now_value[k] += price * h["qty"] * cur_fx
-            period_base_value_price[k] += base_prices[k] * h["qty"] * cur_fx
-            period_base_value_fx[k] += base_prices[k] * h["qty"] * cur_fx_base[k]
+            qty_k = qty_as_of(h["ticker"], base[k]["date"], h["qty"], trades)
+            period_now_value[k] += price * qty_k * cur_fx
+            period_base_value_price[k] += base[k]["price"] * qty_k * cur_fx
+            period_base_value_fx[k] += base[k]["price"] * qty_k * cur_fx_base[k]
 
         positions.append({
             "ticker": h["ticker"],
@@ -158,7 +220,7 @@ def main() -> None:
     # 그대로 들고 있었다면"을 가정해 USD/KRW 환율을 곱해 원화 환산까지 반영한
     # 버전이다 — 환차익 포함 토글일 때 포트폴리오의 원화 실수익률과 견줄 수 있게.
     benchmark_price = fetch_last_price(BENCHMARK_TICKER)
-    benchmark_base = fetch_period_base_prices(BENCHMARK_TICKER, benchmark_price)
+    benchmark_base = {k: v["price"] for k, v in fetch_period_base(BENCHMARK_TICKER).items()}
     usd_fx_base = fx_base["USD"]
     benchmark = {
         "ticker": BENCHMARK_TICKER,
@@ -185,12 +247,16 @@ def main() -> None:
             round((total_value_ex_fx_known / total_cost_known - 1) * 100, 2)
             if total_cost_known else None
         ),
+        # base_value가 0이면(그 시점엔 아직 아무것도 안 갖고 있었으면 — 포트폴리오
+        # 전체를 그 구간 안에 새로 시작한 경우) 나눗셈이 불가능하니 null로 둔다.
         "periods": {
             k: round((period_now_value[k] / period_base_value_price[k] - 1) * 100, 2)
+            if period_base_value_price[k] else None
             for k in PERIOD_KEYS
         },
         "periods_fx": {
             k: round((period_now_value[k] / period_base_value_fx[k] - 1) * 100, 2)
+            if period_base_value_fx[k] else None
             for k in PERIOD_KEYS
         },
         "benchmark": benchmark,

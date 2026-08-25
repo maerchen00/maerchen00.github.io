@@ -41,11 +41,16 @@
   .fx-seg[aria-pressed="true"] { background: var(--accent); color: #fff; }
   .fx-seg:not(:last-child) { border-right: 1px solid var(--rule); }
 
-  .kpi-amount { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-top: 0.2rem; }
+  /* 총수익률 카드는 "+금액 (퍼센트)" 한 줄로 표시하는데 기본 kpi-val 폭보다
+     길어 줄바꿈되기 쉬워서, 이 카드만 글자 크기를 살짝 줄이고 두 줄까지 허용한다 */
+  #kpi-return { font-size: 1.02rem; line-height: 1.3; }
 
   /* 카드 높이를 압축하고, 토글로 sub 텍스트 길이가 바뀌어도(1줄↔2줄) 카드 높이가
      같이 출렁이지 않도록 sub 영역 높이를 고정해둔다 */
   #kpi-grid.kpi-grid { margin: 1rem 0; }
+  /* 카드명(총 평가금액 등)이 기본 article.css 크기(0.55rem)로는 잘 안 읽혀서
+     이 카드에서만 조금 키운다 */
+  #kpi-grid .kpi-label { font-size: 0.66rem; }
   /* 라벨(총수익률 등)은 카드 맨 위에 고정, 그 아래 값·부가정보만 남는
      공간에서 세로 중앙에 오도록 별도 wrapper(.kpi-body)로 감싼다 */
   #kpi-grid .kpi { padding: 0.6rem 0.7rem; display: flex; flex-direction: column; }
@@ -137,7 +142,7 @@
 <div class="kpi-grid" id="kpi-grid" style="display:none;">
   <div class="kpi"><div class="kpi-label">총 평가금액</div><div class="kpi-body"><div class="kpi-val" id="kpi-value">—</div><div class="kpi-sub">원화 환산</div></div></div>
   <div class="kpi"><div class="kpi-label">총 매입원가</div><div class="kpi-body"><div class="kpi-val" id="kpi-cost">—</div><div class="kpi-sub" id="kpi-cost-sub">원화 환산</div></div></div>
-  <div class="kpi"><div class="kpi-label">총수익률</div><div class="kpi-body"><div class="kpi-val" id="kpi-return">—</div><div class="kpi-amount" id="kpi-profit">—</div><div class="kpi-sub" id="kpi-return-sub">환차익 미포함</div></div></div>
+  <div class="kpi"><div class="kpi-label">총수익률</div><div class="kpi-body"><div class="kpi-val" id="kpi-return">—</div><div class="kpi-sub" id="kpi-return-sub">환차익 미포함</div></div></div>
   <div class="kpi"><div class="kpi-label">환율</div><div class="kpi-body"><div class="kpi-val" id="kpi-fx" style="font-size:0.95rem;line-height:1.5;">—</div><div class="kpi-sub">USD·JPY / KRW</div></div></div>
 </div>
 
@@ -248,10 +253,10 @@
     if (n === null || n === undefined) return '—';
     return n.toFixed(1) + '%';
   }
-  function fmtKRWSigned(n) {
-    if (n === null || n === undefined) return '—';
-    const sign = n > 0 ? '+' : (n < 0 ? '−' : '');
-    return sign + '₩' + Math.round(Math.abs(n)).toLocaleString('ko-KR');
+  function fmtProfitPct(profit, pct) {
+    if (profit === null || profit === undefined || pct === null || pct === undefined) return '—';
+    const sign = profit > 0 ? '+' : (profit < 0 ? '−' : '');
+    return sign + Math.round(Math.abs(profit)).toLocaleString('ko-KR') + ' (' + Math.abs(pct).toFixed(2) + '%)';
   }
   function pctClass(n) {
     if (n === null || n === undefined) return 'muted';
@@ -280,8 +285,14 @@
     document.getElementById('kpi-value').textContent = fmtKRW(data.totals.value_krw);
     document.getElementById('kpi-cost').textContent = fmtKRW(data.totals.cost_krw);
     const excluded = data.totals.excluded_from_return || [];
-    document.getElementById('kpi-cost-sub').textContent =
-      excluded.length ? excluded.join(', ') + ' 제외' : '원화 환산';
+    const costSubEl = document.getElementById('kpi-cost-sub');
+    if (excluded.length) {
+      costSubEl.textContent = '현금성 자산 제외';
+      costSubEl.title = excluded.join(', ') + ' 제외';
+    } else {
+      costSubEl.textContent = '원화 환산';
+      costSubEl.removeAttribute('title');
+    }
     document.getElementById('kpi-fx').innerHTML =
       '$1 = ' + fmtFx(data.fx.USD) + '<br>¥1 = ' + fmtFx(data.fx.JPY);
 
@@ -398,11 +409,8 @@
     const profit = includeFx ? totals.profit_krw : totals.profit_price_krw;
 
     const retEl = document.getElementById('kpi-return');
-    retEl.textContent = fmtPct(totalPct);
+    retEl.textContent = fmtProfitPct(profit, totalPct);
     retEl.style.color = totalPct > 0 ? '#2e7d4f' : (totalPct < 0 ? '#c0392b' : '');
-    const profitEl = document.getElementById('kpi-profit');
-    profitEl.textContent = fmtKRWSigned(profit);
-    profitEl.style.color = pctColor(profit);
     document.getElementById('kpi-return-sub').textContent = includeFx
       ? '환차익 포함'
       : '환차익 미포함 (가격 변동만)';

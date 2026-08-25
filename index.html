@@ -52,6 +52,28 @@
       </ul>
     </div>
 
+    <div class="t-divider roadmap-sep"></div>
+
+    <div class="roadmap-heading">글 로드맵</div>
+
+    <div class="roadmap-track">
+      <div class="roadmap-track-label">리밸런싱 시리즈</div>
+      <ul class="roadmap-list">
+        <li class="roadmap-item done">리밸런싱 백테스트</li>
+        <li class="roadmap-item current">그리드서치 최적화</li>
+        <li class="roadmap-item">상관관계, 부호로 다시 보기</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-track">
+      <div class="roadmap-track-label">옵션가격 시리즈</div>
+      <ul class="roadmap-list">
+        <li class="roadmap-item done">GBM 실증 검증</li>
+        <li class="roadmap-item">브라운 운동과 이토 정리</li>
+        <li class="roadmap-item">블랙-숄즈 방정식 유도</li>
+      </ul>
+    </div>
+
     <div class="aside-contact">
       <a class="footer-link" href="feed.xml">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
@@ -144,7 +166,6 @@
       <div class="pw-total" id="pw-total">—</div>
       <div class="pw-return-row">
         <div class="pw-return" id="pw-return">—</div>
-        <div class="pw-profit" id="pw-profit">—</div>
       </div>
 
       <div class="pw-period-grid" id="pw-period-grid">
@@ -338,6 +359,11 @@
       const sign = n > 0 ? '+' : (n < 0 ? '−' : '');
       return sign + '₩' + Math.round(Math.abs(n)).toLocaleString('ko-KR');
     };
+    const fmtProfitPct = (profit, pct) => {
+      if (profit === null || profit === undefined || pct === null || pct === undefined) return '—';
+      const sign = profit > 0 ? '+' : (profit < 0 ? '−' : '');
+      return sign + Math.round(Math.abs(profit)).toLocaleString('ko-KR') + ' (' + Math.abs(pct).toFixed(2) + '%)';
+    };
     const fmtPct = n => {
       if (n === null || n === undefined) return '—';
       return (n > 0 ? '+' : '') + n.toFixed(2) + '%';
@@ -401,11 +427,8 @@
       const profit = includeFx ? data.totals.profit_krw : data.totals.profit_price_krw;
 
       const retEl = document.getElementById('pw-return');
-      retEl.textContent = '총수익률 ' + fmtPct(pct);
+      retEl.textContent = '총수익률 ' + fmtProfitPct(profit, pct);
       retEl.style.color = pctColor(pct);
-      const profitEl = document.getElementById('pw-profit');
-      profitEl.textContent = fmtKRWSigned(profit);
-      profitEl.style.color = pctColor(profit);
 
       const periods = (includeFx ? data.totals.periods_fx : data.totals.periods) || {};
       const benchTotals = data.totals.benchmark || {};
