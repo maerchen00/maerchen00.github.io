@@ -1,5 +1,12 @@
 {
-  "_comment": "매매 기록용 예약 파일. 아직 아무 페이지도 이 파일을 읽지 않는다 — 매매가 발생하면 여기에 한 건씩 추가하고, 그때 posts/portfolio.html '5. 매매 기록' 섹션에서 렌더링을 붙일 예정.",
+  "_comment": "매매 발생 시 여기에 한 건씩 추가할 것. scripts/update_portfolio.py의 qty_as_of()가 이 기록으로 과거 시점 보유수량을 역산해 구간별 수익률 왜곡을 막고, posts/portfolio.html '5. 매매 기록' 섹션이 그대로 렌더링한다. USD-CASH·JPY-CASH(예수금) 잔고 변동은 의도적으로 기록하지 않는다 — 환전 규모(원화 기준)를 알 수 없고 건마다 남기기도 번거로워서, 예수금은 data/holdings.json의 현재 수량만 갱신한다.",
   "_schema": { "date": "YYYY-MM-DD", "ticker": "string", "side": "buy | sell", "qty": "number", "price": "number (해당 통화 기준)", "fx": "number (그날 환율, 통화 1단위당 원)" },
-  "trades": []
+  "trades": [
+    { "date": "2026-08-25", "ticker": "BND",     "side": "buy",  "qty": 20,  "price": 72.5,   "fx": 1422.83 },
+    { "date": "2026-08-27", "ticker": "1306.T",  "side": "buy",  "qty": 240, "price": 428.9,  "fx": 9.0728 },
+    { "date": "2026-08-27", "ticker": "1306.T",  "side": "sell", "qty": 120, "price": 428.8,  "fx": 9.0728 },
+    { "date": "2026-08-27", "ticker": "1615.T",  "side": "buy",  "qty": 60,  "price": 755.2,  "fx": 8.7863 },
+    { "date": "2026-08-27", "ticker": "VTIP",    "side": "buy",  "qty": 10,  "price": 49.83,  "fx": 1384.6 },
+    { "date": "2026-08-27", "ticker": "USD-RP7", "side": "buy",  "qty": 260, "price": 1,      "fx": null }
+  ]
 }

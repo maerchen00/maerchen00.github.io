@@ -13,16 +13,51 @@
   .table-wrap td.neg { color: #c0392b; }
   .table-wrap td.muted { color: var(--ink-dim); }
   /* 종목명 칸만 넓게 잡고(colgroup) table-layout:fixed로 그 비율을 강제 —
-     안 그러면 브라우저가 내용 길이 기준으로 칸을 다시 배분해 종목명이 계속 줄바꿈된다 */
-  /* min-width로 칸이 실제 내용보다 좁아지지 않게 막는다 — 폭이 부족하면
-     .table-wrap의 overflow-x:auto로 옆으로 스크롤되고, 칸이 우그러들지 않는다 */
-  #holdings-table { table-layout: fixed; min-width: 720px; }
+     안 그러면 브라우저가 내용 길이 기준으로 칸을 다시 배분해 종목명이 계속 줄바꿈된다.
+     min-width를 강제로 걸어두면 사이드바가 있는 좁은 화면에서 표가 컨테이너보다
+     넓어져서 옆스크롤이 생기므로, 대신 그냥 컨테이너 폭에 맞춰 줄어들게 둔다 —
+     긴 펀드명은 그만큼 두 줄로 줄바꿈될 수 있는데, row-a/row-b 구조가 애초에
+     가변 높이를 잘 받아줘서 문제없다. */
+  #holdings-table { table-layout: fixed; }
   #holdings-table th {
     vertical-align: middle; padding: 0.55rem 0.3rem;
     font-size: 0.72rem; white-space: nowrap; line-height: 1.5;
   }
-  #holdings-table td { padding: 0.4rem 0.5rem; }
+  #holdings-table td { padding: 0.35rem 0.5rem; text-align: center; }
   #holdings-table td:nth-child(2) { text-align: left; white-space: normal; word-break: keep-all; line-height: 1.4; }
+  /* 매입가/현재가, 매입환율/현재환율, 평가금액/매입금액, 수익률/수익금처럼
+     짝을 이루는 값은 진짜 두 개의 <tr>(row-a/row-b)로 나눠서 보여준다 —
+     한 칸 안에 두 줄을 구겨넣는 대신, 종목당 두 행을 한 쌍으로 묶는 방식.
+     티커·종목명·수량·비중은 짝이 없어서 rowspan=2로 두 행에 걸치게 한다. */
+  #holdings-table tr.row-a td:not([rowspan]) { border-bottom: none; }
+  #holdings-table tr.row-b td { color: var(--ink-dim); font-size: 0.85em; }
+  /* row-b는 그 자체로 독립된 <tr>라, article.css의 td:first-child/nth-child(2)
+     좌측정렬 규칙(원래 종목명 칸 대상)이 row-b의 1·2번째 칸(현재가·현재환율)에도
+     걸려서 가운데 정렬이 깨졌었다 — 명시적으로 되돌린다. */
+  #holdings-table tr.row-b td:not(.ret-sub) { text-align: center; }
+  /* 수익률·수익금 두 행 색은 JS에서 인라인으로 직접 칠한다(위 회색 규칙보다
+     우선하려고 클래스 특이도를 따지는 대신 인라인 style을 씀) — 아래는 수익금
+     쪽만 살짝 옅게 보이도록 */
+  #holdings-table tr.row-b td.ret-sub { opacity: 0.82; }
+  /* 마지막 종목의 row-a는 rowspan 칸(티커·종목명·수량·비중)만 갖고 있는데,
+     article.css의 "마지막 행은 밑줄 없음" 규칙이 진짜 마지막 tr인 row-b에만
+     걸려서 그 rowspan 칸들 밑줄만 남아 마지막 줄이 들쭉날쭉했다 — 같이 없앤다. */
+  #holdings-table tr.row-a:nth-last-child(2) td[rowspan] { border-bottom: none; }
+  /* row-a/row-b는 한 종목을 나타내는 한 쌍인데 서로 다른 <tr>라, 기본 hover
+     규칙(.table-wrap tr:hover td)은 마우스가 올라간 행 하나만 밝힌다 —
+     어느 한쪽에 올려도 둘 다 같이 밝게 보이도록 인접 형제로 서로를 걸어준다.
+     :has()로 "다음 형제가 hover 중인" row-a를 잡아 역방향도 처리한다. */
+  #holdings-table tr.row-a:hover + tr.row-b td,
+  #holdings-table tr.row-a:has(+ tr.row-b:hover) td,
+  #holdings-table tr.row-b:hover td {
+    background: var(--bg-hover); color: var(--ink);
+  }
+
+  #trades-table { table-layout: fixed; min-width: 480px; }
+  #trades-table th, #trades-table td { padding: 0.4rem 0.6rem; }
+  #trades-table td:nth-child(2) { text-align: left; white-space: normal; word-break: keep-all; line-height: 1.4; }
+  #trades-table td.side-buy { color: #2e7d4f; }
+  #trades-table td.side-sell { color: #c0392b; }
 
   .side-rail .viz-wrap:first-child { margin-top: 0; }
   .side-rail .viz-wrap + .viz-wrap { margin-top: 1rem; }
@@ -162,22 +197,28 @@
 <div class="table-wrap">
   <p class="table-caption">보유 종목 상세 (매입가·현재가는 원화가 아닌 현지 통화 기준)</p>
   <table id="holdings-table">
+    <!-- 종목명은 제일 긴 펀드명(341px) 기준으로 다 주면 짧은 이름들이 텅 비어
+         보여서, 예전에 괜찮았던 19% 근처로 유지하고(긴 이름은 두 줄 허용) —
+         수익률·수익금만 실측 기준(75px, 가장 작은 축)으로 줄이고, 거기서 뺀
+         만큼은 원래 비율대로 나머지 숫자 칸들에 고르게 되돌려줬다. -->
     <colgroup>
-      <col style="width:12%"><col style="width:19%"><col style="width:7%">
-      <col style="width:10%"><col style="width:10%">
-      <col style="width:10%">
-      <col style="width:11%"><col style="width:7%"><col style="width:14%">
+      <col style="width:8%"><col style="width:19%"><col style="width:7%">
+      <col style="width:15%"><col style="width:13%">
+      <col style="width:19%"><col style="width:8%"><col style="width:11%">
     </colgroup>
     <thead>
       <tr>
-        <th>티커</th><th>종목명</th><th>수량</th>
+        <th rowspan="2">티커</th><th rowspan="2">종목명</th><th rowspan="2">수량</th>
         <th>매입가</th><th>매입환율</th>
-        <th>현재가</th>
-        <th>평가금액(KRW)</th><th>비중</th><th>수익률</th>
+        <th>평가금액</th><th rowspan="2">비중</th><th>수익률</th>
+      </tr>
+      <tr>
+        <th>현재가</th><th>현재환율</th>
+        <th>매입금액</th><th>수익금</th>
       </tr>
     </thead>
     <tbody id="holdings-body">
-      <tr><td colspan="9" style="text-align:center;color:var(--ink-dim);">불러오는 중…</td></tr>
+      <tr><td colspan="8" style="text-align:center;color:var(--ink-dim);">불러오는 중…</td></tr>
     </tbody>
   </table>
   <p class="table-source" id="table-source"></p>
@@ -193,7 +234,21 @@
 
 <h2 id="sec-trades">5. 매매 기록</h2>
 
-<p style="font-size:0.85rem;color:var(--ink-muted);">개별 매수·매도 내역은 아직 기록하지 않는다 — 지금은 <code>data/holdings.json</code>에 보유 수량·평균 매입가만 남아 있다. 나중에 거래가 발생할 때마다 날짜·종목·수량·가격을 남기는 매매 로그를 여기에 추가할 계획이다.</p>
+<div class="table-wrap">
+  <table id="trades-table">
+    <colgroup>
+      <col style="width:16%"><col style="width:38%"><col style="width:12%">
+      <col style="width:14%"><col style="width:20%">
+    </colgroup>
+    <thead>
+      <tr><th>날짜</th><th>종목</th><th>구분</th><th>수량</th><th>가격</th></tr>
+    </thead>
+    <tbody id="trades-body">
+      <tr><td colspan="5" style="text-align:center;color:var(--ink-dim);">불러오는 중…</td></tr>
+    </tbody>
+  </table>
+  <p class="table-source" id="trades-source"></p>
+</div>
 
     </article>
 
@@ -221,7 +276,7 @@
     .catch(err => {
       document.getElementById('portfolio-status').textContent = '데이터를 불러오지 못했습니다 (' + err.message + ')';
       document.getElementById('holdings-body').innerHTML =
-        '<tr><td colspan="9" style="text-align:center;color:var(--ink-dim);">데이터를 불러오지 못했습니다</td></tr>';
+        '<tr><td colspan="8" style="text-align:center;color:var(--ink-dim);">데이터를 불러오지 못했습니다</td></tr>';
     });
 
   fetch('../data/portfolio_history.json')
@@ -229,6 +284,14 @@
     .then(drawTrendChart)
     .catch(() => {
       document.getElementById('trend-source').textContent = '추이 데이터를 불러오지 못했습니다';
+    });
+
+  fetch('../data/trades.json')
+    .then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+    .then(data => { rawTrades = data.trades || []; tryRenderTrades(); })
+    .catch(() => {
+      document.getElementById('trades-body').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;color:var(--ink-dim);">데이터를 불러오지 못했습니다</td></tr>';
     });
 
   function fmtKRW(n) {
@@ -258,10 +321,6 @@
     const sign = profit > 0 ? '+' : (profit < 0 ? '−' : '');
     return sign + Math.round(Math.abs(profit)).toLocaleString('ko-KR') + ' (' + Math.abs(pct).toFixed(2) + '%)';
   }
-  function pctClass(n) {
-    if (n === null || n === undefined) return 'muted';
-    return n > 0 ? 'pos' : (n < 0 ? 'neg' : '');
-  }
   function pctColor(n) {
     if (n === null || n === undefined) return '';
     return n > 0 ? '#2e7d4f' : (n < 0 ? '#c0392b' : '');
@@ -269,12 +328,19 @@
   function displayTicker(t) {
     return t.replace(/\.T$/, '');
   }
+  function fmtKRWSigned(n) {
+    if (n === null || n === undefined) return '—';
+    const sign = n > 0 ? '+' : (n < 0 ? '−' : '');
+    return sign + '₩' + Math.round(Math.abs(n)).toLocaleString('ko-KR');
+  }
 
   let portfolioData = null;
+  let rawTrades = null; // trades.json 원본 — 종목명 조회에 portfolioData가 필요해서 둘 다 도착해야 그린다
   let includeFx = false; // 기본값 OFF = 환차익 미포함(가격 변동만)
 
   function render(data) {
     portfolioData = data;
+    tryRenderTrades();
     const asOf = new Date(data.as_of);
     document.getElementById('portfolio-meta').textContent =
       '최종 갱신 — ' + asOf.toLocaleString('ko-KR', { dateStyle: 'medium', timeStyle: 'short' });
@@ -298,17 +364,24 @@
 
     const rows = data.positions.map(p => {
       const buyFx = p.buy_fx === null ? '<span class="muted">미입력</span>' : fmtFx(p.buy_fx);
-      return '<tr data-ticker="' + p.ticker + '">' +
-        '<td>' + displayTicker(p.ticker) + '</td>' +
-        '<td style="text-align:left;">' + p.name + '</td>' +
-        '<td>' + p.qty.toLocaleString('ko-KR') + '</td>' +
-        '<td>' + fmtPrice(p.buy_price, p.currency) + '</td>' +
-        '<td>' + buyFx + '</td>' +
-        '<td>' + fmtPrice(p.price, p.currency) + '</td>' +
-        '<td>' + fmtKRW(p.value_krw) + '</td>' +
-        '<td class="muted">' + fmtWeight(p.weight_pct) + '</td>' +
-        '<td class="ret-cell"></td>' +
-        '</tr>';
+      return (
+        '<tr class="row-a" data-ticker="' + p.ticker + '">' +
+          '<td rowspan="2">' + displayTicker(p.ticker) + '</td>' +
+          '<td rowspan="2" style="text-align:left;">' + p.name + '</td>' +
+          '<td rowspan="2">' + p.qty.toLocaleString('ko-KR') + '</td>' +
+          '<td>' + fmtPrice(p.buy_price, p.currency) + '</td>' +
+          '<td>' + buyFx + '</td>' +
+          '<td>' + fmtKRW(p.value_krw) + '</td>' +
+          '<td rowspan="2" class="muted">' + fmtWeight(p.weight_pct) + '</td>' +
+          '<td class="ret-cell"></td>' +
+        '</tr>' +
+        '<tr class="row-b">' +
+          '<td>' + fmtPrice(p.price, p.currency) + '</td>' +
+          '<td>' + fmtFx(p.fx) + '</td>' +
+          '<td>' + fmtKRW(p.cost_krw) + '</td>' +
+          '<td class="ret-sub"></td>' +
+        '</tr>'
+      );
     }).join('');
     document.getElementById('holdings-body').innerHTML = rows;
 
@@ -402,6 +475,42 @@
     });
   }
 
+  function guessCurrency(ticker) {
+    if (ticker.endsWith('.T') || ticker.startsWith('JPY')) return 'JPY';
+    return 'USD';
+  }
+
+  function tryRenderTrades() {
+    if (portfolioData === null || rawTrades === null) return; // 둘 다 도착해야 종목명을 붙일 수 있다
+    renderTrades(rawTrades);
+  }
+
+  function renderTrades(trades) {
+    if (!trades.length) {
+      document.getElementById('trades-body').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;color:var(--ink-dim);">아직 기록된 매매가 없습니다</td></tr>';
+      document.getElementById('trades-source').textContent = '';
+      return;
+    }
+    const nameByTicker = {};
+    portfolioData.positions.forEach(p => { nameByTicker[p.ticker] = p.label || p.name; });
+
+    const sorted = [...trades].sort((a, b) => b.date.localeCompare(a.date));
+    document.getElementById('trades-body').innerHTML = sorted.map(t => {
+      const currency = guessCurrency(t.ticker);
+      const sideLabel = t.side === 'buy' ? '매수' : '매도';
+      const name = nameByTicker[t.ticker] || t.ticker;
+      return '<tr>' +
+        '<td>' + t.date + '</td>' +
+        '<td style="text-align:left;">' + name + '</td>' +
+        '<td class="side-' + t.side + '">' + sideLabel + '</td>' +
+        '<td>' + t.qty.toLocaleString('ko-KR') + '</td>' +
+        '<td>' + fmtPrice(t.price, currency) + '</td>' +
+        '</tr>';
+    }).join('');
+    document.getElementById('trades-source').textContent = '총 ' + trades.length + '건 · 예수금(환전) 변동은 기록하지 않음';
+  }
+
   function applyFxMode() {
     if (!portfolioData) return;
     const totals = portfolioData.totals;
@@ -431,12 +540,19 @@
       document.getElementById('period-bench-' + k).textContent = 'S&P500 ' + fmtPct(bench[k]);
     });
 
-    document.querySelectorAll('#holdings-body tr[data-ticker]').forEach(tr => {
+    document.querySelectorAll('#holdings-body tr.row-a[data-ticker]').forEach(tr => {
       const p = portfolioData.positions.find(x => x.ticker === tr.dataset.ticker);
       const pct = includeFx ? p.return_pct : p.return_price_pct;
+      const profit = includeFx ? p.profit_krw : p.profit_price_krw;
+      const color = pctColor(pct);
+
       const cell = tr.querySelector('.ret-cell');
-      cell.className = 'ret-cell ' + pctClass(pct);
       cell.textContent = fmtPct(pct);
+      cell.style.color = color;
+
+      const subCell = tr.nextElementSibling.querySelector('.ret-sub');
+      subCell.textContent = fmtKRWSigned(profit);
+      subCell.style.color = color;
     });
 
     document.getElementById('fx-seg-off').setAttribute('aria-pressed', String(!includeFx));

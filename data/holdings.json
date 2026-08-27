@@ -2,7 +2,7 @@
   "_comment": "수동 관리 파일. 매매(추가매수·매도) 발생 시 여기만 직접 수정할 것. data/portfolio.json은 이 파일을 읽어 scripts/update_portfolio.py가 매일 자동 생성한다.",
   "_fx_unit_note": "buy_fx는 통화 1단위당 원화 기준(USD·JPY 공통). 한국 시세창의 엔화 표기(100엔당 원)로 값을 받으면 100으로 나눠서 넣을 것 — 예: '100엔당 926.34원' → buy_fx: 9.2634",
   "positions": [
-    { "ticker": "BND",     "name": "Vanguard Total Bond Market Index Fund",           "currency": "USD", "qty": 20,  "buy_price": 71.5755, "buy_fx": 1465.61 },
+    { "ticker": "BND",     "name": "Vanguard Total Bond Market Index Fund",           "currency": "USD", "qty": 40,  "buy_price": 72.0378, "buy_fx": 1444.0827 },
     { "ticker": "DGRO",    "name": "iShares Core Dividend Growth ETF",                "currency": "USD", "qty": 10,  "buy_price": 73.55,   "buy_fx": 1445.8 },
     { "ticker": "GPIX",    "name": "Goldman Sachs S&P 500 Premium Income ETF",        "currency": "USD", "qty": 10,  "buy_price": 55.52,   "buy_fx": 1504.2 },
     { "ticker": "QLD",     "name": "ProShares Ultra QQQ",                             "currency": "USD", "qty": 120, "buy_price": 42.893,  "buy_fx": 1363.86 },
@@ -12,11 +12,13 @@
     { "ticker": "TLTW",    "name": "iShares 20+ Year Treasury Bond Buywrite Strategy ETF", "currency": "USD", "qty": 80, "buy_price": 22.9025, "buy_fx": 1469.46 },
     { "ticker": "USD",     "name": "ProShares Ultra Semiconductors",                  "currency": "USD", "qty": 80,  "buy_price": 34.7681, "buy_fx": 1358.01 },
     { "ticker": "VNQ",     "name": "Vanguard Real Estate Index Fund ETF",             "currency": "USD", "qty": 10,  "buy_price": 91.77,   "buy_fx": 1387.6 },
-    { "ticker": "1306.T",  "name": "NEXT FUNDS TOPIX Exchange Traded Fund",           "label": "NOMURA TOPIX",    "currency": "JPY", "qty": 480, "buy_price": 425.9625, "buy_fx": 9.2634 },
-    { "ticker": "1615.T",  "name": "NEXT FUNDS TOPIX Banks Exchange Traded Fund",     "label": "NOMURA TSE BANK", "currency": "JPY", "qty": 60,  "buy_price": 755.6,    "buy_fx": 8.8784 },
+    { "ticker": "VTIP",    "name": "Vanguard Short-Term Inflation-Protected Securities ETF", "currency": "USD", "qty": 10, "buy_price": 49.83, "buy_fx": 1384.6 },
+    { "ticker": "1306.T",  "name": "NEXT FUNDS TOPIX Exchange Traded Fund",           "label": "NOMURA TOPIX",    "currency": "JPY", "qty": 600, "buy_price": 426.9417, "buy_fx": 9.1996 },
+    { "ticker": "1615.T",  "name": "NEXT FUNDS TOPIX Banks Exchange Traded Fund",     "label": "NOMURA TSE BANK", "currency": "JPY", "qty": 120, "buy_price": 755.4,    "buy_fx": 8.8324 },
 
     { "ticker": "USD-RP30", "name": "USD 일반 RP(30일)",  "type": "cash", "currency": "USD", "qty": 360,   "buy_price": 1, "buy_fx": null },
-    { "ticker": "USD-CASH", "name": "USD 예수금",         "type": "cash", "currency": "USD", "qty": 29.44, "buy_price": 1, "buy_fx": null },
-    { "ticker": "JPY-CASH", "name": "JPY 예수금",         "type": "cash", "currency": "JPY", "qty": 6812,  "buy_price": 1, "buy_fx": null }
+    { "ticker": "USD-RP7",  "name": "USD 일반 RP(7일)",   "type": "cash", "currency": "USD", "qty": 260,   "buy_price": 1, "buy_fx": null },
+    { "ticker": "USD-CASH", "name": "USD 예수금",         "type": "cash", "currency": "USD", "qty": 0.84,  "buy_price": 1, "buy_fx": null },
+    { "ticker": "JPY-CASH", "name": "JPY 예수금",         "type": "cash", "currency": "JPY", "qty": 9880,  "buy_price": 1, "buy_fx": null }
   ]
 }
