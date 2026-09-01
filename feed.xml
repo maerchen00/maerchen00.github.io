@@ -6,7 +6,16 @@
   <description>경제학·금융·수학·컴퓨터과학 에세이</description>
   <language>ko</language>
   <atom:link href="https://maerchen00.github.io/feed.xml" rel="self" type="application/rss+xml" />
-  <lastBuildDate>Sat, 01 Aug 2026 09:00:00 +0900</lastBuildDate>
+  <lastBuildDate>Tue, 01 Sep 2026 09:00:00 +0900</lastBuildDate>
+
+  <item>
+    <title>리밸런싱 파라미터를 그리드서치로 최적화하면</title>
+    <link>https://maerchen00.github.io/posts/grid-search.html</link>
+    <guid>https://maerchen00.github.io/posts/grid-search.html</guid>
+    <pubDate>Tue, 01 Sep 2026 09:00:00 +0900</pubDate>
+    <category>Finance</category>
+    <description>드리프트밴드·추세추종·변동성타겟형 세 규칙의 파라미터를 IS에서 그리드서치로 최적화하고 OS에 그대로 적용해, 최적값이 국면·배수에 따라 얼마나 흔들리는지 검증한다.</description>
+  </item>
 
   <item>
     <title>레버리지 ETF, 리밸런싱 규칙을 다시 설계하면</title>

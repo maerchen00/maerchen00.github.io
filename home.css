@@ -335,6 +335,15 @@ main { padding: 2.5rem 2.5rem 6rem; min-width: 0; }
 }
 .post-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.65; }
 
+/* 시리즈에 속한 글 하단에만 조용히 붙는 한 줄 — 데이터 없으면 안 나타남 */
+.series-thread {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--sans); font-size: 0.72rem; color: var(--ink-dim);
+}
+.series-thread .thread-icon { width: 12px; height: 12px; flex-shrink: 0; opacity: 0.6; color: var(--accent-muted); }
+.series-thread .thread-name { color: var(--accent-muted); }
+.series-thread .thread-pos b { color: var(--ink-muted); font-weight: 600; }
+
 /* ── 반응형 ── */
 @media (max-width: 1120px) {
   .main-body { flex-wrap: wrap; }

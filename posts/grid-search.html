@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>리밸런싱 파라미터를 그리드서치로 최적화하면</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../common.css"/>
+<link rel="stylesheet" href="../article.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* article.css의 .pos/.neg는 side-table에만 스코프되어 있어, 본문 table-wrap 표에도 동일 색상 적용 */
+.post-body .table-wrap table td.pos { color: #2e7d4f; }
+.post-body .table-wrap table td.neg { color: #c0392b; }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<nav class="nav">
+  <div class="nav-logo">무제</div>
+  <div class="nav-right">
+    <a class="nav-back" href="../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Finance ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <a class="td-item d2" href="great-depression.html">오스트리아 학파는 대공황을 어떻게 설명하는가</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <a class="td-item d2" href="capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2" href="volatility-harvesting.html">변동성 수확</a>
+        <a class="td-item d2" href="leverage-rebalancing.html">레버리지 리밸런싱 설계</a>
+        <a class="td-item d2 active" href="grid-search.html">리밸런싱 파라미터 그리드서치</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Math</div>
+        <a class="td-item d2" href="gbm-verification.html">기하 브라운 운동 실증검증</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Portfolio</div>
+        <a class="td-item d2" href="portfolio.html">포트폴리오 공개</a>
+      </div>
+    </span>
+    <span class="nav-date">2026. 9</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="toc-panel">
+    <div class="toc-head">목차</div>
+    <a class="toc-item on"  href="#sec-intro">1. 서론</a>
+    <a class="toc-item"     href="#sec-design">2. 그리드서치 설계</a>
+    <a class="toc-item sub" href="#sec-space">2.1 파라미터 공간</a>
+    <a class="toc-item sub" href="#sec-method">2.2 방법론</a>
+    <a class="toc-item"     href="#sec-results">3. 디폴트 vs 최적값</a>
+    <a class="toc-item"     href="#sec-truth">4. 어디까지가 진짜 최적점인가</a>
+    <a class="toc-item"     href="#sec-benchmark">5. 정적 재조정보다 나은가</a>
+    <a class="toc-item"     href="#sec-conc">6. 결론</a>
+  </div>
+
+  <div class="post-wrap">
+    <div class="post-header">
+      <div class="post-cat">Finance</div>
+      <h1>리밸런싱 파라미터를 그리드서치로 최적화하면</h1>
+      <p class="post-sub">드리프트밴드·추세추종·변동성타겟형 파라미터 최적화, 2010–2025</p>
+      <div class="post-meta">2026. 9</div>
+    </div>
+
+    <div class="series-nav">
+      <div class="series-nav-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.5 5a3.5 3.5 0 0 1 5 5L16 11.5"/><path d="M13 17.5 11.5 19a3.5 3.5 0 0 1-5-5L8 12.5"/></svg>
+        <b>레버리지 ETF 설계</b> 시리즈 · 2편 중 2편째
+      </div>
+      <div class="series-steps">
+        <div class="series-step done">
+          <div class="dot"></div>
+          <a href="leverage-rebalancing.html">레버리지 ETF, 리밸런싱 규칙을 다시 설계하면</a>
+        </div>
+        <div class="series-step current">
+          <div class="dot"></div>
+          <span>리밸런싱 파라미터를 그리드서치로 최적화하면</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-body">
+    <article>
+
+<h2 id="sec-intro">1. 서론</h2>
+
+<p>지난 글은 일곱 개 리밸런싱 규칙을 전부 임의로 정한 초기값으로 비교했다. 드리프트밴드는 목표 ±0.5, 추세추종은 60일 모멘텀에 반응계수 k=5, 변동성타겟형은 목표변동성 연 20% — 전부 "그럴듯한" 값이었지 최적값은 아니었다. 결론에서도 이 한계를 인정했다.</p>
+
+<blockquote>
+드리프트 밴드폭·추세추종 계수를 IS에서 그리드서치로 최적화했을 때도 이 순위가 유지되는지는 아직 확인하지 않았다.
+</blockquote>
+
+<p>이 글은 그 질문에 답한다. 세 개 규칙(드리프트밴드, 추세추종, 변동성타겟형)의 파라미터 공간을 IS(2010–2019)에서 그리드서치로 스윕하고, 각 규칙의 IS 최적값을 OS(2020–2025)에 그대로 적용해 검증했다.</p>
+
+<p>결과를 먼저 요약하면: 2배 기준으로 추세추종과 변동성타겟형은 IS에서 고른 값이 OS에서도 정확한 최적점이었다. 3배로 올리면 변동성타겟형은 어긋나고, 추세추종만 남는다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-design">2. 그리드서치 설계</h2>
+
+<h3 id="sec-space">2.1 파라미터 공간</h3>
+
+<div class="table-wrap">
+  <p class="table-num">표 1</p>
+  <p class="table-caption">파라미터 스윕 범위</p>
+  <table>
+    <thead><tr><th>규칙</th><th>파라미터</th><th>스윕 범위</th><th>지난 글 디폴트</th></tr></thead>
+    <tbody>
+      <tr><td>드리프트밴드</td><td>밴드폭 \(w\) (목표 \(\pm w\))</td><td>0.25 / 0.5 / 0.75 / 1.0</td><td>0.5</td></tr>
+      <tr><td>추세추종</td><td>반응계수 \(k\) × lookback</td><td>\(k=\)3/5/7 × 40/60/90일 (9조합)</td><td>k=5, 60일</td></tr>
+      <tr><td>변동성타겟형</td><td>목표변동성(연)</td><td>15% / 20% / 25%</td><td>20%</td></tr>
+    </tbody>
+  </table>
+  <p class="table-source">총 16개 파라미터 조합 × 2배·3배 × IS·OS = 64개 백테스트</p>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">파라미터 조합</div><div class="kpi-val">16</div><div class="kpi-sub">3개 규칙 합산</div></div>
+  <div class="kpi"><div class="kpi-label">배수</div><div class="kpi-val">2x · 3x</div><div class="kpi-sub">지난 글과 동일 캡 구조</div></div>
+  <div class="kpi"><div class="kpi-label">총 백테스트</div><div class="kpi-val">64</div><div class="kpi-sub">16 × 2배수 × IS/OS</div></div>
+  <div class="kpi"><div class="kpi-label">선정 기준</div><div class="kpi-val">IS Sharpe</div><div class="kpi-sub">OS는 검증 전용, 재최적화 없음</div></div>
+</div>
+
+<h3 id="sec-method">2.2 방법론</h3>
+
+<p>각 규칙의 파라미터는 <strong>IS(2010–2019) Sharpe 최댓값 기준</strong>으로 선정했다. OS 성과는 그 파라미터를 그대로 적용한 결과이며, OS에서 다시 최적화하지 않았다. 조달비용은 지난 글과 동일하게 FRED 실효기준금리(FEDFUNDS) 월별 실측치를 매핑했다. 거래비용은 5bp이며, 이를 제외한 나머지 비용 모델은 지난 글 3장과 동일하다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-results">3. 결과: 디폴트 vs 그리드서치 최적값 (2배, FEDFUNDS 기준)</h2>
+
+<div class="table-wrap">
+  <p class="table-num">표 2</p>
+  <p class="table-caption">디폴트 → IS 최적화 (2배, FEDFUNDS)</p>
+  <table>
+    <thead><tr><th>규칙</th><th>디폴트 → 최적 파라미터</th><th>IS Sharpe</th><th>OS Sharpe</th><th>OS CAGR</th><th>OS MDD</th></tr></thead>
+    <tbody>
+      <tr><td>드리프트밴드</td><td>0.5 → <strong>0.25</strong></td><td>0.97 → 1.00</td><td>0.72 → <strong style="color:#2e7d4f;">0.77</strong></td><td>26.5% → <strong style="color:#2e7d4f;">30.0%</strong></td><td>−63.1% → −63.1%</td></tr>
+      <tr><td>추세추종</td><td>k=5,60일 → <strong>k=3,40일</strong></td><td>0.88 → 0.94</td><td>0.66 → <strong style="color:#2e7d4f;">0.75</strong></td><td>21.0% → <strong style="color:#2e7d4f;">26.5%</strong></td><td>−71.2% → <strong style="color:#2e7d4f;">−66.6%</strong></td></tr>
+      <tr><td>변동성타겟형</td><td>20% → 15%</td><td>1.00 → 1.02</td><td>0.99 → <strong style="color:#2e7d4f;">1.01</strong></td><td>21.2% → <strong style="color:#c0392b;">17.2%</strong></td><td>−28.5% → <strong style="color:#2e7d4f;">−22.1%</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="table-source">초록 = 디폴트 대비 개선, 빨강 = 악화. 볼드는 최적 파라미터 값</p>
+</div>
+
+<p>세 규칙 모두 디폴트보다 OS Sharpe가 올랐다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-truth">4. 어디까지가 진짜 최적점인가</h2>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 1 — 파라미터별 IS·OS Sharpe (2배, FEDFUNDS)</p>
+  <div class="chart-2col">
+    <div class="chart-box">
+      <div class="chart-label">드리프트밴드 — 밴드폭</div>
+      <canvas id="chart-drift" height="200"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-label">변동성타겟형 — 목표변동성</div>
+      <canvas id="chart-volbudget" height="200"></canvas>
+    </div>
+  </div>
+  <div class="chart-box" style="margin-top:0.8rem;">
+    <div class="chart-label">추세추종 — \(k\)·lookback 9조합</div>
+    <canvas id="chart-trend" height="200"></canvas>
+  </div>
+  <p class="table-source" style="margin-top:.6rem;">실선 = IS Sharpe, 점선 = OS Sharpe. 두 선이 같은 지점에서 꺾이면 IS·OS 최적점 일치</p>
+</div>
+
+<div class="table-wrap table-center-first">
+  <p class="table-num">표 3</p>
+  <p class="table-caption">IS 기준 선택값 vs OS 기준 진짜 최적값 (2배)</p>
+  <table>
+    <thead><tr><th>규칙</th><th>IS 기준 선택값</th><th>OS 기준 진짜 최적값</th><th>일치 여부</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td><strong>추세추종</strong></td><td>k=3, 40일</td><td>k=<strong>3, 40일</strong> (OS Sharpe 0.75)</td><td class="pos"><strong>일치</strong></td></tr>
+      <tr class="hl"><td><strong>변동성타겟형</strong></td><td>목표 15%</td><td>목표 <strong>15%</strong> (OS Sharpe 1.01)</td><td class="pos"><strong>일치</strong></td></tr>
+      <tr><td>드리프트밴드</td><td>밴드폭 0.25</td><td>밴드폭 <strong>1.0</strong> (OS Sharpe 0.80)</td><td class="neg">불일치</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>세 규칙 중 둘(추세추종·변동성타겟형)이 일치했다. 드리프트밴드는 방향은 맞았지만(디폴트보다는 나아졌지만) 진짜 최적점에는 못 미쳤다.</p>
+
+<p><strong>추세추종</strong> — IS·OS가 정확히 같은 조합(k=3, 40일)을 최적으로 골랐다. 지난 글의 디폴트(k=5, 60일)는 어느 지표로 봐도 이 조합에 못 미친다 — Sharpe는 0.66에서 0.75로, CAGR은 21.0%에서 26.5%로 올랐고 MDD는 −71.2%에서 −66.6%로 줄었다.</p>
+
+<div class="viz-wrap">
+  <p class="viz-title">Fig. 2 — 2020년 추세추종 노출 궤적: 60일(디폴트) vs 40일(최적화)</p>
+  <canvas id="chart-exposure" height="260"></canvas>
+  <p class="table-source" style="margin-top:.5rem;">점선 = 목표 배수 2.0x. 각 lookback에서 IS·OS 공통 최적 \(k\) 사용(60일=k5, 40일=k3). 배경 초록/빨강 = 상승/하락 국면 강도</p>
+</div>
+
+<p>2020년 노출 궤적을 겹쳐보면 이유가 보인다. 디폴트(60일, k=5)는 연초부터 2.6~2.8배까지 노출을 끌어올렸다가, 하락이 본격화된 3월 20일 전후로는 1.02배까지 극단적으로 낮춘다. 이후 반등이 시작되자 5월부터 캡 상한(3.5배)에 자주 부딪히며 여름 내내 그 근처를 오간다. 최적화값(40일, k=3)은 변동폭이 훨씬 완만하다 — 연초 노출도 2.2~2.4배로 낮고, 하락기 최저치도 1.28배까지만 낮아지며, 반등기에도 2.0~2.9배 범위에서 벗어나지 않아 캡에 부딪힌 적이 한 번도 없다. k를 5에서 3으로 낮추면 모멘텀 신호 한 단위당 노출 반응폭이 줄어드는데, 그 결과 디폴트가 겪은 두 번의 극단(바닥 근처 저노출, 캡 근처 고노출) 모두가 완화됐다. 극단을 오가는 대신 계속 캡·바닥에 부딪히며 발생하는 재조정 비용도 함께 줄었을 것이다.</p>
+
+<p><strong>변동성타겟형</strong> — IS·OS가 정확히 같은 목표변동성(15%)을 최적으로 골랐다. 목표변동성이 낮을수록 노출이 작아지고, 노출이 작을수록 리밸런싱 비용과 변동성 끌림 둘 다 줄어드는 단조로운 관계라서 국면이 바뀌어도 최적점이 안 움직인 것으로 보인다. 다만 이건 Sharpe 기준 최적이고, CAGR은 21.2%→17.2%로 오히려 낮아졌다.</p>
+
+<p><strong>드리프트밴드</strong> — IS는 밴드를 좁히라 하고(0.25) OS는 반대로 넓히라 한다(1.0). IS가 고른 0.25는 디폴트보다 나았지만(OS Sharpe 0.72→0.77), 진짜 최적인 1.0(0.80)에는 못 미쳤다. 밴드를 1.0까지 넓히면 OS 6년 내내 재조정이 단 한 번도 발생하지 않는다 — 노출을 그냥 자연 표류에 통째로 맡기는 셈이다. 그 결과 노출은 2020년 3월 20일 코로나 바닥에서 2.67배까지 치솟는다. 레버리지 포지션은 급락 중 재조정을 안 하면 자기자본이 노출가치보다 더 빨리 줄어드는 구조라, 배수가 저절로 올라간다. 직관과 달리 이게 MDD를 키우지 않고 오히려 줄였다(−63.1%→−51.1%). 좁은 밴드(0.25)는 하락 도중 노출을 반복적으로 2.0으로 깎아내리며 저가에 익스포저를 판 반면, 넓은 밴드는 그 노출을 그대로 들고 이어진 반등을 온전히 누렸기 때문으로 보인다. IS(2010–2019)에는 이런 급락→급반등 사이클이 드물었고(최저 노출도 1.13배에 그침), OS는 이 패턴이 결과를 좌우할 만큼 강했다.</p>
+
+<p>3배 레버리지로 바꾸면 이 그림이 한 번 더 갈린다. 드리프트밴드는 2배와 마찬가지로 IS·OS가 어긋났고, 변동성타겟형도 이번엔 어긋난다(IS는 목표변동성 15%를, OS는 25%를 원한다) — 둘 다 IS 최적화가 디폴트보다 나빠졌다. 2배에서 통했던 방향이 배수를 바꾸면 뒤집힌다는 뜻이며, 2배·3배 모두에서 IS·OS가 일치한 건 추세추종 하나뿐이다.</p>
+
+<div class="table-wrap table-center-first">
+  <p class="table-num">표 3-1</p>
+  <p class="table-caption">3배 결과: 디폴트 → IS 최적화 (OS Sharpe)</p>
+  <table>
+    <thead><tr><th>규칙</th><th>디폴트</th><th>IS 최적화</th><th>2배·3배 모두 일치</th></tr></thead>
+    <tbody>
+      <tr><td>드리프트밴드</td><td>0.787</td><td class="neg">0.771</td><td>✗</td></tr>
+      <tr class="hl"><td><strong>추세추종</strong></td><td>0.678</td><td class="pos"><strong>0.737</strong></td><td class="pos"><strong>✓</strong></td></tr>
+      <tr><td>변동성타겟형</td><td>0.952</td><td class="neg">0.919</td><td>✗ (2배만 일치)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-benchmark">5. 정적 재조정보다 나은가</h2>
+
+<p>4장에서 채택한 세 규칙의 최적 파라미터와 변동성연동 디폴트를 일일·주간·월간 재조정과 나란히 놓았다.</p>
+
+
+<div class="table-wrap">
+  <p class="table-num">표 4</p>
+  <p class="table-caption">최종 채택 파라미터 vs 정적 재조정 (OS 2020–2025, 2배·FEDFUNDS)</p>
+  <table>
+    <thead><tr><th>규칙</th><th>CAGR</th><th>연변동성</th><th>MDD</th><th>Sharpe</th><th>Calmar</th></tr></thead>
+    <tbody>
+      <tr><td style="font-style:italic;color:var(--ink-dim);">기초지수</td><td style="font-style:italic;">19.4%</td><td style="font-style:italic;">25.7%</td><td style="font-style:italic;">−35.6%</td><td style="font-style:italic;">0.82</td><td style="font-style:italic;">0.55</td></tr>
+      <tr><td>일일</td><td>29.4%</td><td>51.3%</td><td>−63.6%</td><td>0.77</td><td>0.46</td></tr>
+      <tr><td>주간</td><td>30.9%</td><td>51.6%</td><td>−63.1%</td><td>0.78</td><td>0.49</td></tr>
+      <tr><td>월간</td><td class="pos"><strong>32.0%</strong></td><td>53.9%</td><td>−62.7%</td><td>0.79</td><td>0.51</td></tr>
+      <tr><td>드리프트밴드(최적화)</td><td>30.0%</td><td>50.9%</td><td>−63.1%</td><td>0.77</td><td>0.47</td></tr>
+      <tr class="hl"><td style="color:#c0392b;"><strong>추세추종(최적화)</strong></td><td>26.5%</td><td>49.1%</td><td class="neg">−66.6%</td><td>0.74</td><td>0.40</td></tr>
+      <tr class="hl"><td><strong>변동성연동(디폴트)</strong></td><td>29.4%</td><td>34.9%</td><td class="pos">−43.5%</td><td><strong>0.94</strong></td><td>0.68</td></tr>
+      <tr class="hl"><td><strong>변동성타겟형(최적화)</strong></td><td>17.2%</td><td>17.6%</td><td class="pos"><strong>−22.1%</strong></td><td><strong>1.01</strong></td><td><strong>0.78</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="table-source">붉은 글씨 = 전 지표에서 정적 재조정 세 개보다 모두 열위. 초록 MDD = 여덟 규칙 중 가장 방어적인 두 곳. 기초지수는 무레버리지 나스닥100 매수·보유 참고용</p>
+</div>
+
+<p>결과가 규칙별로 완전히 갈린다. <strong>드리프트밴드는 최적화해도 그냥 일일 재조정과 사실상 동률이고(Sharpe 0.77), 주간·월간보다는 못하다.</strong> <strong>추세추종은 최적화 후에도 CAGR·MDD·Sharpe·Calmar 네 지표 전부 세 정적 규칙에 못 미친다</strong> — 가장 복잡한 규칙이 가장 단순한 규칙만도 못한 셈이다. 반면 <strong>변동성연동과 변동성타겟형은 명확히 앞선다.</strong> 변동성연동은 CAGR을 거의 그대로 유지하면서(29.4%, 일일과 동일) MDD를 −43.5%까지 줄여 Sharpe·Calmar 둘 다 압도한다. 변동성타겟형은 CAGR을 17.2%까지 내주는 대신 MDD를 −22.1%까지 눌렀다 — 수익을 낮춰서 리스크를 낮춘 셈이다.</p>
+
+<p><strong>노출을 변동성 자체에 연동시키는 규칙(변동성연동·변동성타겟형)은 파라미터를 어떻게 튜닝하든 정적 재조정보다 구조적으로 우월하다</strong> — 애초에 리스크를 다르게 정의하기 때문이다. 반면 <strong>노출을 가격 움직임에 연동시키는 규칙(드리프트밴드·추세추종)은 아무리 그리드서치를 돌려도 정적 재조정을 이기지 못했다.</strong> 파라미터가 아니라 신호 자체(가격 드리프트, 모멘텀)의 정보량 문제로 보인다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-conc">6. 결론</h2>
+
+<p>일곱 개 규칙 중 그리드서치 대상이었던 세 개(드리프트밴드·추세추종·변동성타겟형) 가운데, 2배 기준으로는 추세추종과 변동성타겟형 두 규칙에서 IS 선택값이 OS의 진짜 최적점과 정확히 일치했다. 그런데 배수를 3배로 바꾸면 변동성타겟형마저 어긋난다 — 두 배수 모두에서 안정적으로 검증된 건 추세추종 하나뿐이었다.</p>
+
+<p>드리프트밴드는 방향은 맞았지만(디폴트보다는 나아졌지만) 진짜 최적점에는 못 미쳤다.</p>
+
+<p>가장 중요한 실질적 결론은 파라미터 숫자 자체가 아니라 <strong>최적 파라미터도 국면·배수에 따라 달라진다</strong>는 점이다. 지난 글이 "어떤 규칙이 최적인가"에 대해 내린 결론 — 강세장에서 이기는 규칙과 급락장에서 방어하는 규칙은 다르다 — 이 규칙 하나 단위가 아니라 규칙 내부의 파라미터 단위에서도 반복된다. 그 와중에 추세추종의 lookback 최적값(40일)만은 IS·OS·2배·3배 네 조건 모두에서 흔들리지 않았다 — 파라미터 하나가 이 정도로 안정적으로 재현된 경우는 이번 그리드서치에서 이게 유일했다.</p>
+
+<p>5장 결과를 더하면 기준이 하나 더 생긴다. 변동성에 연동시키는 규칙은 파라미터와 무관하게 정적 재조정을 이겼고, 가격·모멘텀에 연동시키는 규칙은 최적화해도 못 이겼다. 파라미터를 손보기 전에 애초에 어떤 신호에 노출을 연동시킬지부터 잘못 골랐다면, 최적화로는 그 한계를 못 넘는다.</p>
+
+<p>결국 이번 그리드서치가 실전에 보탠 값은 크지 않다. 애초에 쓸만했던 두 규칙(변동성연동·변동성타겟형)은 최적화가 필요 없었고, 최적화가 절실했던 두 규칙(드리프트밴드·추세추종)은 아무리 파라미터를 돌려도 정적 재조정을 넘지 못했다.</p>
+
+<div class="footnotes">
+  <p><sup>1</sup> 데이터: 나스닥100 지수, FRED FEDFUNDS(월별) — 지난 글과 동일 소스. 비용 모델(거래비용 5bp, 조달비용 FEDFUNDS 매핑)도 동일.</p>
+</div>
+
+    </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <div class="viz-title">그리드서치 개요</div>
+        <div class="side-table-wrap">
+        <table class="side-table">
+          <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+          <tbody>
+            <tr><td>파라미터 조합</td><td style="font-weight:600;">16개</td></tr>
+            <tr><td>총 백테스트</td><td style="font-weight:600;">64개</td></tr>
+            <tr><td>선정 기준</td><td>IS Sharpe 최댓값</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">IS/OS 최적값 일치 여부</div>
+        <div class="side-table-wrap">
+        <table class="side-table">
+          <colgroup><col style="width:52%"><col style="width:48%"></colgroup>
+          <thead><tr><th>규칙</th><th>일치?</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td style="font-weight:600;">추세추종</td><td class="pos"><strong>일치</strong></td></tr>
+            <tr class="hl"><td style="font-weight:600;">변동성타겟형</td><td class="pos"><strong>일치</strong></td></tr>
+            <tr><td>드리프트밴드</td><td class="neg">불일치</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="table-source" style="margin-top:.4rem;">2배·FEDFUNDS 기준(변동성연동은 그리드서치 대상 아님).<br>3배까지 보면 추세추종만 남는다(본문 4장)</p>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">3배 결과: 디폴트 vs IS 최적화 (OS Sharpe)</div>
+        <div class="side-table-wrap">
+        <table class="side-table">
+          <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
+          <thead><tr><th>규칙</th><th>디폴트</th><th>최적화</th></tr></thead>
+          <tbody>
+            <tr><td>드리프트밴드</td><td>0.787</td><td class="neg">0.771</td></tr>
+            <tr class="hl"><td style="font-weight:600;">추세추종</td><td>0.678</td><td class="pos"><strong>0.737</strong></td></tr>
+            <tr><td>변동성타겟형</td><td>0.952</td><td class="neg">0.919</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="table-source" style="margin-top:.4rem;">3배에서는 추세추종만 개선 유지</p>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">파라미터 공식</div>
+        <div style="font-size:0.8rem;text-align:center;padding:0.5rem 0.3rem;color:var(--ink);line-height:2.1;">
+          드리프트: \(f_t\in[\text{목표}-w,\ \text{목표}+w]\)<br>
+          변동성연동: \([\text{목표}(1-s),\ \text{목표}(1+s)]\)<br>
+          추세추종: \(f_t=\text{목표}+k\cdot\text{mom}_t\)<br>
+          변동성타겟형: \(f_t=\sigma_{target}/\hat\sigma_t\)
+        </div>
+      </div>
+    </aside>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const FONT="'Noto Sans KR','EB Garamond',sans-serif";
+const GR='#e7e2d8',TC='#78716c';
+const base={responsive:true,plugins:{legend:{display:false},tooltip:{titleFont:{family:FONT},bodyFont:{family:FONT}}},scales:{x:{ticks:{color:TC,font:{family:FONT,size:9}},grid:{color:GR},border:{color:GR}},y:{ticks:{color:TC,font:{family:FONT,size:9}},grid:{color:GR},border:{color:GR}}}};
+
+function sharpeChart(id, labels, isVals, osVals){
+  new Chart(document.getElementById(id),{type:'line',
+    data:{labels:labels,datasets:[
+      {label:'IS Sharpe',data:isVals,borderColor:'rgba(44,95,138,0.85)',borderWidth:1.8,pointRadius:2.5,pointBackgroundColor:'rgba(44,95,138,0.9)',fill:false,tension:0.15},
+      {label:'OS Sharpe',data:osVals,borderColor:'rgba(146,64,14,0.85)',borderWidth:1.8,borderDash:[5,3],pointRadius:2.5,pointBackgroundColor:'rgba(146,64,14,0.9)',fill:false,tension:0.15}
+    ]},
+    options:{...base,plugins:{...base.plugins,
+      legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:9},boxWidth:12}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(3)}`}}},
+      scales:{...base.scales,
+        x:{...base.scales.x,ticks:{...base.scales.x.ticks,maxRotation:0,autoSkip:false}},
+        y:{...base.scales.y,title:{display:true,text:'Sharpe',color:TC,font:{family:FONT,size:9}}}}}
+  });
+}
+
+// ── Fig.1: 3개 규칙 파라미터별 IS/OS Sharpe ──
+sharpeChart('chart-drift', ['0.25','0.5','0.75','1.0'],
+  [1.003,0.974,0.966,0.958], [0.772,0.723,0.791,0.802]);
+
+sharpeChart('chart-volbudget', ['15%','20%','25%'],
+  [1.022,1.002,1.001], [1.009,0.991,0.961]);
+
+sharpeChart('chart-trend',
+  ['3·40','3·60','3·90','5·40','5·60','5·90','7·40','7·60','7·90'],
+  [0.939,0.918,0.888,0.917,0.882,0.835,0.892,0.845,0.785],
+  [0.745,0.704,0.740,0.716,0.659,0.710,0.676,0.603,0.697]);
+
+// ── Fig.2: 2020년 추세추종 노출 궤적 (60일 디폴트 vs 40일 최적화) ──
+const EXP2_LABELS=["01-02","01-07","01-10","01-15","01-21","01-24","01-29","02-03","02-06","02-11","02-14","02-20","02-25","02-28","03-04","03-09","03-12","03-17","03-20","03-25","03-30","04-02","04-07","04-13","04-16","04-21","04-24","04-29","05-04","05-07","05-12","05-15","05-20","05-26","05-29","06-03","06-08","06-11","06-16","06-19","06-24","06-29","07-02","07-08","07-13","07-16","07-21","07-24","07-29","08-03","08-06","08-11","08-14","08-19","08-24","08-27","09-01","09-04","09-10","09-15","09-18","09-23","09-28","10-01","10-06","10-09","10-14","10-19","10-22","10-27","10-30","11-04","11-09","11-12","11-17","11-20","11-25","12-01","12-04","12-09","12-14","12-17","12-22","12-28","12-31"];
+const REGIME_INTENSITY=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.017,0.019,0.015,0.038,-0.282,-0.448,-0.746,-0.999,-1.0,-1.0,-1.0,-1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.942,0.861,0.565,0.498,0.481,0.311,0.316,0.188,0.025,0.058,0.29,0.287,0.236,0.295,0.359,0.38,0.413,0.198,0.187,0.265,-0.302,0.252,0.226,0.211,0.212,0.264,0.198,0.066,0.063,0.048,0.373,-0.576,-0.603,-0.619,-0.687,-0.724,0.711,0.483,0.412,0.427,0.43,0.308,-0.273,-0.407,0.488,0.483,0.54,0.52,0.532,0.375,0.281,0.032,0.0,0.0,0.0,0.0,0.0,0.0];
+const regimeBg = {
+  id: 'regimeBg',
+  beforeDatasetsDraw(chart) {
+    const {ctx, chartArea} = chart;
+    if (!chartArea) return;
+    const n = REGIME_INTENSITY.length;
+    const grad = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+    REGIME_INTENSITY.forEach((v, i) => {
+      const offset = Math.min(1, Math.max(0, i / (n - 1)));
+      const isGreen = v >= 0;
+      const alpha = Math.abs(v) * (isGreen ? 0.18 : 0.22);
+      const rgb = isGreen ? '46,125,79' : '192,57,43';
+      grad.addColorStop(offset, `rgba(${rgb},${alpha.toFixed(3)})`);
+    });
+    ctx.save();
+    ctx.fillStyle = grad;
+    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+    ctx.restore();
+  }
+};
+const EXP2_60=[2.742,2.714,2.644,2.742,2.809,2.635,2.63,2.558,2.721,2.762,2.778,2.824,2.268,2.092,2.386,1.757,1.279,1.355,1.022,1.258,1.446,1.316,1.488,1.611,1.777,1.596,1.827,1.921,1.676,1.781,1.734,1.753,2.368,2.548,2.339,3.105,3.5,3.415,3.5,3.5,3.34,3.5,3.424,3.4,3.053,3.323,3.165,2.835,3.035,3.073,3.182,2.941,2.885,3.027,3.083,3.145,3.208,3.06,2.605,2.714,2.467,2.438,2.494,2.43,2.325,2.517,2.532,2.549,2.469,2.246,1.905,2.414,2.298,2.225,2.151,1.992,1.943,2.358,2.616,2.405,2.697,2.886,2.595,2.542,2.707];
+const EXP2_40=[2.242,2.229,2.255,2.26,2.32,2.276,2.249,2.3,2.389,2.372,2.367,2.328,2.019,1.907,2.034,1.652,1.412,1.444,1.277,1.465,1.632,1.445,1.537,1.605,1.703,1.776,2.124,2.136,2.107,2.411,2.894,2.767,2.767,2.712,2.829,2.602,2.606,2.348,2.42,2.475,2.458,2.428,2.453,2.441,2.497,2.428,2.452,2.34,2.312,2.376,2.349,2.337,2.345,2.326,2.541,2.481,2.504,2.218,2.127,2.133,2.101,2.086,2.126,2.123,2.056,2.147,2.154,2.021,1.923,1.873,1.817,2.1,2.147,2.202,2.212,2.203,2.193,2.247,2.254,2.07,2.154,2.279,2.316,2.393,2.428];
+
+new Chart(document.getElementById('chart-exposure'),{type:'line',
+  plugins:[regimeBg],
+  data:{labels:EXP2_LABELS,datasets:[
+    {label:'목표 2.0x',data:EXP2_LABELS.map(()=>2.0),borderColor:'rgba(120,113,108,0.6)',borderWidth:1,borderDash:[5,4],pointRadius:0,fill:false,tension:0},
+    {label:'60일(디폴트, k=5)',data:EXP2_60,borderColor:'rgba(192,57,43,0.9)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.2},
+    {label:'40일(최적화, k=3)',data:EXP2_40,borderColor:'rgba(44,95,138,0.9)',borderWidth:1.8,pointRadius:0,fill:false,tension:0.2}
+  ]},
+  options:{...base,plugins:{...base.plugins,
+    legend:{display:true,position:'top',labels:{color:TC,font:{family:FONT,size:11},boxWidth:16}},
+    tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}x`}}},
+    scales:{
+      x:{...base.scales.x,ticks:{...base.scales.x.ticks,autoSkip:true,maxTicksLimit:12,maxRotation:0}},
+      y:{...base.scales.y,min:0,max:3.7,title:{display:true,text:'노출 배수 (x)',color:TC,font:{family:FONT,size:10}}}}}
+});
+
+// ── 네비 ──
+const tagBtn=document.getElementById('tag-btn'),treeDrop=document.getElementById('tree-drop'),overlay=document.getElementById('overlay');
+tagBtn.addEventListener('click',e=>{e.stopPropagation();const o=treeDrop.classList.toggle('open');tagBtn.classList.toggle('open',o);overlay.classList.toggle('show',o);});
+overlay.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+document.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+
+// ── TOC ──
+const tocItems=document.querySelectorAll('.toc-item'),sections=document.querySelectorAll('h2[id],h3[id]');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});tocItems.forEach(t=>{const h=t.getAttribute('href')||'';t.classList.toggle('on',h==='#'+cur);});});
+
+// ── KaTeX ──
+renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
+</script>
+<script src="../footnotes.js"></script>
+<script data-goatcounter="https://maerchen00.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

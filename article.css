@@ -121,6 +121,31 @@ h1 {
 }
 .post-meta { font-family: var(--sans); font-size: 0.7rem; color: var(--ink-dim); }
 
+/* ── 시리즈 내비게이션 박스: 헤더 바로 아래, 본문 시작 전 ── */
+.series-nav {
+  max-width: 780px;
+  margin: 1.3rem 0 2rem; padding: 1rem 1.2rem; background: var(--bg-card);
+  border-radius: 4px; border-left: 2px solid var(--accent-muted);
+}
+.series-nav-label {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--sans); font-size: 0.68rem; font-weight: 500;
+  color: var(--ink-muted); margin-bottom: 0.65rem;
+}
+.series-nav-label svg { width: 12px; height: 12px; color: var(--accent-muted); flex-shrink: 0; }
+.series-nav-label b { color: var(--accent); font-weight: 600; }
+.series-steps { display: flex; flex-direction: column; gap: 0.4rem; }
+.series-step { display: flex; align-items: baseline; gap: 0.55rem; font-family: var(--sans); font-size: 0.82rem; line-height: 1.5; }
+.series-step .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: var(--ink-dim); margin-top: 0.5em; }
+.series-step.done a { color: var(--ink-muted); }
+.series-step.done .dot { background: var(--accent-muted); }
+.series-step.current { font-weight: 600; }
+.series-step.current .dot { background: var(--accent); }
+.series-step.current span { color: var(--ink); }
+.series-step.upcoming { color: var(--ink-dim); }
+.series-step.upcoming .dot { background: var(--bg-card); border: 1px solid var(--ink-dim); }
+.series-step.upcoming span { font-style: italic; }
+
 /* ── 본문 + 사이드 비주얼 레일 ── */
 .post-body { display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start; }
 
