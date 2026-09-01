@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-08-29T12:16:57+09:00",
+  "as_of": "2026-09-01T09:45:12+09:00",
   "fx": {
-    "USD": 1375.67,
-    "JPY": 8.573
+    "USD": 1370.08,
+    "JPY": 8.55
   },
   "positions": [
     {
@@ -14,29 +14,29 @@
       "qty": 40,
       "buy_price": 72.0378,
       "buy_fx": 1444.0827,
-      "price": 72.31,
-      "fx": 1375.67,
+      "price": 72.24,
+      "fx": 1370.08,
       "cost_krw": 4161142,
-      "value_krw": 3978988,
-      "profit_krw": -182154,
-      "profit_price_krw": 15723,
-      "return_pct": -4.38,
-      "return_price_pct": 0.38,
+      "value_krw": 3958983,
+      "profit_krw": -202159,
+      "profit_price_krw": 11680,
+      "return_pct": -4.86,
+      "return_price_pct": 0.28,
       "periods": {
-        "d1": -0.32,
-        "w1": 0.11,
-        "m1": 0.25,
-        "y1": 1.93,
-        "ytd": -0.08
+        "d1": -0.1,
+        "w1": -0.18,
+        "m1": 0.36,
+        "y1": 2.05,
+        "ytd": -0.18
       },
       "periods_fx": {
-        "d1": -0.88,
-        "w1": -0.98,
-        "m1": -5.09,
-        "y1": 0.68,
-        "ytd": -4.41
+        "d1": -0.85,
+        "w1": -0.95,
+        "m1": -3.21,
+        "y1": 0.67,
+        "ytd": -4.89
       },
-      "weight_pct": 7.93
+      "weight_pct": 7.9
     },
     {
       "ticker": "DGRO",
@@ -47,29 +47,29 @@
       "qty": 10,
       "buy_price": 73.55,
       "buy_fx": 1445.8,
-      "price": 79.36,
-      "fx": 1375.67,
+      "price": 79.02,
+      "fx": 1370.08,
       "cost_krw": 1063386,
-      "value_krw": 1091732,
-      "profit_krw": 28346,
-      "profit_price_krw": 84001,
-      "return_pct": 2.67,
-      "return_price_pct": 7.9,
+      "value_krw": 1082637,
+      "profit_krw": 19251,
+      "profit_price_krw": 79085,
+      "return_pct": 1.81,
+      "return_price_pct": 7.44,
       "periods": {
-        "d1": 0.1,
-        "w1": -0.31,
-        "m1": 1.39,
-        "y1": 21.07,
-        "ytd": 15.36
+        "d1": -0.43,
+        "w1": -1.14,
+        "m1": 1.29,
+        "y1": 21.03,
+        "ytd": 14.86
       },
       "periods_fx": {
-        "d1": -0.46,
-        "w1": -1.4,
-        "m1": -4.01,
-        "y1": 19.59,
-        "ytd": 10.36
+        "d1": -1.18,
+        "w1": -1.9,
+        "m1": -2.31,
+        "y1": 19.39,
+        "ytd": 9.44
       },
-      "weight_pct": 2.18
+      "weight_pct": 2.16
     },
     {
       "ticker": "GPIX",
@@ -80,29 +80,29 @@
       "qty": 10,
       "buy_price": 55.52,
       "buy_fx": 1504.2,
-      "price": 56.34,
-      "fx": 1375.67,
+      "price": 56.21,
+      "fx": 1370.08,
       "cost_krw": 835132,
-      "value_krw": 775053,
-      "profit_krw": -60079,
-      "profit_price_krw": 12334,
-      "return_pct": -7.19,
-      "return_price_pct": 1.48,
+      "value_krw": 770122,
+      "profit_krw": -65010,
+      "profit_price_krw": 10379,
+      "return_pct": -7.78,
+      "return_price_pct": 1.24,
       "periods": {
-        "d1": -0.14,
-        "w1": 0.45,
-        "m1": 4.63,
-        "y1": 20.01,
-        "ytd": 12.94
+        "d1": -0.23,
+        "w1": 0.48,
+        "m1": 2.22,
+        "y1": 20.42,
+        "ytd": 12.68
       },
       "periods_fx": {
-        "d1": -0.71,
-        "w1": -0.65,
-        "m1": -0.95,
-        "y1": 18.54,
-        "ytd": 8.05
+        "d1": -0.98,
+        "w1": -0.29,
+        "m1": -1.41,
+        "y1": 18.79,
+        "ytd": 7.36
       },
-      "weight_pct": 1.55
+      "weight_pct": 1.54
     },
     {
       "ticker": "QLD",
@@ -113,29 +113,29 @@
       "qty": 120,
       "buy_price": 42.893,
       "buy_fx": 1363.86,
-      "price": 90.17,
-      "fx": 1375.67,
+      "price": 90.24,
+      "fx": 1370.08,
       "cost_krw": 7020006,
-      "value_krw": 14885300,
-      "profit_krw": 7865294,
-      "profit_price_krw": 7737505,
-      "return_pct": 112.04,
-      "return_price_pct": 110.22,
+      "value_krw": 14836321,
+      "profit_krw": 7816316,
+      "profit_price_krw": 7748961,
+      "return_pct": 111.34,
+      "return_price_pct": 110.38,
       "periods": {
-        "d1": -1.32,
-        "w1": 0.71,
-        "m1": 16.23,
-        "y1": 45.4,
-        "ytd": 28.18
+        "d1": 0.08,
+        "w1": 2.87,
+        "m1": 7.85,
+        "y1": 47.96,
+        "ytd": 28.28
       },
       "periods_fx": {
-        "d1": -1.88,
-        "w1": -0.38,
-        "m1": 10.03,
-        "y1": 43.61,
-        "ytd": 22.63
+        "d1": -0.67,
+        "w1": 2.08,
+        "m1": 4.02,
+        "y1": 45.96,
+        "ytd": 22.22
       },
-      "weight_pct": 29.68
+      "weight_pct": 29.6
     },
     {
       "ticker": "SCHD",
@@ -146,29 +146,29 @@
       "qty": 150,
       "buy_price": 26.28,
       "buy_fx": 1366.6,
-      "price": 34.9,
-      "fx": 1375.67,
+      "price": 34.89,
+      "fx": 1370.08,
       "cost_krw": 5387137,
-      "value_krw": 7201633,
-      "profit_krw": 1814496,
-      "profit_price_krw": 1767014,
-      "return_pct": 33.68,
-      "return_price_pct": 32.8,
+      "value_krw": 7170313,
+      "profit_krw": 1783176,
+      "profit_price_krw": 1764964,
+      "return_pct": 33.1,
+      "return_price_pct": 32.76,
       "periods": {
-        "d1": 0.2,
-        "w1": -0.6,
-        "m1": 3.16,
-        "y1": 29.59,
-        "ytd": 29.33
+        "d1": -0.03,
+        "w1": -0.91,
+        "m1": 4.24,
+        "y1": 29.93,
+        "ytd": 29.29
       },
       "periods_fx": {
-        "d1": -0.37,
+        "d1": -0.78,
         "w1": -1.68,
-        "m1": -2.34,
-        "y1": 28.0,
-        "ytd": 23.73
+        "m1": 0.54,
+        "y1": 28.17,
+        "ytd": 23.19
       },
-      "weight_pct": 14.36
+      "weight_pct": 14.31
     },
     {
       "ticker": "SPYM",
@@ -179,29 +179,29 @@
       "qty": 20,
       "buy_price": 71.49,
       "buy_fx": 1382.43,
-      "price": 90.57,
-      "fx": 1375.67,
+      "price": 90.28,
+      "fx": 1370.08,
       "cost_krw": 1976598,
-      "value_krw": 2491889,
-      "profit_krw": 515290,
-      "profit_price_krw": 527535,
-      "return_pct": 26.07,
-      "return_price_pct": 26.69,
+      "value_krw": 2473816,
+      "profit_krw": 497218,
+      "profit_price_krw": 519517,
+      "return_pct": 25.16,
+      "return_price_pct": 26.28,
       "periods": {
-        "d1": -0.2,
-        "w1": 0.49,
-        "m1": 5.4,
-        "y1": 20.68,
-        "ytd": 13.49
+        "d1": -0.32,
+        "w1": 0.45,
+        "m1": 2.71,
+        "y1": 21.18,
+        "ytd": 13.13
       },
       "periods_fx": {
-        "d1": -0.76,
-        "w1": -0.6,
-        "m1": -0.22,
-        "y1": 19.2,
-        "ytd": 8.58
+        "d1": -1.07,
+        "w1": -0.33,
+        "m1": -0.94,
+        "y1": 19.55,
+        "ytd": 7.79
       },
-      "weight_pct": 4.97
+      "weight_pct": 4.94
     },
     {
       "ticker": "TLT",
@@ -212,29 +212,29 @@
       "qty": 20,
       "buy_price": 91.18,
       "buy_fx": 1383.98,
-      "price": 82.88,
-      "fx": 1375.67,
+      "price": 82.52,
+      "fx": 1370.08,
       "cost_krw": 2523826,
-      "value_krw": 2280311,
-      "profit_krw": -243515,
-      "profit_price_krw": -229741,
-      "return_pct": -9.65,
-      "return_price_pct": -9.1,
+      "value_krw": 2261180,
+      "profit_krw": -262646,
+      "profit_price_krw": -239705,
+      "return_pct": -10.41,
+      "return_price_pct": -9.5,
       "periods": {
-        "d1": -0.3,
-        "w1": 1.01,
-        "m1": 0.44,
-        "y1": 0.09,
-        "ytd": -2.36
+        "d1": -0.43,
+        "w1": -0.05,
+        "m1": 0.73,
+        "y1": 0.4,
+        "ytd": -2.79
       },
       "periods_fx": {
-        "d1": -0.86,
-        "w1": -0.09,
-        "m1": -4.92,
-        "y1": -1.14,
-        "ytd": -6.59
+        "d1": -1.18,
+        "w1": -0.82,
+        "m1": -2.85,
+        "y1": -0.96,
+        "ytd": -7.37
       },
-      "weight_pct": 4.55
+      "weight_pct": 4.51
     },
     {
       "ticker": "TLTW",
@@ -245,29 +245,29 @@
       "qty": 80,
       "buy_price": 22.9025,
       "buy_fx": 1469.46,
-      "price": 21.4,
-      "fx": 1375.67,
+      "price": 21.33,
+      "fx": 1370.08,
       "cost_krw": 2692345,
-      "value_krw": 2355147,
-      "profit_krw": -337198,
-      "profit_price_krw": -176629,
-      "return_pct": -12.52,
-      "return_price_pct": -6.56,
+      "value_krw": 2337904,
+      "profit_krw": -354440,
+      "profit_price_krw": -184858,
+      "return_pct": -13.16,
+      "return_price_pct": -6.87,
       "periods": {
-        "d1": -0.23,
-        "w1": 0.99,
-        "m1": 0.58,
-        "y1": 3.94,
-        "ytd": -0.34
+        "d1": -0.33,
+        "w1": 0.14,
+        "m1": 0.86,
+        "y1": 4.29,
+        "ytd": -0.66
       },
       "periods_fx": {
-        "d1": -0.8,
-        "w1": -0.11,
-        "m1": -4.79,
-        "y1": 2.67,
-        "ytd": -4.65
+        "d1": -1.08,
+        "w1": -0.63,
+        "m1": -2.73,
+        "y1": 2.88,
+        "ytd": -5.35
       },
-      "weight_pct": 4.7
+      "weight_pct": 4.66
     },
     {
       "ticker": "USD",
@@ -278,29 +278,29 @@
       "qty": 80,
       "buy_price": 34.7681,
       "buy_fx": 1358.01,
-      "price": 82.82,
-      "fx": 1375.67,
+      "price": 84.64,
+      "fx": 1370.08,
       "cost_krw": 3777234,
-      "value_krw": 9114639,
-      "profit_krw": 5337405,
-      "profit_price_krw": 5220397,
-      "return_pct": 141.3,
-      "return_price_pct": 138.21,
+      "value_krw": 9277085,
+      "profit_krw": 5499851,
+      "profit_price_krw": 5418123,
+      "return_pct": 145.61,
+      "return_price_pct": 143.44,
       "periods": {
-        "d1": -6.76,
-        "w1": -1.95,
-        "m1": 20.41,
-        "y1": 97.22,
-        "ytd": 58.14
+        "d1": 2.2,
+        "w1": 6.59,
+        "m1": 7.56,
+        "y1": 107.56,
+        "ytd": 61.61
       },
       "periods_fx": {
-        "d1": -7.28,
-        "w1": -3.02,
-        "m1": 13.99,
-        "y1": 94.81,
-        "ytd": 51.29
+        "d1": 1.43,
+        "w1": 5.76,
+        "m1": 3.74,
+        "y1": 104.76,
+        "ytd": 53.99
       },
-      "weight_pct": 18.18
+      "weight_pct": 18.51
     },
     {
       "ticker": "VNQ",
@@ -311,29 +311,29 @@
       "qty": 10,
       "buy_price": 91.77,
       "buy_fx": 1387.6,
-      "price": 97.24,
-      "fx": 1375.67,
+      "price": 96.44,
+      "fx": 1370.08,
       "cost_krw": 1273401,
-      "value_krw": 1337702,
-      "profit_krw": 64301,
-      "profit_price_krw": 75902,
-      "return_pct": 5.05,
-      "return_price_pct": 5.96,
+      "value_krw": 1321305,
+      "profit_krw": 47905,
+      "profit_price_krw": 64801,
+      "return_pct": 3.76,
+      "return_price_pct": 5.09,
       "periods": {
-        "d1": -0.42,
-        "w1": -1.28,
-        "m1": -3.4,
-        "y1": 9.5,
-        "ytd": 12.04
+        "d1": -0.82,
+        "w1": -2.68,
+        "m1": -2.54,
+        "y1": 10.43,
+        "ytd": 11.12
       },
       "periods_fx": {
-        "d1": -0.98,
-        "w1": -2.35,
-        "m1": -8.55,
-        "y1": 8.16,
-        "ytd": 7.19
+        "d1": -1.57,
+        "w1": -3.44,
+        "m1": -6.0,
+        "y1": 8.94,
+        "ytd": 5.88
       },
-      "weight_pct": 2.67
+      "weight_pct": 2.64
     },
     {
       "ticker": "VTIP",
@@ -344,27 +344,27 @@
       "qty": 10,
       "buy_price": 49.83,
       "buy_fx": 1384.6,
-      "price": 49.65,
-      "fx": 1375.67,
+      "price": 49.67,
+      "fx": 1370.08,
       "cost_krw": 689946,
-      "value_krw": 683020,
-      "profit_krw": -6926,
-      "profit_price_krw": -2492,
-      "return_pct": -1.0,
-      "return_price_pct": -0.36,
+      "value_krw": 680519,
+      "profit_krw": -9427,
+      "profit_price_krw": -2215,
+      "return_pct": -1.37,
+      "return_price_pct": -0.32,
       "periods": {
-        "d1": -0.28,
-        "w1": -0.28,
-        "m1": -0.06,
-        "y1": 2.09,
-        "ytd": 1.81
+        "d1": 0.04,
+        "w1": -0.22,
+        "m1": 0.02,
+        "y1": 2.24,
+        "ytd": 1.85
       },
       "periods_fx": {
-        "d1": -0.84,
-        "w1": -1.37,
-        "m1": -5.39,
-        "y1": 0.84,
-        "ytd": -2.6
+        "d1": -0.71,
+        "w1": -0.99,
+        "m1": -3.54,
+        "y1": 0.86,
+        "ytd": -2.95
       },
       "weight_pct": 1.36
     },
@@ -377,29 +377,29 @@
       "qty": 600,
       "buy_price": 426.9417,
       "buy_fx": 9.1996,
-      "price": 432.0,
-      "fx": 8.573,
+      "price": 433.7,
+      "fx": 8.55,
       "cost_krw": 2356616,
-      "value_krw": 2222122,
-      "profit_krw": -134494,
-      "profit_price_krw": 27921,
-      "return_pct": -5.71,
-      "return_price_pct": 1.18,
+      "value_krw": 2224881,
+      "profit_krw": -131735,
+      "profit_price_krw": 37304,
+      "return_pct": -5.59,
+      "return_price_pct": 1.58,
       "periods": {
-        "d1": 0.89,
-        "w1": 2.18,
-        "m1": 4.63,
-        "y1": 37.16,
-        "ytd": 23.02
+        "d1": 0.39,
+        "w1": 1.64,
+        "m1": 3.95,
+        "y1": 38.96,
+        "ytd": 23.51
       },
       "periods_fx": {
-        "d1": -0.44,
-        "w1": 0.06,
-        "m1": 1.15,
-        "y1": 24.39,
-        "ytd": 14.72
+        "d1": -0.94,
+        "w1": 0.16,
+        "m1": 0.23,
+        "y1": 25.83,
+        "ytd": 14.86
       },
-      "weight_pct": 4.43
+      "weight_pct": 4.44
     },
     {
       "ticker": "1615.T",
@@ -410,27 +410,27 @@
       "qty": 120,
       "buy_price": 755.4,
       "buy_fx": 8.8324,
-      "price": 768.9,
-      "fx": 8.573,
+      "price": 773.0,
+      "fx": 8.55,
       "cost_krw": 800639,
-      "value_krw": 791014,
-      "profit_krw": -9626,
-      "profit_price_krw": 14308,
-      "return_pct": -1.2,
-      "return_price_pct": 1.79,
+      "value_krw": 793098,
+      "profit_krw": -7541,
+      "profit_price_krw": 18654,
+      "return_pct": -0.94,
+      "return_price_pct": 2.33,
       "periods": {
-        "d1": 2.11,
-        "w1": 5.4,
-        "m1": 2.4,
-        "y1": 75.37,
-        "ytd": 49.74
+        "d1": 0.53,
+        "w1": 4.18,
+        "m1": 5.89,
+        "y1": 78.49,
+        "ytd": 50.54
       },
       "periods_fx": {
-        "d1": 0.76,
-        "w1": 3.21,
-        "m1": -1.01,
-        "y1": 59.04,
-        "ytd": 39.64
+        "d1": -0.8,
+        "w1": 2.66,
+        "m1": 2.1,
+        "y1": 61.62,
+        "ytd": 40.0
       },
       "weight_pct": 1.58
     },
@@ -444,9 +444,9 @@
       "buy_price": 1,
       "buy_fx": null,
       "price": 1.0,
-      "fx": 1375.67,
+      "fx": 1370.08,
       "cost_krw": null,
-      "value_krw": 495241,
+      "value_krw": 493229,
       "profit_krw": null,
       "profit_price_krw": null,
       "return_pct": null,
@@ -459,13 +459,13 @@
         "ytd": 0.0
       },
       "periods_fx": {
-        "d1": -0.57,
-        "w1": -1.09,
-        "m1": -5.33,
-        "y1": -1.23,
-        "ytd": -4.33
+        "d1": -0.75,
+        "w1": -0.77,
+        "m1": -3.56,
+        "y1": -1.35,
+        "ytd": -4.72
       },
-      "weight_pct": 0.99
+      "weight_pct": 0.98
     },
     {
       "ticker": "USD-RP7",
@@ -477,9 +477,9 @@
       "buy_price": 1,
       "buy_fx": null,
       "price": 1.0,
-      "fx": 1375.67,
+      "fx": 1370.08,
       "cost_krw": null,
-      "value_krw": 357674,
+      "value_krw": 356221,
       "profit_krw": null,
       "profit_price_krw": null,
       "return_pct": null,
@@ -492,11 +492,11 @@
         "ytd": 0.0
       },
       "periods_fx": {
-        "d1": -0.57,
-        "w1": -1.09,
-        "m1": -5.33,
-        "y1": -1.23,
-        "ytd": -4.33
+        "d1": -0.75,
+        "w1": -0.77,
+        "m1": -3.56,
+        "y1": -1.35,
+        "ytd": -4.72
       },
       "weight_pct": 0.71
     },
@@ -510,9 +510,9 @@
       "buy_price": 1,
       "buy_fx": null,
       "price": 1.0,
-      "fx": 1375.67,
+      "fx": 1370.08,
       "cost_krw": null,
-      "value_krw": 1156,
+      "value_krw": 1151,
       "profit_krw": null,
       "profit_price_krw": null,
       "return_pct": null,
@@ -525,11 +525,11 @@
         "ytd": 0.0
       },
       "periods_fx": {
-        "d1": -0.57,
-        "w1": -1.09,
-        "m1": -5.33,
-        "y1": -1.23,
-        "ytd": -4.33
+        "d1": -0.75,
+        "w1": -0.77,
+        "m1": -3.56,
+        "y1": -1.35,
+        "ytd": -4.72
       },
       "weight_pct": 0.0
     },
@@ -543,9 +543,9 @@
       "buy_price": 1,
       "buy_fx": null,
       "price": 1.0,
-      "fx": 8.573,
+      "fx": 8.55,
       "cost_krw": null,
-      "value_krw": 84701,
+      "value_krw": 84474,
       "profit_krw": null,
       "profit_price_krw": null,
       "return_pct": null,
@@ -558,52 +558,52 @@
         "ytd": 0.0
       },
       "periods_fx": {
-        "d1": -1.32,
-        "w1": -2.07,
-        "m1": -3.33,
-        "y1": -9.31,
-        "ytd": -6.75
+        "d1": -1.33,
+        "w1": -1.46,
+        "m1": -3.58,
+        "y1": -9.45,
+        "ytd": -7.0
       },
       "weight_pct": 0.17
     }
   ],
   "totals": {
-    "value_krw": 50147320,
+    "value_krw": 50123240,
     "cost_krw": 34557407,
-    "profit_krw": 14651140,
-    "profit_price_krw": 15073778,
-    "return_pct": 42.4,
-    "return_price_pct": 43.62,
+    "profit_krw": 14630759,
+    "profit_price_krw": 15246689,
+    "return_pct": 42.34,
+    "return_price_pct": 44.12,
     "periods": {
-      "d1": -1.71,
-      "w1": -0.04,
-      "m1": 9.7,
-      "y1": 36.72,
-      "ytd": 25.25
+      "d1": 0.35,
+      "w1": 2.05,
+      "m1": 5.04,
+      "y1": 38.92,
+      "ytd": 25.72
     },
     "periods_fx": {
-      "d1": -2.3,
-      "w1": -1.17,
-      "m1": 3.96,
-      "y1": 34.47,
-      "ytd": 19.68
+      "d1": -0.44,
+      "w1": 1.23,
+      "m1": 1.3,
+      "y1": 36.46,
+      "ytd": 19.65
     },
     "benchmark": {
       "ticker": "^GSPC",
       "name": "S&P 500",
       "periods": {
-        "d1": -0.25,
-        "w1": 0.49,
-        "m1": 5.41,
-        "y1": 19.37,
-        "ytd": 12.65
+        "d1": -0.33,
+        "w1": 0.43,
+        "m1": 2.62,
+        "y1": 19.81,
+        "ytd": 12.28
       },
       "periods_fx": {
-        "d1": -0.81,
-        "w1": -0.61,
-        "m1": -0.21,
-        "y1": 17.91,
-        "ytd": 7.78
+        "d1": -1.08,
+        "w1": -0.34,
+        "m1": -1.03,
+        "y1": 18.19,
+        "ytd": 6.98
       }
     },
     "excluded_from_return": [
