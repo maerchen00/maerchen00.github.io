@@ -16,9 +16,8 @@
     { "ticker": "1306.T",  "name": "NEXT FUNDS TOPIX Exchange Traded Fund",           "label": "NOMURA TOPIX",    "currency": "JPY", "qty": 600, "buy_price": 426.9417, "buy_fx": 9.1996 },
     { "ticker": "1615.T",  "name": "NEXT FUNDS TOPIX Banks Exchange Traded Fund",     "label": "NOMURA TSE BANK", "currency": "JPY", "qty": 120, "buy_price": 755.4,    "buy_fx": 8.8324 },
 
-    { "ticker": "USD-RP30", "name": "USD 일반 RP(30일)",  "type": "cash", "currency": "USD", "qty": 360,   "buy_price": 1, "buy_fx": null },
-    { "ticker": "USD-RP7",  "name": "USD 일반 RP(7일)",   "type": "cash", "currency": "USD", "qty": 260,   "buy_price": 1, "buy_fx": null },
-    { "ticker": "USD-CASH", "name": "USD 예수금",         "type": "cash", "currency": "USD", "qty": 0.84,  "buy_price": 1, "buy_fx": null },
+    { "ticker": "USD-RP30", "name": "USD 일반 RP(30일)",  "type": "cash", "currency": "USD", "qty": 500,   "buy_price": 1, "buy_fx": null },
+    { "ticker": "USD-CASH", "name": "USD 예수금",         "type": "cash", "currency": "USD", "qty": 62.20, "buy_price": 1, "buy_fx": null },
     { "ticker": "JPY-CASH", "name": "JPY 예수금",         "type": "cash", "currency": "JPY", "qty": 9880,  "buy_price": 1, "buy_fx": null }
   ]
 }
