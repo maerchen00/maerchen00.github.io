@@ -256,5 +256,11 @@
     "value_krw": 47054512,
     "return_pct": 33.75,
     "return_price_pct": 39.01
+  },
+  {
+    "date": "2026-10-20",
+    "value_krw": 47301247,
+    "return_pct": 34.48,
+    "return_price_pct": 40.46
   }
 ]
