@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SWIFT 배제 이후, 중앙은행은 정말 달러를 버렸는가</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../common.css"/>
+<link rel="stylesheet" href="../../article.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<nav class="nav">
+  <div class="nav-logo">무제</div>
+  <div class="nav-right">
+    <a class="nav-back" href="../../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Economics ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <a class="td-item d2" href="great-depression.html">오스트리아 학파는 대공황을 어떻게 설명하는가</a>
+        <a class="td-item d2 active" href="trust-realignment.html">SWIFT 배제 이후, 중앙은행은 정말 달러를 버렸는가</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <a class="td-item d2" href="../finance/capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2" href="../finance/volatility-harvesting.html">변동성 수확</a>
+        <a class="td-item d2" href="../finance/leverage-rebalancing.html">레버리지 리밸런싱 설계</a>
+        <a class="td-item d2" href="../finance/grid-search.html">리밸런싱 파라미터 그리드서치</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Math</div>
+        <a class="td-item d2" href="../math/gbm-verification.html">기하 브라운 운동 실증검증</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Club</div>
+        <a class="td-item d2" href="../club/portfolio-report.html">개인 포트폴리오 보고서</a>
+        <a class="td-item d2" href="../club/kodex-bank.html">국내 은행주 ETF (KODEX 은행)</a>
+        <a class="td-item d2" href="../club/yield-curve.html">수익률 곡선 분석 및 예측</a>
+        <a class="td-item d2" href="../club/macro-indicators.html">경기지표 분석</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Portfolio</div>
+        <a class="td-item d2" href="../portfolio.html">포트폴리오 공개</a>
+      </div>
+    </span>
+    <span class="nav-date">2026. 9</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="toc-panel">
+    <div class="toc-head">목차</div>
+    <a class="toc-item on"  href="#sec-intro">1. 서론</a>
+    <a class="toc-item"     href="#sec-data">2. 자연실험과 데이터</a>
+    <a class="toc-item"     href="#sec-method">3. 방법론</a>
+    <a class="toc-item"     href="#sec-crimea">4. 크림합병 (2014)</a>
+    <a class="toc-item"     href="#sec-swift">5. SWIFT 배제 (2022)</a>
+    <a class="toc-item"     href="#sec-alt">6. 대안가설 검증</a>
+    <a class="toc-item"     href="#sec-common">7. 공통 배경조건: 2008년</a>
+    <a class="toc-item"     href="#sec-conc">8. 결론</a>
+  </div>
+
+  <div class="post-wrap">
+    <div class="post-header">
+      <div class="post-cat">Economics</div>
+      <h1>SWIFT 배제 이후, 중앙은행은 정말 달러를 버렸는가</h1>
+      <p class="post-sub">크림합병·SWIFT 배제 전후 중앙은행 금매집·미채권 보유 diff-in-diff, 2000–2026</p>
+      <div class="post-meta">2026. 9</div>
+    </div>
+
+    <div class="post-body">
+    <article>
+
+<h2 id="sec-intro">1. 서론</h2>
+
+<p>1971년 닉슨쇼크는 달러가 금에서 풀려난 사건이다. 브레튼우즈 체제의 종언이자, 달러의 신용이 금태환이 아닌 미국의 재정·군사적 패권으로 뒷받침되는 체제로의 전환이었다.</p>
+
+<p>이 체제에 처음 균열이 간 시점은 2008년이다. 세계 중앙은행들은 2000년대 초반까지 금을 순매도하고 있었다(이른바 워싱턴 협정 시대). 이 흐름이 순매수로 뒤집힌 지점을 데이터로 거슬러 올라가면 2009년 상반기 부근에 뚜렷하게 걸린다 — 글로벌 금융위기 직후, 그리고 이어진 제로금리 국면의 시작점이다.</p>
+
+<p>이후 2014년 크림합병, 2022년 러시아의 SWIFT 배제와 외환보유고 동결은 이 흐름 위에 놓인 개별 사건들이다. 통념은 이 사건들을 "제재 리스크 회피"라는 하나의 원인으로 묶어 탈달러화 서사로 소비한다. 이 글은 그 서사를 국가별 패널 데이터로 뜯어본다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-data">2. 자연실험과 데이터</h2>
+
+<p>이산적 지정학 사건 두 개를 처치(treatment)로 삼는다.</p>
+
+<div class="table-wrap">
+  <p class="table-num">표 1</p>
+  <p class="table-caption">이벤트와 데이터 출처</p>
+  <table>
+    <thead><tr><th>이벤트</th><th>처치 시점</th><th>처치군</th><th>데이터</th></tr></thead>
+    <tbody>
+      <tr><td>크림합병</td><td>2014-03</td><td>러시아</td><td>WGC 금 보유량(분기), TIC 미채권 보유(월별)</td></tr>
+      <tr><td>SWIFT 배제</td><td>2022-02</td><td>중국·인도·튀르키예</td><td>WGC 금 보유량(분기), TIC 미채권 보유(월별, 러·튀 제외)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>대조군은 일본·영국·독일·캐나다(TIC는 캐나다 제외)로, 서방 동맹국 중 데이터 커버리지가 완전한 국가만 선정했다. 통제변수는 10년물 국채금리(FRED DGS10), 달러인덱스(DTWEXBGS)를 분기 평균으로 병합했다.</p>
+
+<p>데이터 자체에서 한 가지 발견이 나온다. <strong>러시아의 TIC 미채권 보유 통계는 2019년부터, WGC 금 보유량 변화는 2022년부터 사실상 공개 데이터에서 사라진다.</strong> 후자는 2022Q1 이후 보고값이 완전히 고정(변화율 0.000%)되는 것으로 확인했는데, 이는 실제 무행동이 아니라 IMF 보고 중단에 따른 데이터 동결이다. 제재 대상에 가장 가까운 국가일수록 공개 통계에서 관측 불가능해진다는 것 자체가 하나의 방법론적 한계이자 발견이다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-method">3. 방법론</h2>
+
+<p>당초 "레벨-점프 DiD"(이벤트 전 평행 → 이벤트 후 처치군만 도약)를 계획했으나, 사전추세(pre-trend) 검정 결과 모든 처치군에서 이벤트 이전부터 이미 대조군과 다른 궤적을 보이는 것으로 확인됐다. 이에 따라 레벨보다 <strong>기울기 변화</strong>를 포착하는 interrupted time series(ITS) 구조로 전환했다.</p>
+
+<div class="disp-eq">\[ \ln(Y_{it}) = \alpha_i + \beta_1 t + \beta_2 (Treated_i \times t) + \beta_3 Post_t + \beta_4 (Treated_i \times Post_t) + \beta_5 (Treated_i \times Post_t \times \tilde t_{it}) + \gamma X_{it} + \varepsilon_{it} \]</div>
+
+<div style="font-family:var(--sans);font-size:0.72rem;color:var(--ink-muted);line-height:1.9;margin:-0.8rem 0 1.2rem;padding:0 0.5rem;">
+\(\alpha_i\) : 국가 고정효과 (\(Treated_i\) 단독 주효과는 시간불변이라 이와 완전공선이므로 제외)<br>
+\(t\) : 이벤트 기준 상대시점 · \(Post_t=\mathbb{1}[t\ge0]\)<br>
+\(\tilde t_{it}\) : 사후구간 전용 기울기항(사전구간에서는 0)<br>
+\(X_{it}\) : 거시통제(DGS10, DTWEXBGS)
+</div>
+
+<p>관심 계수는 세 개다. \(\beta_2\)(사전추세 차이), \(\beta_4\)(이벤트 시점 레벨 점프), \(\beta_5\)(이벤트 이후 기울기 변화 — "가속" 여부를 포착하는 핵심 계수). 표준오차는 국가 클러스터로 잡았으나, 크림합병 모델은 처치군이 러시아 한 국가뿐이라 클러스터 추론이 이론적으로 불안정하다는 한계가 있다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-crimea">4. 크림합병 (2014)</h2>
+
+<p>같은 사건에 대해 두 자산이 서로 다른 조정 메커니즘을 보였다.</p>
+
+<div class="table-wrap">
+  <p class="table-num">표 2</p>
+  <p class="table-caption">크림합병 ITS 결과 (러시아 vs 대조군, 거시통제 포함)</p>
+  <table>
+    <thead><tr><th>자산</th><th>계수</th><th>값</th><th>해석</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="2">금 (WGC)</td><td>\(\beta_2\)</td><td>0.0264***</td><td>사전추세부터 대조군보다 이미 가파름</td></tr>
+      <tr><td>\(\beta_5\)</td><td>0.0106***</td><td>이벤트 이후 기울기 <strong>추가 가속</strong></td></tr>
+      <tr><td rowspan="2">미채권 (TIC)</td><td>\(\beta_4\)</td><td>−0.5189***</td><td>이벤트 시점 <strong>레벨 급락</strong>(로그, 약 −40%)</td></tr>
+      <tr><td>\(\beta_5\)</td><td>0.0038 (n.s.)</td><td>레벨 조정 후 추가 가속은 없음</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>실제 TIC 원자료를 보면 러시아의 미채권 보유액은 2014년 2월 $126.2B에서 3월 $100.4B로 한 달 만에 급감했고, 이후 2015년까지 $70B대로 지속 하락했다. 금은 반대로 기존의 완만한 상승 추세가 이벤트 이후 한 단계 더 가팔라지는 연속적 반응을 보였다. 같은 국가, 같은 사건에 대해 채권은 <strong>단절적 처분</strong>, 금은 <strong>연속적 가속</strong>이라는 이질적인 조정 방식이 나타난 셈이다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-swift">5. SWIFT 배제 (2022)</h2>
+
+<div class="table-wrap">
+  <p class="table-num">표 3</p>
+  <p class="table-caption">SWIFT 배제 ITS 결과 (중국·인도·튀르키예 vs 대조군)</p>
+  <table>
+    <thead><tr><th>자산</th><th>계수</th><th>값</th><th>해석</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="2">금 (WGC)</td><td>\(\beta_2\)</td><td>0.0203**</td><td>사전추세부터 이미 가파름</td></tr>
+      <tr><td>\(\beta_5\)</td><td>−0.0070 (n.s.)</td><td>이벤트 이후 <strong>추가 가속 없음</strong></td></tr>
+      <tr><td rowspan="2">미채권 (TIC, 중·인만)</td><td>\(\beta_4\)</td><td>0.0359 (n.s.)</td><td>레벨 점프 없음</td></tr>
+      <tr><td>\(\beta_5\)</td><td>−0.0043 (n.s.)</td><td>추가 가속 없음</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>크림합병과 달리, SWIFT 배제 이후 중국·인도·튀르키예의 금매집에서는 통계적으로 유의한 추가 가속이 확인되지 않는다. 미채권 쪽은 애초에 러시아·튀르키예의 이 시기 데이터 자체가 없어 중국·인도만으로 관측했는데, 여기서도 유의한 효과가 없다. 사전추세는 존재하지만, SWIFT라는 사건 자체가 식별 가능한 변곡점을 만들었다는 증거는 이 데이터로는 나오지 않는다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-alt">6. 대안가설 검증</h2>
+
+<p>이 결과가 처치군 오분류 때문은 아닌지 두 가지를 추가로 확인했다.</p>
+
+<p><strong>실제 최대 매수국은 누구인가.</strong> 2022Q1 이후 금 보유량 증가분 기준 상위권에는 중국(+18.7%) 다음으로 <strong>폴란드(+154%)</strong>가 오르고, 증가율로는 <strong>체코(+602%)</strong>가 압도적 1위다. 폴란드·체코 모두 나토 정회원국으로, "서방 제재 리스크 회피"라는 가설과 정반대 위치에 있다.</p>
+
+<div class="table-wrap">
+  <p class="table-num">표 4</p>
+  <p class="table-caption">2022 Q1 이후 금 보유량 증가 상위국 (기존 보유량 50톤 이상)</p>
+  <table>
+    <thead><tr><th>국가</th><th>증가율</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td>폴란드</td><td>+154.4%</td><td>나토 정회원, 우크라이나 인접</td></tr>
+      <tr><td>카타르</td><td>+124.7%</td><td>—</td></tr>
+      <tr><td>아제르바이잔</td><td>+75.0%</td><td>—</td></tr>
+      <tr><td>튀르키예</td><td>+24.1%</td><td>2018 리라 위기 이후 자체 추세</td></tr>
+      <tr><td>중국</td><td>+18.7%</td><td>—</td></tr>
+      <tr><td>인도</td><td>+15.8%</td><td>—</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p><strong>국방비 증가율과의 상관관계.</strong> 안보 불안이 대리 동기일 가능성을 SIPRI 국방비(%GDP) 데이터로 확인했다(2019–21 평균 대비 2023–25 평균 변화, N=24). 상관계수는 Pearson r=0.130, Spearman r=0.075로 사실상 무상관이다. 러시아(데이터 동결 아티팩트)를 제외해도 결과는 유지된다. 폴란드만 국방비·금매집이 함께 움직이고, 나머지 국가는 따로 논다 — 중국·튀르키예·인도는 국방비 비중이 오히려 정체·감소하는데도 금은 계속 사고 있다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-common">7. 공통 배경조건: 2008년</h2>
+
+<p>미 연방정부 신용등급 강등(2011 S&amp;P, 2023 Fitch)을 사전에 지정해 동일한 ITS로 검정했으나, 위약(placebo) 검정에서 실패했다 — 같은 윈도우 안에서 임의의 분기를 가짜 이벤트로 넣어도 거의 대부분 유의하게 나왔고, 이는 짧은 윈도우에서의 모델 과적합 때문이었다.</p>
+
+<p>대신 <strong>사전에 시점을 지정하지 않고</strong>, 2000–2026 전체 표본에서 세계 금 보유량 총계(WGC World 집계)의 구조변화 지점을 SSR 최소화 기준으로 데이터가 스스로 찾도록 했다(Quandt-Andrews 방식, 양끝 15% 트리밍). 상위 10개 후보 breakpoint는 전부 2007Q3–2009Q3 사이에 밀집했고, 최적점은 <strong>2009년 2분기</strong>였다.</p>
+
+<div class="chart-wrap">
+  <canvas id="world-gold-chart" height="90"></canvas>
+</div>
+
+<p>이 시점은 신용등급 강등일과는 무관하지만, 세계 금시장에서 이미 잘 알려진 전환점과 일치한다 — 2000년대 초반의 중앙은행 순매도 기조(워싱턴 협정 시대)가 글로벌 금융위기 이후 순매수로 뒤집힌 지점이다. 금융위기가 만든 신뢰 공백과, 제로금리로 무이자자산인 금의 기회비용이 사실상 사라진 상황이 겹친 결과로 해석할 수 있다.</p>
+
+<div class="divider">· · ·</div>
+
+<h2 id="sec-conc">8. 결론</h2>
+
+<p>세계 중앙은행의 금매집과 미채권 이탈은 단일한 원인으로 설명되지 않는다. 실증분석은 두 개의 층위를 보여준다.</p>
+
+<p>바닥에는 2008년 금융위기 이후 형성된 공통의 배경조건이 있다. 이 시점부터 금매집은 이미 추세적으로 진행되고 있었고, 2014년과 2022년 각각의 사건 이전에도 처치군 국가들은 대조군과 이미 다른 궤적을 그리고 있었다.</p>
+
+<p>그 위에서 실제로 "누가, 언제, 얼마나" 움직였는지는 국가마다 다른 개별 동기가 결정했다. 러시아는 크림합병 시점에 미채권을 한 번에 던지고 금 매집 추세를 한 단계 더 가속시켰다 — 두 자산에서 서로 다른 조정 방식을 보였다. 반면 2022년 SWIFT 배제 이후 중국·인도·튀르키예의 금매집에서는 통계적으로 유의한 추가 가속이 확인되지 않았다. 오히려 이 시기 최대 매수국 상위권에는 폴란드, 체코 같은 나토 회원국이 올라 있다. 제재 리스크 회피로는 설명되지 않는 그림이다. 국방비 지출 증가율과 금매집 증가율의 상관관계도 사실상 없다.</p>
+
+<p>정작 제재 대상에 가장 가까운 나라들의 최근 데이터는 공개 통계 자체에서 사라진다. 러시아는 2019년 이후 미국채 보유 통계에서, 2022년 이후 금보유량 통계에서도 실질적으로 관측이 끊긴다. 이 침묵 자체가 하나의 신호다.</p>
+
+<p>종합하면 "제재가 탈달러화를 촉발했다"는 단일 원인론보다, "2008년 이후 누적된 신뢰의 공백 위에서 각국이 자국의 사정에 따라 개별적으로 반응했다"는 쪽이 데이터에 더 부합한다. 닉슨쇼크가 달러를 금에서 풀어낸 단일한 결정이었다면, 지금 진행 중인 것은 그보다 훨씬 느리고, 훨씬 이질적이고, 훨씬 불완전한 재조정이다.</p>
+
+<div class="footnotes">
+  <p><sup>1</sup> 데이터: World Gold Council 분기별 국가별 금 보유량(2000Q1–2026Q1), 미 재무부 TIC Major Foreign Holders(월별, 2000.02–2025.12), FRED DGS10·DTWEXBGS, World Bank CPI, SIPRI Military Expenditure(%GDP, 1949–2025).</p>
+  <p><sup>2</sup> 크림합병 모델은 처치군이 러시아 1개국뿐이라 국가클러스터 표준오차의 이론적 신뢰도가 낮다. 후속 검증으로 synthetic control 방법이 필요하다.</p>
+  <p><sup>3</sup> 2008년 breakpoint는 사후적으로 발견된 상관관계이며, 인과관계를 주장하는 것은 아니다. 이 시기 통화정책(제로금리 국면 진입)과의 관계는 별도 검증이 필요하다.</p>
+</div>
+
+    </article>
+
+    <aside class="side-rail">
+      <div class="viz-wrap">
+        <div class="viz-title">이벤트별 핵심 결과 요약</div>
+        <div class="side-table-wrap">
+        <table class="side-table">
+          <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
+          <thead><tr><th>이벤트</th><th>금</th><th>미채권</th></tr></thead>
+          <tbody>
+            <tr><td>크림합병</td><td class="pos">가속 ***</td><td>레벨급락 ***</td></tr>
+            <tr><td>SWIFT</td><td>가속 없음</td><td>효과 없음</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="table-source">*** p&lt;0.01, 거시통제(DGS10·DTWEXBGS) 포함 모델 기준</p>
+      </div>
+
+      <div class="viz-wrap" style="margin-top:1rem;">
+        <div class="viz-title">2022 Q1 이후 최대 매수국</div>
+        <div style="font-size:0.82rem;text-align:left;padding:0.6rem 0.7rem;color:var(--ink);line-height:2.0;">
+          1. 중국 +18.7%<br>
+          2. 폴란드 +154.4%<br>
+          3. 인도 +15.8%<br>
+          4. 튀르키예 +24.1%<br>
+          <span style="color:var(--ink-muted);font-size:0.78rem;">*순서는 절대증가량 기준</span>
+        </div>
+      </div>
+    </aside>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const TC = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#3a3a38';
+const FONT = "'Noto Sans KR', sans-serif";
+const base = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{display:false}, tooltip:{titleFont:{family:FONT},bodyFont:{family:FONT}} },
+  scales:{
+    x:{ grid:{color:'rgba(0,0,0,0.05)'}, ticks:{color:TC,font:{family:FONT,size:10}} },
+    y:{ grid:{color:'rgba(0,0,0,0.05)'}, ticks:{color:TC,font:{family:FONT,size:10}} }
+  }
+};
+
+// 세계 금 보유량 총계 (WGC, 톤) — world_gold_quarterly.csv 실측값
+const WORLD_GOLD_LABELS = ['2000','2004','2008','2009Q2(bp)','2012','2016','2020','2022','2025'];
+const WORLD_GOLD_VALUES = [33444,31902,30146,30395,31297,33021,34898,35489,36552];
+
+new Chart(document.getElementById('world-gold-chart'), {
+  type:'line',
+  data:{ labels:WORLD_GOLD_LABELS, datasets:[{
+    data:WORLD_GOLD_VALUES, borderColor:'rgba(146,64,14,0.9)', borderWidth:1.8,
+    pointRadius:(ctx)=> ctx.dataIndex===3 ? 4 : 0,
+    pointBackgroundColor:'rgba(192,57,43,0.9)',
+    fill:false, tension:0.25
+  }]},
+  options:{...base,
+    plugins:{...base.plugins, tooltip:{callbacks:{label:c=>`${c.parsed.y.toLocaleString()} 톤`}}},
+    scales:{...base.scales,
+      y:{...base.scales.y, title:{display:true,text:'세계 총 보유량 (톤)',color:TC,font:{family:FONT,size:10}}}}
+  }
+});
+
+// ── 네비 ──
+const tagBtn=document.getElementById('tag-btn'),treeDrop=document.getElementById('tree-drop'),overlay=document.getElementById('overlay');
+tagBtn.addEventListener('click',e=>{e.stopPropagation();const o=treeDrop.classList.toggle('open');tagBtn.classList.toggle('open',o);overlay.classList.toggle('show',o);});
+overlay.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+document.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+
+// ── TOC ──
+const tocItems=document.querySelectorAll('.toc-item'),sections=document.querySelectorAll('h2[id],h3[id]');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});tocItems.forEach(t=>{const h=t.getAttribute('href')||'';t.classList.toggle('on',h==='#'+cur);});});
+
+// ── KaTeX ──
+renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});
+</script>
+<script src="../../footnotes.js"></script>
+<script data-goatcounter="https://maerchen00.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

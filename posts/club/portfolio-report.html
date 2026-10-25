@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>개인 포트폴리오 보고서</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../common.css"/>
+<link rel="stylesheet" href="../../article.css"/>
+<style>
+  .report-page {
+    display: block; width: 100%; height: auto; margin: 0 auto 1.3rem;
+    border: 1px solid var(--rule); border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(28,25,23,0.06);
+    scroll-margin-top: 58px;
+  }
+  .report-page:last-child { margin-bottom: 0; }
+  .page-caption {
+    text-align: center; font-family: var(--sans); font-size: 0.68rem; color: var(--ink-dim);
+    margin: -0.9rem 0 1.6rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<nav class="nav">
+  <div class="nav-logo">무제</div>
+  <div class="nav-right">
+    <a class="nav-back" href="../../index.html">← 목록으로</a>
+    <span class="nav-tag" id="tag-btn">Club ▾
+      <div class="tree-drop" id="tree-drop" onclick="event.stopPropagation()">
+        <div class="td-item d1">Economics</div>
+        <a class="td-item d2" href="../economics/great-depression.html">오스트리아 학파는 대공황을 어떻게 설명하는가</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Finance</div>
+        <a class="td-item d2" href="../finance/capm-report.html">CAPM SML의 OOS 설명력 검정</a>
+        <a class="td-item d2" href="../finance/volatility-harvesting.html">변동성 수확</a>
+        <a class="td-item d2" href="../finance/leverage-rebalancing.html">레버리지 리밸런싱 설계</a>
+        <a class="td-item d2" href="../finance/grid-search.html">리밸런싱 파라미터 그리드서치</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Math</div>
+        <a class="td-item d2" href="../math/gbm-verification.html">기하 브라운 운동 실증검증</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Club</div>
+        <a class="td-item d2 active" href="portfolio-report.html">개인 포트폴리오 보고서</a>
+        <a class="td-item d2" href="kodex-bank.html">국내 은행주 ETF (KODEX 은행)</a>
+        <a class="td-item d2" href="yield-curve.html">수익률 곡선 분석 및 예측</a>
+        <a class="td-item d2" href="macro-indicators.html">경기지표 분석</a>
+        <div class="td-divider"></div>
+        <div class="td-item d1">Portfolio</div>
+        <a class="td-item d2" href="../portfolio.html">포트폴리오 공개</a>
+      </div>
+    </span>
+    <span class="nav-date">2026. 9</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="toc-panel">
+    <div class="toc-head">목차</div>
+    <a class="toc-item on" href="#page-1">표지</a>
+    <a class="toc-item" href="#page-2">목차</a>
+    <a class="toc-item" href="#page-3">I. 포트폴리오 전략 및 구성</a>
+  </div>
+
+  <div class="post-wrap">
+    <div class="post-header">
+      <div class="post-cat">Club</div>
+      <h1>개인 포트폴리오 보고서</h1>
+      <p class="post-sub">SWIC Multi-Asset Macro — Max Sharpe 포트폴리오와 비중 상한의 trade-off</p>
+      <div class="post-meta">2026. 9 · Sogang Wise Investment Club 39기</div>
+    </div>
+
+    <div class="post-body">
+    <article>
+
+<img class="report-page" id="page-1" src="images/portfolio-report/page-01.png" alt="개인 포트폴리오 보고서 1쪽" loading="lazy">
+<p class="page-caption">1 / 5</p>
+<img class="report-page" id="page-2" src="images/portfolio-report/page-02.png" alt="개인 포트폴리오 보고서 2쪽" loading="lazy">
+<p class="page-caption">2 / 5</p>
+<img class="report-page" id="page-3" src="images/portfolio-report/page-03.png" alt="개인 포트폴리오 보고서 3쪽" loading="lazy">
+<p class="page-caption">3 / 5</p>
+<img class="report-page" id="page-4" src="images/portfolio-report/page-04.png" alt="개인 포트폴리오 보고서 4쪽" loading="lazy">
+<p class="page-caption">4 / 5</p>
+<img class="report-page" id="page-5" src="images/portfolio-report/page-05.png" alt="개인 포트폴리오 보고서 5쪽" loading="lazy">
+<p class="page-caption">5 / 5</p>
+
+    </article>
+    </div>
+  </div>
+</div>
+
+<script>
+const tagBtn=document.getElementById('tag-btn'),treeDrop=document.getElementById('tree-drop'),overlay=document.getElementById('overlay');
+tagBtn.addEventListener('click',e=>{e.stopPropagation();const o=treeDrop.classList.toggle('open');tagBtn.classList.toggle('open',o);overlay.classList.toggle('show',o);});
+overlay.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+document.addEventListener('click',()=>{treeDrop.classList.remove('open');tagBtn.classList.remove('open');overlay.classList.remove('show');});
+
+const tocItems=document.querySelectorAll('.toc-item'),sections=document.querySelectorAll('[id^="page-"]');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});tocItems.forEach(t=>{const h=t.getAttribute('href')||'';t.classList.toggle('on',h==='#'+cur);});});
+</script>
+<script data-goatcounter="https://maerchen00.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
