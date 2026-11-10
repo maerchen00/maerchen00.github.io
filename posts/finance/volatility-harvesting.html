@@ -336,7 +336,7 @@
 
 <p>현실적인 주식·채권 조합(\(\mu_s=7\%,\sigma_s=18\%\) / \(\mu_b=3\%,\sigma_b=6\%\))에 공식을 적용하면, 상관계수가 −0.6인 구간에서도 \(w^*\)는 이미 102%를 넘는다. 두 자산의 기대수익률 차이(4%p)가 분산 감소 효과를 압도하기 때문이다. 상관계수가 양수로 올라가면 \(w^*\)는 200%를 넘기기도 한다 — 이론상 정답은 주식 레버리지가 된다.</p>
 
-<p>더 극단적인 예는 5장의 닛케이+일본 국채 사례 그 자체다. 실현된 월간 통계(닛케이 CAGR −4.75%, \(\sigma\) 5.72%/월; 국채 CAGR +2.93%, \(\sigma\) 1.57%/월; \(\rho=-0.246\))를 그대로 공식에 넣으면 \(w^*\)(닛케이 비중)는 <strong>약 −150%</strong>가 나온다. 닛케이를 공매도하고 그 대금으로 채권을 레버리지하라는 결론이다.</p>
+<p>더 극단적인 예는 5장의 닛케이+일본 국채 사례 그 자체다. 실현된 월간 통계(닛케이 CAGR −4.75%, \(\sigma\) 5.72%/월; 국채 CAGR +2.93%, \(\sigma\) 1.57%/월; \(\rho=-0.246\))를 그대로 공식에 넣으면 \(w^*\)(닛케이 비중)는 <strong>약 −112%</strong>가 나온다. 닛케이를 공매도하고 그 대금으로 채권을 레버리지하라는 결론이다.</p>
 
 <p>이것이 왜 함정인가. 이 \(\mu\)는 <em>사후적으로 관찰된</em> 값이다. 1994년 시점에서 닛케이가 향후 18년간 −58%를 기록할 것을 안다면 애초에 공매도가 정답이겠지만, 그런 정보는 존재하지 않았다. 5장의 역변동성 가중(닛케이 비중 약 21.5%, 채권 약 78.5%)은 애초에 \(\mu\)를 요구하지 않아 이 문제를 피해가는 대신, \(\sigma\)와 방향성 없는 리밸런싱만으로 변동성 수확을 얻고 이론적 최적 성장률에는 못 미치는 것을 감수한다.<sup>2</sup></p>
 
@@ -377,6 +377,7 @@
   <p><sup>7</sup> Kelly, J. L. (1956). A New Interpretation of Information Rate. <em>Bell System Technical Journal</em>, 35(4), 917–926.</p>
   <p><sup>8</sup> Fernholz, E. R. (2002). <em>Stochastic Portfolio Theory.</em> Springer.</p>
   <p><sup>9</sup> 4.3절 리밸런싱 주기 결과는 GBM 기반 몬테카를로 시뮬레이션(자체 생성)이며, 4장(4.1·4.2)·6장 수치는 3·5장에서 쓴 파라미터를 재사용한 해석적 근사임. 실제 시장 데이터의 정밀 재현이 아님.</p>
+  <p>2026.11 수정 — 6장 닛케이 \(w^*\) 계산에 기하평균 대신 산술평균 적용(−150%→−112%), 사이드바 수치 정정. 결론 변동 없음.</p>
 </div>
 
     </article>
@@ -396,13 +397,13 @@
           <tbody>
             <tr><td style="font-weight:600;">Joy A1</td><td>+5.0%</td><td>35.0%</td><td class="neg">−1.1%</td></tr>
             <tr><td style="font-weight:600;">Joy A2</td><td>−2.5%</td><td>17.5%</td><td class="neg">−4.0%</td></tr>
-            <tr><td style="font-weight:600;">50:50포트</td><td>+1.25%</td><td>≈0%</td><td class="pos">+0.87%</td></tr>
+            <tr><td style="font-weight:600;">50:50포트</td><td>+1.25%</td><td>8.75%</td><td class="pos">+0.87%</td></tr>
             <tr style="border-top:1px solid var(--rule);"><td style="color:#92400e;font-weight:600;">닛케이</td><td>−0.24%/월</td><td>5.72%/월</td><td class="neg">−4.75%/년</td></tr>
             <tr><td style="color:#2c5f8a;font-weight:600;">국채</td><td>+0.25%/월</td><td>1.57%/월</td><td class="pos">+2.93%/년</td></tr>
-            <tr class="hl"><td style="font-weight:600;">역변동성 리밸런싱</td><td>—</td><td>가변</td><td class="pos">+1.93%/년</td></tr>
+            <tr class="hl"><td style="font-weight:600;">동일가중 분기 리밸런싱</td><td>—</td><td>가변</td><td class="pos">+1.93%/년</td></tr>
           </tbody>
         </table>
-        <p class="table-source">Joy 포트: 반상관으로 \(\sigma_{p}\approx 0\)</p>
+        <p class="table-source">반상관이라도 50:50에서는 \(\sigma_p\)가 0이 되지 않는다(0이 되는 비중은 자산 1 약 33%)</p>
       </div>
 
       <div class="viz-wrap" style="margin-top:1rem;">

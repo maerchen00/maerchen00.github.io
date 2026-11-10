@@ -99,7 +99,7 @@
   </div>
 </div>
 
-<p>이 논리를 직접 눈으로 확인해보자. \(S_0 = 100\)에서 시작해 하루 단위 스텝에서 1년(240거래일) 단위 스텝까지 스텝 폭을 점점 넓혀가며 경로 하나를 이어 그린다. 매 스텝 실제로 일어난 변화는 실선 한 줄로, 그 스텝에서 이론상 가능했던 로그정규분포 전체는 옅은 점선 곡선으로 함께 표시한다.</p>
+<p>이 논리를 직접 눈으로 확인해보자. \(S_0 = 100\)에서 시작해 하루 단위 스텝에서 1년(252거래일) 단위 스텝까지 스텝 폭을 점점 넓혀가며 경로 하나를 이어 그린다. 매 스텝 실제로 일어난 변화는 실선 한 줄로, 그 스텝에서 이론상 가능했던 로그정규분포 전체는 옅은 점선 곡선으로 함께 표시한다.</p>
 
 <div class="viz-wrap">
   <div class="viz-title">확률의 갈래 — 스케일별 가격 경로</div>
@@ -277,6 +277,7 @@
   <p><sup>3</sup> Jarque, C. M., & Bera, A. K. (1980). Efficient tests for normality, homoscedasticity and serial independence of regression residuals. <em>Economics Letters</em>, 6(3), 255–259.</p>
   <p><sup>4</sup> Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. <em>Quantitative Finance</em>, 1(2), 223–236.</p>
   <p><sup>5</sup> Merton, R. C. (1973). Theory of Rational Option Pricing. <em>The Bell Journal of Economics and Management Science</em>, 4(1), 141–183.</p>
+  <p>2026.11 수정 — 2장 "확률의 갈래" 시뮬레이션의 1년 스텝을 240거래일에서 252거래일로 통일(본문·코드 모두). 결론 변동 없음.</p>
 </div>
 
     </article>
@@ -534,7 +535,7 @@ new Chart(document.getElementById('rolling-vol'), {
 
   const W = 700, H = 340, S0 = 100;
   const N_STEPS = 12;
-  const DURSEQ = Array.from({ length: N_STEPS }, (_, k) => Math.pow(240, k / (N_STEPS - 1))); // 1일→240일까지 로그 간격으로 점점 넓어지는 dt 12개
+  const DURSEQ = Array.from({ length: N_STEPS }, (_, k) => Math.pow(252, k / (N_STEPS - 1))); // 1일→252일까지 로그 간격으로 점점 넓어지는 dt 12개
   const TRADING_DAYS = 252;
   const PAD_L = 10, PAD_R = 10, PAD_T = 10, PAD_B = 10;
 
@@ -546,7 +547,7 @@ new Chart(document.getElementById('rolling-vol'), {
     return Math.exp(-0.5 * Math.pow((x - mean) / sd, 2)) / (sd * Math.sqrt(2 * Math.PI));
   }
 
-  // 각 점마다 dt가 점점 커지고(1→5→20→60→120→240), 시각적 간격도 sqrt(dt)로
+  // 각 점마다 dt가 점점 커지고(1→5→20→60→120→252), 시각적 간격도 sqrt(dt)로
   // 함께 점점 넓어진다. 버킷 단위로 묶지 않아서 계단식으로 확 뛰지 않고 매끄럽게 벌어진다.
   function build(mu, sigma) {
     let pathpts = [{ ix: 0, y: S0 }];
