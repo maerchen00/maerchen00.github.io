@@ -10,6 +10,8 @@
     { "date": "2026-08-27", "ticker": "USD-RP7", "side": "buy",  "qty": 260,    "price": 1, "fx": null },
     { "date": "2026-09-03", "ticker": "USD-RP30", "side": "sell", "qty": 360.01, "price": 1, "fx": null },
     { "date": "2026-09-03", "ticker": "USD-RP7",  "side": "sell", "qty": 260.16, "price": 1, "fx": null },
-    { "date": "2026-09-04", "ticker": "USD-RP30", "side": "buy",  "qty": 500,    "price": 1, "fx": null }
+    { "date": "2026-09-04", "ticker": "USD-RP30", "side": "buy",  "qty": 500,    "price": 1, "fx": null },
+    { "date": "2026-10-29", "ticker": "USD-RP30", "side": "sell", "qty": 501.96, "price": 1, "fx": null },
+    { "date": "2026-10-29", "ticker": "USD-RP7",  "side": "buy",  "qty": 680,    "price": 1, "fx": null }
   ]
 }
